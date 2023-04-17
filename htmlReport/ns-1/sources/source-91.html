@@ -1,0 +1,364 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Queue</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Queue (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Queue</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Queue$LinkedIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Queue$Node</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/49)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Queue.java
+&nbsp; *  Execution:    java Queue &lt; input.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/13stacks/tobe.txt  
+&nbsp; *
+&nbsp; *  A generic queue, implemented using a linked list.
+&nbsp; *
+&nbsp; *  % java Queue &lt; tobe.txt 
+&nbsp; *  to be or not to be (2 left on queue)
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Queue} class represents a first-in-first-out (FIFO)
+&nbsp; *  queue of generic items.
+&nbsp; *  It supports the usual &lt;em&gt;enqueue&lt;/em&gt; and &lt;em&gt;dequeue&lt;/em&gt;
+&nbsp; *  operations, along with methods for peeking at the first item,
+&nbsp; *  testing if the queue is empty, and iterating through
+&nbsp; *  the items in FIFO order.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a singly linked list with a static nested class for
+&nbsp; *  linked-list nodes. See {@link LinkedQueue} for the version from the
+&nbsp; *  textbook that uses a non-static nested class.
+&nbsp; *  See {@link ResizingArrayQueue} for a version that uses a resizing array.
+&nbsp; *  The &lt;em&gt;enqueue&lt;/em&gt;, &lt;em&gt;dequeue&lt;/em&gt;, &lt;em&gt;peek&lt;/em&gt;, &lt;em&gt;size&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt;
+&nbsp; *  operations all take constant time in the worst case.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/13stacks&quot;&gt;Section 1.3&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; *
+&nbsp; *  @param &lt;Item&gt; the generic type of an item in this queue
+&nbsp; */
+&nbsp;public class Queue&lt;Item&gt; implements Iterable&lt;Item&gt; {
+&nbsp;    private Node&lt;Item&gt; first;    // beginning of queue
+&nbsp;    private Node&lt;Item&gt; last;     // end of queue
+&nbsp;    private int n;               // number of elements on queue
+&nbsp;
+&nbsp;    // helper linked list class
+&nbsp;    private static class Node&lt;Item&gt; {
+&nbsp;        private Item item;
+&nbsp;        private Node&lt;Item&gt; next;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty queue.
+&nbsp;     */
+<b class="nc">&nbsp;    public Queue() {</b>
+<b class="nc">&nbsp;        first = null;</b>
+<b class="nc">&nbsp;        last  = null;</b>
+<b class="nc">&nbsp;        n = 0;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this queue is empty.
+&nbsp;     *
+&nbsp;     * @return {@code true} if this queue is empty; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return first == null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of items in this queue.
+&nbsp;     *
+&nbsp;     * @return the number of items in this queue
+&nbsp;     */
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return n;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the item least recently added to this queue.
+&nbsp;     *
+&nbsp;     * @return the item least recently added to this queue
+&nbsp;     * @throws NoSuchElementException if this queue is empty
+&nbsp;     */
+&nbsp;    public Item peek() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Queue underflow&quot;);</b>
+<b class="nc">&nbsp;        return first.item;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the item to this queue.
+&nbsp;     *
+&nbsp;     * @param  item the item to add
+&nbsp;     */
+&nbsp;    public void enqueue(Item item) {
+<b class="nc">&nbsp;        Node&lt;Item&gt; oldlast = last;</b>
+<b class="nc">&nbsp;        last = new Node&lt;Item&gt;();</b>
+<b class="nc">&nbsp;        last.item = item;</b>
+<b class="nc">&nbsp;        last.next = null;</b>
+<b class="nc">&nbsp;        if (isEmpty()) first = last;</b>
+<b class="nc">&nbsp;        else           oldlast.next = last;</b>
+<b class="nc">&nbsp;        n++;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes and returns the item on this queue that was least recently added.
+&nbsp;     *
+&nbsp;     * @return the item on this queue that was least recently added
+&nbsp;     * @throws NoSuchElementException if this queue is empty
+&nbsp;     */
+&nbsp;    public Item dequeue() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Queue underflow&quot;);</b>
+<b class="nc">&nbsp;        Item item = first.item;</b>
+<b class="nc">&nbsp;        first = first.next;</b>
+<b class="nc">&nbsp;        n--;</b>
+<b class="nc">&nbsp;        if (isEmpty()) last = null;   // to avoid loitering</b>
+<b class="nc">&nbsp;        return item;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of this queue.
+&nbsp;     *
+&nbsp;     * @return the sequence of items in FIFO order, separated by spaces
+&nbsp;     */
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        StringBuilder s = new StringBuilder();</b>
+<b class="nc">&nbsp;        for (Item item : this) {</b>
+<b class="nc">&nbsp;            s.append(item);</b>
+<b class="nc">&nbsp;            s.append(&#39; &#39;);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return s.toString();</b>
+&nbsp;    } 
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an iterator that iterates over the items in this queue in FIFO order.
+&nbsp;     *
+&nbsp;     * @return an iterator that iterates over the items in this queue in FIFO order
+&nbsp;     */
+&nbsp;    public Iterator&lt;Item&gt; iterator()  {
+<b class="nc">&nbsp;        return new LinkedIterator(first);  </b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // an iterator, doesn&#39;t implement remove() since it&#39;s optional
+&nbsp;    private class LinkedIterator implements Iterator&lt;Item&gt; {
+&nbsp;        private Node&lt;Item&gt; current;
+&nbsp;
+<b class="nc">&nbsp;        public LinkedIterator(Node&lt;Item&gt; first) {</b>
+<b class="nc">&nbsp;            current = first;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        public boolean hasNext()  { return current != null;                     }</b>
+<b class="nc">&nbsp;        public void remove()      { throw new UnsupportedOperationException();  }</b>
+&nbsp;
+&nbsp;        public Item next() {
+<b class="nc">&nbsp;            if (!hasNext()) throw new NoSuchElementException();</b>
+<b class="nc">&nbsp;            Item item = current.item;</b>
+<b class="nc">&nbsp;            current = current.next; </b>
+<b class="nc">&nbsp;            return item;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code Queue} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        Queue&lt;String&gt; queue = new Queue&lt;String&gt;();</b>
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            String item = StdIn.readString();</b>
+<b class="nc">&nbsp;            if (!item.equals(&quot;-&quot;))</b>
+<b class="nc">&nbsp;                queue.enqueue(item);</b>
+<b class="nc">&nbsp;            else if (!queue.isEmpty())</b>
+<b class="nc">&nbsp;                StdOut.print(queue.dequeue() + &quot; &quot;);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;(&quot; + queue.size() + &quot; left on queue)&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

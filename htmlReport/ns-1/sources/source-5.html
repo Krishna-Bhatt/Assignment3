@@ -1,0 +1,373 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > AdjMatrixEdgeWeightedDigraph</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: AdjMatrixEdgeWeightedDigraph (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AdjMatrixEdgeWeightedDigraph</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/46)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AdjMatrixEdgeWeightedDigraph$AdjIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/59)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac AdjMatrixEdgeWeightedDigraph.java
+&nbsp; *  Execution:    java AdjMatrixEdgeWeightedDigraph V E
+&nbsp; *  Dependencies: StdOut.java
+&nbsp; *
+&nbsp; *  An edge-weighted digraph, implemented using an adjacency matrix.
+&nbsp; *  Parallel edges are disallowed; self-loops are allowed.
+&nbsp; *  
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code AdjMatrixEdgeWeightedDigraph} class represents a edge-weighted
+&nbsp; *  digraph of vertices named 0 through &lt;em&gt;V&lt;/em&gt; - 1, where each
+&nbsp; *  directed edge is of type {@link DirectedEdge} and has a real-valued weight.
+&nbsp; *  It supports the following two primary operations: add a directed edge
+&nbsp; *  to the digraph and iterate over all of edges incident from a given vertex.
+&nbsp; *  It also provides
+&nbsp; *  methods for returning the number of vertices &lt;em&gt;V&lt;/em&gt; and the number
+&nbsp; *  of edges &lt;em&gt;E&lt;/em&gt;. Parallel edges are disallowed; self-loops are permitted.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses an adjacency-matrix representation.
+&nbsp; *  All operations take constant time (in the worst case) except
+&nbsp; *  iterating over the edges incident from a given vertex, which takes
+&nbsp; *  time proportional to &lt;em&gt;V&lt;/em&gt;.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/44sp&quot;&gt;Section 4.4&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class AdjMatrixEdgeWeightedDigraph {
+<b class="nc">&nbsp;    private static final String NEWLINE = System.getProperty(&quot;line.separator&quot;);</b>
+&nbsp;
+&nbsp;    private final int V;
+&nbsp;    private int E;
+&nbsp;    private DirectedEdge[][] adj;
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Initializes an empty edge-weighted digraph with {@code V} vertices and 0 edges.
+&nbsp;     * @param V the number of vertices
+&nbsp;     * @throws IllegalArgumentException if {@code V &lt; 0}
+&nbsp;     */
+<b class="nc">&nbsp;    public AdjMatrixEdgeWeightedDigraph(int V) {</b>
+<b class="nc">&nbsp;        if (V &lt; 0) throw new IllegalArgumentException(&quot;number of vertices must be non-negative&quot;);</b>
+<b class="nc">&nbsp;        this.V = V;</b>
+<b class="nc">&nbsp;        this.E = 0;</b>
+<b class="nc">&nbsp;        this.adj = new DirectedEdge[V][V];</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a random edge-weighted digraph with {@code V} vertices and &lt;em&gt;E&lt;/em&gt; edges.
+&nbsp;     * @param V the number of vertices
+&nbsp;     * @param E the number of edges
+&nbsp;     * @throws IllegalArgumentException if {@code V &lt; 0}
+&nbsp;     * @throws IllegalArgumentException if {@code E &lt; 0}
+&nbsp;     */
+&nbsp;    public AdjMatrixEdgeWeightedDigraph(int V, int E) {
+<b class="nc">&nbsp;        this(V);</b>
+<b class="nc">&nbsp;        if (E &lt; 0) throw new IllegalArgumentException(&quot;number of edges must be non-negative&quot;);</b>
+<b class="nc">&nbsp;        if (E &gt; V*V) throw new IllegalArgumentException(&quot;too many edges&quot;);</b>
+&nbsp;
+&nbsp;        // can be inefficient
+<b class="nc">&nbsp;        while (this.E != E) {</b>
+<b class="nc">&nbsp;            int v = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;            int w = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;            double weight = Math.round(100 * StdRandom.uniform()) / 100.0;</b>
+<b class="nc">&nbsp;            addEdge(new DirectedEdge(v, w, weight));</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of vertices in the edge-weighted digraph.
+&nbsp;     * @return the number of vertices in the edge-weighted digraph
+&nbsp;     */
+&nbsp;    public int V() {
+<b class="nc">&nbsp;        return V;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of edges in the edge-weighted digraph.
+&nbsp;     * @return the number of edges in the edge-weighted digraph
+&nbsp;     */
+&nbsp;    public int E() {
+<b class="nc">&nbsp;        return E;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the directed edge {@code e} to the edge-weighted digraph (if there
+&nbsp;     * is not already an edge with the same endpoints).
+&nbsp;     * @param e the edge
+&nbsp;     */
+&nbsp;    public void addEdge(DirectedEdge e) {
+<b class="nc">&nbsp;        int v = e.from();</b>
+<b class="nc">&nbsp;        int w = e.to();</b>
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        validateVertex(w);</b>
+<b class="nc">&nbsp;        if (adj[v][w] == null) {</b>
+<b class="nc">&nbsp;            E++;</b>
+<b class="nc">&nbsp;            adj[v][w] = e;</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the directed edges incident from vertex {@code v}.
+&nbsp;     * @param v the vertex
+&nbsp;     * @return the directed edges incident from vertex {@code v} as an Iterable
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public Iterable&lt;DirectedEdge&gt; adj(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        return new AdjIterator(v);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // support iteration over graph vertices
+&nbsp;    private class AdjIterator implements Iterator&lt;DirectedEdge&gt;, Iterable&lt;DirectedEdge&gt; {
+&nbsp;        private int v;
+<b class="nc">&nbsp;        private int w = 0;</b>
+&nbsp;
+<b class="nc">&nbsp;        public AdjIterator(int v) {</b>
+<b class="nc">&nbsp;            this.v = v;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        public Iterator&lt;DirectedEdge&gt; iterator() {
+<b class="nc">&nbsp;            return this;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        public boolean hasNext() {
+<b class="nc">&nbsp;            while (w &lt; V) {</b>
+<b class="nc">&nbsp;                if (adj[v][w] != null) return true;</b>
+<b class="nc">&nbsp;                w++;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        public DirectedEdge next() {
+<b class="nc">&nbsp;            if (!hasNext()) {</b>
+<b class="nc">&nbsp;                throw new NoSuchElementException();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return adj[v][w++];</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        public void remove() {
+<b class="nc">&nbsp;            throw new UnsupportedOperationException();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of the edge-weighted digraph. This method takes
+&nbsp;     * time proportional to &lt;em&gt;V&lt;/em&gt;&lt;sup&gt;2&lt;/sup&gt;.
+&nbsp;     * @return the number of vertices &lt;em&gt;V&lt;/em&gt;, followed by the number of edges &lt;em&gt;E&lt;/em&gt;,
+&nbsp;     *   followed by the &lt;em&gt;V&lt;/em&gt; adjacency lists of edges
+&nbsp;     */
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        StringBuilder s = new StringBuilder();</b>
+<b class="nc">&nbsp;        s.append(V + &quot; &quot; + E + NEWLINE);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; V; v++) {</b>
+<b class="nc">&nbsp;            s.append(v + &quot;: &quot;);</b>
+<b class="nc">&nbsp;            for (DirectedEdge e : adj(v)) {</b>
+<b class="nc">&nbsp;                s.append(e + &quot;  &quot;);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            s.append(NEWLINE);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return s.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // throw an IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;    private void validateVertex(int v) {
+<b class="nc">&nbsp;        if (v &lt; 0 || v &gt;= V)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;vertex &quot; + v + &quot; is not between 0 and &quot; + (V-1));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code AdjMatrixEdgeWeightedDigraph} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int V = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;        int E = Integer.parseInt(args[1]);</b>
+<b class="nc">&nbsp;        AdjMatrixEdgeWeightedDigraph G = new AdjMatrixEdgeWeightedDigraph(V, E);</b>
+<b class="nc">&nbsp;        StdOut.println(G);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

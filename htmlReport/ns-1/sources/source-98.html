@@ -1,0 +1,290 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > QuickX</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: QuickX (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">QuickX</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/48)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac QuickX.java
+&nbsp; *  Execution:    java QuickX &lt; input.txt
+&nbsp; *  Dependencies: StdOut.java StdIn.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/23quicksort/tiny.txt
+&nbsp; *                https://algs4.cs.princeton.edu/23quicksort/words3.txt
+&nbsp; *  
+&nbsp; *  Uses the Hoare&#39;s 2-way partitioning scheme, chooses the partitioning
+&nbsp; *  element using median-of-3, and cuts off to insertion sort.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code QuickX} class provides static methods for sorting an array
+&nbsp; *  using an optimized version of quicksort (using Hoare&#39;s 2-way partitioning
+&nbsp; *  algorithm, median-of-3 to choose the partitioning element, and cutoff
+&nbsp; *  to insertion sort).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/23quicksort&quot;&gt;Section 2.3&lt;/a&gt;   
+&nbsp; *  of &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class QuickX {</b>
+&nbsp;
+&nbsp;    // cutoff to insertion sort, must be &gt;= 1
+&nbsp;    private static final int INSERTION_SORT_CUTOFF = 8;
+&nbsp;
+&nbsp;    // This class should not be instantiated.
+&nbsp;    private QuickX() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rearranges the array in ascending order, using the natural order.
+&nbsp;     * @param a the array to be sorted
+&nbsp;     */
+&nbsp;    public static void sort(Comparable[] a) {
+&nbsp;        // StdRandom.shuffle(a);
+<b class="nc">&nbsp;        sort(a, 0, a.length - 1);</b>
+<b class="nc">&nbsp;        assert isSorted(a);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // quicksort the subarray from a[lo] to a[hi]
+&nbsp;    private static void sort(Comparable[] a, int lo, int hi) { 
+<b class="nc">&nbsp;        if (hi &lt;= lo) return;</b>
+&nbsp;
+&nbsp;        // cutoff to insertion sort (Insertion.sort() uses half-open intervals)
+<b class="nc">&nbsp;        int n = hi - lo + 1;</b>
+<b class="nc">&nbsp;        if (n &lt;= INSERTION_SORT_CUTOFF) {</b>
+<b class="nc">&nbsp;            Insertion.sort(a, lo, hi + 1);</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        int j = partition(a, lo, hi);</b>
+<b class="nc">&nbsp;        sort(a, lo, j-1);</b>
+<b class="nc">&nbsp;        sort(a, j+1, hi);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // partition the subarray a[lo..hi] so that a[lo..j-1] &lt;= a[j] &lt;= a[j+1..hi]
+&nbsp;    // and return the index j.
+&nbsp;    private static int partition(Comparable[] a, int lo, int hi) {
+<b class="nc">&nbsp;        int n = hi - lo + 1;</b>
+<b class="nc">&nbsp;        int m = median3(a, lo, lo + n/2, hi);</b>
+<b class="nc">&nbsp;        exch(a, m, lo);</b>
+&nbsp;
+<b class="nc">&nbsp;        int i = lo;</b>
+<b class="nc">&nbsp;        int j = hi + 1;</b>
+<b class="nc">&nbsp;        Comparable v = a[lo];</b>
+&nbsp;
+&nbsp;        // a[lo] is unique largest element
+<b class="nc">&nbsp;        while (less(a[++i], v)) {</b>
+<b class="nc">&nbsp;            if (i == hi) { exch(a, lo, hi); return hi; }</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // a[lo] is unique smallest element
+<b class="nc">&nbsp;        while (less(v, a[--j])) {</b>
+<b class="nc">&nbsp;            if (j == lo + 1) return lo;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // the main loop
+<b class="nc">&nbsp;        while (i &lt; j) { </b>
+<b class="nc">&nbsp;            exch(a, i, j);</b>
+<b class="nc">&nbsp;            while (less(a[++i], v)) ;</b>
+<b class="nc">&nbsp;            while (less(v, a[--j])) ;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // put partitioning item v at a[j]
+<b class="nc">&nbsp;        exch(a, lo, j);</b>
+&nbsp;
+&nbsp;        // now, a[lo .. j-1] &lt;= a[j] &lt;= a[j+1 .. hi]
+<b class="nc">&nbsp;        return j;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // return the index of the median element among a[i], a[j], and a[k]
+&nbsp;    private static int median3(Comparable[] a, int i, int j, int k) {
+<b class="nc">&nbsp;        return (less(a[i], a[j]) ?</b>
+<b class="nc">&nbsp;               (less(a[j], a[k]) ? j : less(a[i], a[k]) ? k : i) :</b>
+<b class="nc">&nbsp;               (less(a[k], a[j]) ? j : less(a[k], a[i]) ? k : i));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /***************************************************************************
+&nbsp;    *  Helper sorting functions.
+&nbsp;    ***************************************************************************/
+&nbsp;    
+&nbsp;    // is v &lt; w ?
+&nbsp;    private static boolean less(Comparable v, Comparable w) {
+<b class="nc">&nbsp;        return v.compareTo(w) &lt; 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // exchange a[i] and a[j]
+&nbsp;    private static void exch(Object[] a, int i, int j) {
+<b class="nc">&nbsp;        Object swap = a[i];</b>
+<b class="nc">&nbsp;        a[i] = a[j];</b>
+<b class="nc">&nbsp;        a[j] = swap;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;   /***************************************************************************
+&nbsp;    *  Check if array is sorted - useful for debugging.
+&nbsp;    ***************************************************************************/
+&nbsp;    private static boolean isSorted(Comparable[] a) {
+<b class="nc">&nbsp;        for (int i = 1; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            if (less(a[i], a[i-1])) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // print array to standard output
+&nbsp;    private static void show(Comparable[] a) {
+<b class="nc">&nbsp;        for (int i = 0; i &lt; a.length; i++) {</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads in a sequence of strings from standard input; quicksorts them
+&nbsp;     * (using an optimized version of 2-way quicksort); 
+&nbsp;     * and prints them to standard output in ascending order. 
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String[] a = StdIn.readAllStrings();</b>
+<b class="nc">&nbsp;        QuickX.sort(a);</b>
+<b class="nc">&nbsp;        assert isSorted(a);</b>
+<b class="nc">&nbsp;        show(a);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

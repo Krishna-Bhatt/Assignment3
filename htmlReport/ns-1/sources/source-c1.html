@@ -1,0 +1,459 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > TrieSET</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: TrieSET (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TrieSET</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/72)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/106)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TrieSET$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/72)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/108)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac TrieSET.java
+&nbsp; *  Execution:    java TrieSET &lt; words.txt
+&nbsp; *  Dependencies: StdIn.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/52trie/shellsST.txt
+&nbsp; *
+&nbsp; *  An set for extended ASCII strings, implemented  using a 256-way trie.
+&nbsp; *
+&nbsp; *  Sample client reads in a list of words from standard input and
+&nbsp; *  prints out each word, removing any duplicates.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Iterator;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code TrieSET} class represents an ordered set of strings over
+&nbsp; *  the extended ASCII alphabet.
+&nbsp; *  It supports the usual &lt;em&gt;add&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;, and &lt;em&gt;delete&lt;/em&gt;
+&nbsp; *  methods. It also provides character-based methods for finding the string
+&nbsp; *  in the set that is the &lt;em&gt;longest prefix&lt;/em&gt; of a given prefix,
+&nbsp; *  finding all strings in the set that &lt;em&gt;start with&lt;/em&gt; a given prefix,
+&nbsp; *  and finding all strings in the set that &lt;em&gt;match&lt;/em&gt; a given pattern.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a 256-way trie.
+&nbsp; *  The &lt;em&gt;add&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;, &lt;em&gt;delete&lt;/em&gt;, and
+&nbsp; *  &lt;em&gt;longest prefix&lt;/em&gt; methods take time proportional to the length
+&nbsp; *  of the key (in the worst case). Construction takes constant time.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/52trie&quot;&gt;Section 5.2&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms in Java, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class TrieSET implements Iterable&lt;String&gt; {
+&nbsp;    private static final int R = 256;        // extended ASCII
+&nbsp;
+&nbsp;    private Node root;      // root of trie
+&nbsp;    private int n;          // number of keys in trie
+&nbsp;
+&nbsp;    // R-way trie node
+<b class="nc">&nbsp;    private static class Node {</b>
+<b class="nc">&nbsp;        private Node[] next = new Node[R];</b>
+&nbsp;        private boolean isString;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty set of strings.
+&nbsp;     */
+<b class="nc">&nbsp;    public TrieSET() {</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Does the set contain the given key?
+&nbsp;     * @param key the key
+&nbsp;     * @return {@code true} if the set contains {@code key} and
+&nbsp;     *     {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public boolean contains(String key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to contains() is null&quot;);</b>
+<b class="nc">&nbsp;        Node x = get(root, key, 0);</b>
+<b class="nc">&nbsp;        if (x == null) return false;</b>
+<b class="nc">&nbsp;        return x.isString;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Node get(Node x, String key, int d) {
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        if (d == key.length()) return x;</b>
+<b class="nc">&nbsp;        char c = key.charAt(d);</b>
+<b class="nc">&nbsp;        return get(x.next[c], key, d+1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the key to the set if it is not already present.
+&nbsp;     * @param key the key to add
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void add(String key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to add() is null&quot;);</b>
+<b class="nc">&nbsp;        root = add(root, key, 0);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private Node add(Node x, String key, int d) {
+<b class="nc">&nbsp;        if (x == null) x = new Node();</b>
+<b class="nc">&nbsp;        if (d == key.length()) {</b>
+<b class="nc">&nbsp;            if (!x.isString) n++;</b>
+<b class="nc">&nbsp;            x.isString = true;</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            char c = key.charAt(d);</b>
+<b class="nc">&nbsp;            x.next[c] = add(x.next[c], key, d+1);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of strings in the set.
+&nbsp;     * @return the number of strings in the set
+&nbsp;     */
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return n;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Is the set empty?
+&nbsp;     * @return {@code true} if the set is empty, and {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return size() == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all of the keys in the set, as an iterator.
+&nbsp;     * To iterate over all of the keys in a set named {@code set}, use the
+&nbsp;     * foreach notation: {@code for (Key key : set)}.
+&nbsp;     * @return an iterator to all of the keys in the set
+&nbsp;     */
+&nbsp;    public Iterator&lt;String&gt; iterator() {
+<b class="nc">&nbsp;        return keysWithPrefix(&quot;&quot;).iterator();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all of the keys in the set that start with {@code prefix}.
+&nbsp;     * @param prefix the prefix
+&nbsp;     * @return all of the keys in the set that start with {@code prefix},
+&nbsp;     *     as an iterable
+&nbsp;     */
+&nbsp;    public Iterable&lt;String&gt; keysWithPrefix(String prefix) {
+<b class="nc">&nbsp;        Queue&lt;String&gt; results = new Queue&lt;String&gt;();</b>
+<b class="nc">&nbsp;        Node x = get(root, prefix, 0);</b>
+<b class="nc">&nbsp;        collect(x, new StringBuilder(prefix), results);</b>
+<b class="nc">&nbsp;        return results;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void collect(Node x, StringBuilder prefix, Queue&lt;String&gt; results) {
+<b class="nc">&nbsp;        if (x == null) return;</b>
+<b class="nc">&nbsp;        if (x.isString) results.enqueue(prefix.toString());</b>
+<b class="nc">&nbsp;        for (char c = 0; c &lt; R; c++) {</b>
+<b class="nc">&nbsp;            prefix.append(c);</b>
+<b class="nc">&nbsp;            collect(x.next[c], prefix, results);</b>
+<b class="nc">&nbsp;            prefix.deleteCharAt(prefix.length() - 1);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all of the keys in the set that match {@code pattern},
+&nbsp;     * where the character &#39;.&#39; is interpreted as a wildcard character.
+&nbsp;     * @param pattern the pattern
+&nbsp;     * @return all of the keys in the set that match {@code pattern},
+&nbsp;     *     as an iterable, where . is treated as a wildcard character.
+&nbsp;     */  
+&nbsp;    public Iterable&lt;String&gt; keysThatMatch(String pattern) {
+<b class="nc">&nbsp;        Queue&lt;String&gt; results = new Queue&lt;String&gt;();</b>
+<b class="nc">&nbsp;        StringBuilder prefix = new StringBuilder();</b>
+<b class="nc">&nbsp;        collect(root, prefix, pattern, results);</b>
+<b class="nc">&nbsp;        return results;</b>
+&nbsp;    }
+&nbsp;        
+&nbsp;    private void collect(Node x, StringBuilder prefix, String pattern, Queue&lt;String&gt; results) {
+<b class="nc">&nbsp;        if (x == null) return;</b>
+<b class="nc">&nbsp;        int d = prefix.length();</b>
+<b class="nc">&nbsp;        if (d == pattern.length() &amp;&amp; x.isString)</b>
+<b class="nc">&nbsp;            results.enqueue(prefix.toString());</b>
+<b class="nc">&nbsp;        if (d == pattern.length())</b>
+<b class="nc">&nbsp;            return;</b>
+<b class="nc">&nbsp;        char c = pattern.charAt(d);</b>
+<b class="nc">&nbsp;        if (c == &#39;.&#39;) {</b>
+<b class="nc">&nbsp;            for (char ch = 0; ch &lt; R; ch++) {</b>
+<b class="nc">&nbsp;                prefix.append(ch);</b>
+<b class="nc">&nbsp;                collect(x.next[ch], prefix, pattern, results);</b>
+<b class="nc">&nbsp;                prefix.deleteCharAt(prefix.length() - 1);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            prefix.append(c);</b>
+<b class="nc">&nbsp;            collect(x.next[c], prefix, pattern, results);</b>
+<b class="nc">&nbsp;            prefix.deleteCharAt(prefix.length() - 1);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the string in the set that is the longest prefix of {@code query},
+&nbsp;     * or {@code null}, if no such string.
+&nbsp;     * @param query the query string
+&nbsp;     * @return the string in the set that is the longest prefix of {@code query},
+&nbsp;     *     or {@code null} if no such string
+&nbsp;     * @throws IllegalArgumentException if {@code query} is {@code null}
+&nbsp;     */
+&nbsp;    public String longestPrefixOf(String query) {
+<b class="nc">&nbsp;        if (query == null) throw new IllegalArgumentException(&quot;argument to longestPrefixOf() is null&quot;);</b>
+<b class="nc">&nbsp;        int length = longestPrefixOf(root, query, 0, -1);</b>
+<b class="nc">&nbsp;        if (length == -1) return null;</b>
+<b class="nc">&nbsp;        return query.substring(0, length);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // returns the length of the longest string key in the subtrie
+&nbsp;    // rooted at x that is a prefix of the query string,
+&nbsp;    // assuming the first d character match and we have already
+&nbsp;    // found a prefix match of length length
+&nbsp;    private int longestPrefixOf(Node x, String query, int d, int length) {
+<b class="nc">&nbsp;        if (x == null) return length;</b>
+<b class="nc">&nbsp;        if (x.isString) length = d;</b>
+<b class="nc">&nbsp;        if (d == query.length()) return length;</b>
+<b class="nc">&nbsp;        char c = query.charAt(d);</b>
+<b class="nc">&nbsp;        return longestPrefixOf(x.next[c], query, d+1, length);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the key from the set if the key is present.
+&nbsp;     * @param key the key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void delete(String key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to delete() is null&quot;);</b>
+<b class="nc">&nbsp;        root = delete(root, key, 0);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private Node delete(Node x, String key, int d) {
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        if (d == key.length()) {</b>
+<b class="nc">&nbsp;            if (x.isString) n--;</b>
+<b class="nc">&nbsp;            x.isString = false;</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            char c = key.charAt(d);</b>
+<b class="nc">&nbsp;            x.next[c] = delete(x.next[c], key, d+1);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // remove subtrie rooted at x if it is completely empty
+<b class="nc">&nbsp;        if (x.isString) return x;</b>
+<b class="nc">&nbsp;        for (int c = 0; c &lt; R; c++)</b>
+<b class="nc">&nbsp;            if (x.next[c] != null)</b>
+<b class="nc">&nbsp;                return x;</b>
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code TrieSET} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        TrieSET set = new TrieSET();</b>
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            String key = StdIn.readString();</b>
+<b class="nc">&nbsp;            set.add(key);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // print results
+<b class="nc">&nbsp;        if (set.size() &lt; 100) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;keys(\&quot;\&quot;):&quot;);</b>
+<b class="nc">&nbsp;            for (String key : set) {</b>
+<b class="nc">&nbsp;                StdOut.println(key);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            StdOut.println();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;longestPrefixOf(\&quot;shellsort\&quot;):&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(set.longestPrefixOf(&quot;shellsort&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;longestPrefixOf(\&quot;xshellsort\&quot;):&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(set.longestPrefixOf(&quot;xshellsort&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;keysWithPrefix(\&quot;shor\&quot;):&quot;);</b>
+<b class="nc">&nbsp;        for (String s : set.keysWithPrefix(&quot;shor&quot;))</b>
+<b class="nc">&nbsp;            StdOut.println(s);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;keysWithPrefix(\&quot;shortening\&quot;):&quot;);</b>
+<b class="nc">&nbsp;        for (String s : set.keysWithPrefix(&quot;shortening&quot;))</b>
+<b class="nc">&nbsp;            StdOut.println(s);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;keysThatMatch(\&quot;.he.l.\&quot;):&quot;);</b>
+<b class="nc">&nbsp;        for (String s : set.keysThatMatch(&quot;.he.l.&quot;))</b>
+<b class="nc">&nbsp;            StdOut.println(s);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,438 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BinaryStdOut</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: BinaryStdOut (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BinaryStdOut</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/60)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/104)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac BinaryStdOut.java
+&nbsp; *  Execution:    java BinaryStdOut
+&nbsp; *  Dependencies: none
+&nbsp; *
+&nbsp; *  Write binary data to standard output, either one 1-bit boolean,
+&nbsp; *  one 8-bit char, one 32-bit int, one 64-bit double, one 32-bit float,
+&nbsp; *  or one 64-bit long at a time.
+&nbsp; *
+&nbsp; *  The bytes written are not aligned.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.io.BufferedOutputStream;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  &lt;i&gt;Binary standard output&lt;/i&gt;. This class provides methods for converting
+&nbsp; *  primtive type variables ({@code boolean}, {@code byte}, {@code char},
+&nbsp; *  {@code int}, {@code long}, {@code float}, and {@code double})
+&nbsp; *  to sequences of bits and writing them to standard output.
+&nbsp; *  Uses big-endian (most-significant byte first).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The client must {@code flush()} the output stream when finished writing bits.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The client should not intermix calls to {@code BinaryStdOut} with calls
+&nbsp; *  to {@code StdOut} or {@code System.out}; otherwise unexpected behavior 
+&nbsp; *  will result.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public final class BinaryStdOut {</b>
+&nbsp;    private static BufferedOutputStream out;  // output stream (standard output)
+&nbsp;    private static int buffer;                // 8-bit buffer of bits to write
+&nbsp;    private static int n;                     // number of bits remaining in buffer
+&nbsp;    private static boolean isInitialized;     // has BinaryStdOut been called for first time?
+&nbsp;
+&nbsp;    // don&#39;t instantiate
+&nbsp;    private BinaryStdOut() { }
+&nbsp;
+&nbsp;    // initialize BinaryStdOut
+&nbsp;    private static void initialize() {
+<b class="nc">&nbsp;        out = new BufferedOutputStream(System.out);</b>
+<b class="nc">&nbsp;        buffer = 0;</b>
+<b class="nc">&nbsp;        n = 0;</b>
+<b class="nc">&nbsp;        isInitialized = true;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the specified bit to standard output.
+&nbsp;     */
+&nbsp;    private static void writeBit(boolean bit) {
+<b class="nc">&nbsp;        if (!isInitialized) initialize();</b>
+&nbsp;
+&nbsp;        // add bit to buffer
+<b class="nc">&nbsp;        buffer &lt;&lt;= 1;</b>
+<b class="nc">&nbsp;        if (bit) buffer |= 1;</b>
+&nbsp;
+&nbsp;        // if buffer is full (8 bits), write out as a single byte
+<b class="nc">&nbsp;        n++;</b>
+<b class="nc">&nbsp;        if (n == 8) clearBuffer();</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the 8-bit byte to standard output.
+&nbsp;     */
+&nbsp;    private static void writeByte(int x) {
+<b class="nc">&nbsp;        if (!isInitialized) initialize();</b>
+&nbsp;
+<b class="nc">&nbsp;        assert x &gt;= 0 &amp;&amp; x &lt; 256;</b>
+&nbsp;
+&nbsp;        // optimized if byte-aligned
+<b class="nc">&nbsp;        if (n == 0) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                out.write(x);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            catch (IOException e) {</b>
+<b class="nc">&nbsp;                e.printStackTrace();</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // otherwise write one bit at a time
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 8; i++) {</b>
+<b class="nc">&nbsp;            boolean bit = ((x &gt;&gt;&gt; (8 - i - 1)) &amp; 1) == 1;</b>
+<b class="nc">&nbsp;            writeBit(bit);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // write out any remaining bits in buffer to standard output, padding with 0s
+&nbsp;    private static void clearBuffer() {
+<b class="nc">&nbsp;        if (!isInitialized) initialize();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (n == 0) return;</b>
+<b class="nc">&nbsp;        if (n &gt; 0) buffer &lt;&lt;= (8 - n);</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            out.write(buffer);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        n = 0;</b>
+<b class="nc">&nbsp;        buffer = 0;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Flushes standard output, padding 0s if number of bits written so far
+&nbsp;     * is not a multiple of 8.
+&nbsp;     */
+&nbsp;    public static void flush() {
+<b class="nc">&nbsp;        clearBuffer();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            out.flush();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Flushes and closes standard output. Once standard output is closed, you can no
+&nbsp;     * longer write bits to it.
+&nbsp;     */
+&nbsp;    public static void close() {
+<b class="nc">&nbsp;        flush();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            out.close();</b>
+<b class="nc">&nbsp;            isInitialized = false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the specified bit to standard output.
+&nbsp;     * @param x the {@code boolean} to write.
+&nbsp;     */
+&nbsp;    public static void write(boolean x) {
+<b class="nc">&nbsp;        writeBit(x);</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the 8-bit byte to standard output.
+&nbsp;     * @param x the {@code byte} to write.
+&nbsp;     */
+&nbsp;    public static void write(byte x) {
+<b class="nc">&nbsp;        writeByte(x &amp; 0xff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the 32-bit int to standard output.
+&nbsp;     * @param x the {@code int} to write.
+&nbsp;     */
+&nbsp;    public static void write(int x) {
+<b class="nc">&nbsp;        writeByte((x &gt;&gt;&gt; 24) &amp; 0xff);</b>
+<b class="nc">&nbsp;        writeByte((x &gt;&gt;&gt; 16) &amp; 0xff);</b>
+<b class="nc">&nbsp;        writeByte((x &gt;&gt;&gt;  8) &amp; 0xff);</b>
+<b class="nc">&nbsp;        writeByte((x &gt;&gt;&gt;  0) &amp; 0xff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the &lt;em&gt;r&lt;/em&gt;-bit int to standard output.
+&nbsp;     * @param x the {@code int} to write.
+&nbsp;     * @param r the number of relevant bits in the char.
+&nbsp;     * @throws IllegalArgumentException if {@code r} is not between 1 and 32.
+&nbsp;     * @throws IllegalArgumentException if {@code x} is not between 0 and 2&lt;sup&gt;r&lt;/sup&gt; - 1.
+&nbsp;     */
+&nbsp;    public static void write(int x, int r) {
+<b class="nc">&nbsp;        if (r == 32) {</b>
+<b class="nc">&nbsp;            write(x);</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (r &lt; 1 || r &gt; 32)        throw new IllegalArgumentException(&quot;Illegal value for r = &quot; + r);</b>
+<b class="nc">&nbsp;        if (x &lt; 0 || x &gt;= (1 &lt;&lt; r)) throw new IllegalArgumentException(&quot;Illegal &quot; + r + &quot;-bit char = &quot; + x);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; r; i++) {</b>
+<b class="nc">&nbsp;            boolean bit = ((x &gt;&gt;&gt; (r - i - 1)) &amp; 1) == 1;</b>
+<b class="nc">&nbsp;            writeBit(bit);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the 64-bit double to standard output.
+&nbsp;     * @param x the {@code double} to write.
+&nbsp;     */
+&nbsp;    public static void write(double x) {
+<b class="nc">&nbsp;        write(Double.doubleToRawLongBits(x));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the 64-bit long to standard output.
+&nbsp;     * @param x the {@code long} to write.
+&nbsp;     */
+&nbsp;    public static void write(long x) {
+<b class="nc">&nbsp;        writeByte((int) ((x &gt;&gt;&gt; 56) &amp; 0xff));</b>
+<b class="nc">&nbsp;        writeByte((int) ((x &gt;&gt;&gt; 48) &amp; 0xff));</b>
+<b class="nc">&nbsp;        writeByte((int) ((x &gt;&gt;&gt; 40) &amp; 0xff));</b>
+<b class="nc">&nbsp;        writeByte((int) ((x &gt;&gt;&gt; 32) &amp; 0xff));</b>
+<b class="nc">&nbsp;        writeByte((int) ((x &gt;&gt;&gt; 24) &amp; 0xff));</b>
+<b class="nc">&nbsp;        writeByte((int) ((x &gt;&gt;&gt; 16) &amp; 0xff));</b>
+<b class="nc">&nbsp;        writeByte((int) ((x &gt;&gt;&gt;  8) &amp; 0xff));</b>
+<b class="nc">&nbsp;        writeByte((int) ((x &gt;&gt;&gt;  0) &amp; 0xff));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the 32-bit float to standard output.
+&nbsp;     * @param x the {@code float} to write.
+&nbsp;     */
+&nbsp;    public static void write(float x) {
+<b class="nc">&nbsp;        write(Float.floatToRawIntBits(x));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the 16-bit int to standard output.
+&nbsp;     * @param x the {@code short} to write.
+&nbsp;     */
+&nbsp;    public static void write(short x) {
+<b class="nc">&nbsp;        writeByte((x &gt;&gt;&gt;  8) &amp; 0xff);</b>
+<b class="nc">&nbsp;        writeByte((x &gt;&gt;&gt;  0) &amp; 0xff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the 8-bit char to standard output.
+&nbsp;     * @param x the {@code char} to write.
+&nbsp;     * @throws IllegalArgumentException if {@code x} is not betwen 0 and 255.
+&nbsp;     */
+&nbsp;    public static void write(char x) {
+<b class="nc">&nbsp;        if (x &lt; 0 || x &gt;= 256) throw new IllegalArgumentException(&quot;Illegal 8-bit char = &quot; + x);</b>
+<b class="nc">&nbsp;        writeByte(x);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the &lt;em&gt;r&lt;/em&gt;-bit char to standard output.
+&nbsp;     * @param x the {@code char} to write.
+&nbsp;     * @param r the number of relevant bits in the char.
+&nbsp;     * @throws IllegalArgumentException if {@code r} is not between 1 and 16.
+&nbsp;     * @throws IllegalArgumentException if {@code x} is not between 0 and 2&lt;sup&gt;r&lt;/sup&gt; - 1.
+&nbsp;     */
+&nbsp;    public static void write(char x, int r) {
+<b class="nc">&nbsp;        if (r == 8) {</b>
+<b class="nc">&nbsp;            write(x);</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (r &lt; 1 || r &gt; 16) throw new IllegalArgumentException(&quot;Illegal value for r = &quot; + r);</b>
+<b class="nc">&nbsp;        if (x &gt;= (1 &lt;&lt; r))   throw new IllegalArgumentException(&quot;Illegal &quot; + r + &quot;-bit char = &quot; + x);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; r; i++) {</b>
+<b class="nc">&nbsp;            boolean bit = ((x &gt;&gt;&gt; (r - i - 1)) &amp; 1) == 1;</b>
+<b class="nc">&nbsp;            writeBit(bit);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the string of 8-bit characters to standard output.
+&nbsp;     * @param s the {@code String} to write.
+&nbsp;     * @throws IllegalArgumentException if any character in the string is not
+&nbsp;     * between 0 and 255.
+&nbsp;     */
+&nbsp;    public static void write(String s) {
+<b class="nc">&nbsp;        for (int i = 0; i &lt; s.length(); i++)</b>
+<b class="nc">&nbsp;            write(s.charAt(i));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Writes the string of &lt;em&gt;r&lt;/em&gt;-bit characters to standard output.
+&nbsp;     * @param s the {@code String} to write.
+&nbsp;     * @param r the number of relevants bits in each character.
+&nbsp;     * @throws IllegalArgumentException if r is not between 1 and 16.
+&nbsp;     * @throws IllegalArgumentException if any character in the string is not
+&nbsp;     * between 0 and 2&lt;sup&gt;r&lt;/sup&gt; - 1.
+&nbsp;     */
+&nbsp;    public static void write(String s, int r) {
+<b class="nc">&nbsp;        for (int i = 0; i &lt; s.length(); i++)</b>
+<b class="nc">&nbsp;            write(s.charAt(i), r);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Tests the methods in this class.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int m = Integer.parseInt(args[0]);</b>
+&nbsp;
+&nbsp;        // write n integers to binary standard output
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m; i++) {</b>
+<b class="nc">&nbsp;            BinaryStdOut.write(i);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        BinaryStdOut.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

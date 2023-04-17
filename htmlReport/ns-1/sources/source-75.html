@@ -1,0 +1,293 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LinearRegression</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: LinearRegression (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LinearRegression</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac LinearRegression.java
+&nbsp; *  Execution:    java  LinearRegression
+&nbsp; *  Dependencies: none
+&nbsp; *  
+&nbsp; *  Compute least squares solution to y = beta * x + alpha.
+&nbsp; *  Simple linear regression.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code LinearRegression} class performs a simple linear regression
+&nbsp; *  on an set of &lt;em&gt;n&lt;/em&gt; data points (&lt;em&gt;y&lt;sub&gt;i&lt;/sub&gt;&lt;/em&gt;, &lt;em&gt;x&lt;sub&gt;i&lt;/sub&gt;&lt;/em&gt;).
+&nbsp; *  That is, it fits a straight line &lt;em&gt;y&lt;/em&gt; = &amp;alpha; + &amp;beta; &lt;em&gt;x&lt;/em&gt;,
+&nbsp; *  (where &lt;em&gt;y&lt;/em&gt; is the response variable, &lt;em&gt;x&lt;/em&gt; is the predictor variable,
+&nbsp; *  &amp;alpha; is the &lt;em&gt;y-intercept&lt;/em&gt;, and &amp;beta; is the &lt;em&gt;slope&lt;/em&gt;)
+&nbsp; *  that minimizes the sum of squared residuals of the linear regression model.
+&nbsp; *  It also computes associated statistics, including the coefficient of
+&nbsp; *  determination &lt;em&gt;R&lt;/em&gt;&lt;sup&gt;2&lt;/sup&gt; and the standard deviation of the
+&nbsp; *  estimates for the slope and &lt;em&gt;y&lt;/em&gt;-intercept.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class LinearRegression {
+&nbsp;    private final double intercept, slope;
+&nbsp;    private final double r2;
+&nbsp;    private final double svar0, svar1;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Performs a linear regression on the data points {@code (y[i], x[i])}.
+&nbsp;     *
+&nbsp;     * @param  x the values of the predictor variable
+&nbsp;     * @param  y the corresponding values of the response variable
+&nbsp;     * @throws IllegalArgumentException if the lengths of the two arrays are not equal
+&nbsp;     */
+<b class="nc">&nbsp;    public LinearRegression(double[] x, double[] y) {</b>
+<b class="nc">&nbsp;        if (x.length != y.length) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;array lengths are not equal&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        int n = x.length;</b>
+&nbsp;
+&nbsp;        // first pass
+<b class="nc">&nbsp;        double sumx = 0.0, sumy = 0.0, sumx2 = 0.0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            sumx  += x[i];</b>
+<b class="nc">&nbsp;            sumx2 += x[i]*x[i];</b>
+<b class="nc">&nbsp;            sumy  += y[i];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        double xbar = sumx / n;</b>
+<b class="nc">&nbsp;        double ybar = sumy / n;</b>
+&nbsp;
+&nbsp;        // second pass: compute summary statistics
+<b class="nc">&nbsp;        double xxbar = 0.0, yybar = 0.0, xybar = 0.0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            xxbar += (x[i] - xbar) * (x[i] - xbar);</b>
+<b class="nc">&nbsp;            yybar += (y[i] - ybar) * (y[i] - ybar);</b>
+<b class="nc">&nbsp;            xybar += (x[i] - xbar) * (y[i] - ybar);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        slope  = xybar / xxbar;</b>
+<b class="nc">&nbsp;        intercept = ybar - slope * xbar;</b>
+&nbsp;
+&nbsp;        // more statistical analysis
+<b class="nc">&nbsp;        double rss = 0.0;      // residual sum of squares</b>
+<b class="nc">&nbsp;        double ssr = 0.0;      // regression sum of squares</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            double fit = slope*x[i] + intercept;</b>
+<b class="nc">&nbsp;            rss += (fit - y[i]) * (fit - y[i]);</b>
+<b class="nc">&nbsp;            ssr += (fit - ybar) * (fit - ybar);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        int degreesOfFreedom = n-2;</b>
+<b class="nc">&nbsp;        r2    = ssr / yybar;</b>
+<b class="nc">&nbsp;        double svar  = rss / degreesOfFreedom;</b>
+<b class="nc">&nbsp;        svar1 = svar / xxbar;</b>
+<b class="nc">&nbsp;        svar0 = svar/n + xbar*xbar*svar1;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns the &lt;em&gt;y&lt;/em&gt;-intercept &amp;alpha; of the best of the best-fit line &lt;em&gt;y&lt;/em&gt; = &amp;alpha; + &amp;beta; &lt;em&gt;x&lt;/em&gt;.
+&nbsp;     *
+&nbsp;     * @return the &lt;em&gt;y&lt;/em&gt;-intercept &amp;alpha; of the best-fit line &lt;em&gt;y = &amp;alpha; + &amp;beta; x&lt;/em&gt;
+&nbsp;     */
+&nbsp;    public double intercept() {
+<b class="nc">&nbsp;        return intercept;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns the slope &amp;beta; of the best of the best-fit line &lt;em&gt;y&lt;/em&gt; = &amp;alpha; + &amp;beta; &lt;em&gt;x&lt;/em&gt;.
+&nbsp;     *
+&nbsp;     * @return the slope &amp;beta; of the best-fit line &lt;em&gt;y&lt;/em&gt; = &amp;alpha; + &amp;beta; &lt;em&gt;x&lt;/em&gt;
+&nbsp;     */
+&nbsp;    public double slope() {
+<b class="nc">&nbsp;        return slope;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns the coefficient of determination &lt;em&gt;R&lt;/em&gt;&lt;sup&gt;2&lt;/sup&gt;.
+&nbsp;     *
+&nbsp;     * @return the coefficient of determination &lt;em&gt;R&lt;/em&gt;&lt;sup&gt;2&lt;/sup&gt;,
+&nbsp;     *         which is a real number between 0 and 1
+&nbsp;     */
+&nbsp;    public double R2() {
+<b class="nc">&nbsp;        return r2;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns the standard error of the estimate for the intercept.
+&nbsp;     *
+&nbsp;     * @return the standard error of the estimate for the intercept
+&nbsp;     */
+&nbsp;    public double interceptStdErr() {
+<b class="nc">&nbsp;        return Math.sqrt(svar0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns the standard error of the estimate for the slope.
+&nbsp;     *
+&nbsp;     * @return the standard error of the estimate for the slope
+&nbsp;     */
+&nbsp;    public double slopeStdErr() {
+<b class="nc">&nbsp;        return Math.sqrt(svar1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns the expected response {@code y} given the value of the predictor
+&nbsp;     * variable {@code x}.
+&nbsp;     *
+&nbsp;     * @param  x the value of the predictor variable
+&nbsp;     * @return the expected response {@code y} given the value of the predictor
+&nbsp;     *         variable {@code x}
+&nbsp;     */
+&nbsp;    public double predict(double x) {
+<b class="nc">&nbsp;        return slope*x + intercept;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns a string representation of the simple linear regression model.
+&nbsp;     *
+&nbsp;     * @return a string representation of the simple linear regression model,
+&nbsp;     *         including the best-fit line and the coefficient of determination
+&nbsp;     *         &lt;em&gt;R&lt;/em&gt;&lt;sup&gt;2&lt;/sup&gt;
+&nbsp;     */
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        StringBuilder s = new StringBuilder();</b>
+<b class="nc">&nbsp;        s.append(String.format(&quot;%.2f n + %.2f&quot;, slope(), intercept()));</b>
+<b class="nc">&nbsp;        s.append(&quot;  (R^2 = &quot; + String.format(&quot;%.3f&quot;, R2()) + &quot;)&quot;);</b>
+<b class="nc">&nbsp;        return s.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

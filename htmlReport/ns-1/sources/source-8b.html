@@ -1,0 +1,626 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PatriciaST</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: PatriciaST (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PatriciaST</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/132)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/164)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PatriciaST$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/132)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/169)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac PatriciaST.java
+&nbsp; *  Execution:    java PatriciaST
+&nbsp; *  Dependencies: StdOut.java StdRandom.java Queue.java
+&nbsp; *  Data files:   n/a
+&nbsp; *
+&nbsp; *  A symbol table implementation based on PATRICIA.
+&nbsp; *
+&nbsp; *  % java PatriciaST 1000000 1
+&nbsp; *  Creating dataset (1000000 items)...
+&nbsp; *  Shuffling...
+&nbsp; *  Adding (1000000 items)...
+&nbsp; *  Iterating...
+&nbsp; *  1000000 items iterated
+&nbsp; *  Shuffling...
+&nbsp; *  Deleting (500000 items)...
+&nbsp; *  Iterating...
+&nbsp; *  500000 items iterated
+&nbsp; *  Checking...
+&nbsp; *  500000 items found and 500000 (deleted) items missing
+&nbsp; *  Deleting the rest (500000 items)...
+&nbsp; *  PASS 1 TESTS SUCCEEDED
+&nbsp; *  %
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code PatriciaST} class provides an implementation of an unordered
+&nbsp; *  symbol table of key-value pairs, with the restriction that the key is of
+&nbsp; *  class {@link java.lang.String}. It supports the usual &lt;em&gt;put&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;, &lt;em&gt;delete&lt;/em&gt;, &lt;em&gt;size&lt;/em&gt;, and
+&nbsp; *  &lt;em&gt;is-empty&lt;/em&gt; methods. It also provides a &lt;em&gt;keys&lt;/em&gt; method for
+&nbsp; *  iterating over all of the keys. A symbol table implements the
+&nbsp; *  &lt;em&gt;associative array&lt;/em&gt; abstraction: when associating a value with a key
+&nbsp; *  that is already in the symbol table, the convention is to replace the old
+&nbsp; *  value with the new value. Unlike {@link java.util.Map}, this class uses the
+&nbsp; *  convention that values cannot be {@code null}—setting the value
+&nbsp; *  associated with a key to {@code null} is equivalent to deleting the key
+&nbsp; *  from the symbol table.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This unordered symbol table class implements PATRICIA (Practical Algorithm
+&nbsp; *  to Retrieve Information Coded In Alphanumeric). In spite of the acronym,
+&nbsp; *  string keys are not limited to alphanumeric content. A key may possess any
+&nbsp; *  string value, except for the string of zero length (the empty string).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  Unlike other generic symbol table implementations that can accept a
+&nbsp; *  parameterized key type, this symbol table class can only accommodate keys
+&nbsp; *  of class {@link java.lang.String}. This unfortunate restriction stems from a
+&nbsp; *  limitation in Java. Although Java provides excellent support for generic
+&nbsp; *  programming, the current infrastructure somewhat limits generic collection
+&nbsp; *  implementations to those that employ comparison-based or hash-based methods.
+&nbsp; *  PATRICIA does not employ comparisons or hashing; instead, it relies on
+&nbsp; *  bit-test operations. Because Java does not furnish any generic abstractions
+&nbsp; *  (or implementations) for bit-testing the contents of an object, providing
+&nbsp; *  support for generic keys using PATRICIA does not seem practical.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  PATRICIA is a variation of a trie, and it is often classified as a
+&nbsp; *  space-optimized trie. In a classical trie, each level represents a
+&nbsp; *  subsequent digit in a key. In PATRICIA, nodes only exist to identify the
+&nbsp; *  digits (bits) that distinguish the individual keys within the trie. Because
+&nbsp; *  PATRICIA uses a radix of two, each node has only two children, like a binary
+&nbsp; *  tree. Also like a binary tree, the number of nodes, within the trie, equals
+&nbsp; *  the number of keys. Consequently, some classify PATRICIA as a tree.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The analysis of PATRICIA is complicated. The theoretical wost-case
+&nbsp; *  performance for a &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;put&lt;/em&gt;, or &lt;em&gt;delete&lt;/em&gt; operation
+&nbsp; *  is &lt;strong&gt;O(N)&lt;/strong&gt;, when &lt;strong&gt;N&lt;/strong&gt; is less than
+&nbsp; *  &lt;strong&gt;W&lt;/strong&gt; (where &lt;strong&gt;W&lt;/strong&gt; is the length in bits of the
+&nbsp; *  longest key), and &lt;strong&gt;O(W)&lt;/strong&gt;, when &lt;strong&gt;N&lt;/strong&gt; is greater
+&nbsp; *  than &lt;strong&gt;W&lt;/strong&gt;. However, the worst case is unlikely to occur with
+&nbsp; *  typical use. The average (and usual) performance of PATRICIA is
+&nbsp; *  approximately &lt;strong&gt;~lg N&lt;/strong&gt; for each &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;put&lt;/em&gt;, or
+&nbsp; *  &lt;em&gt;delete&lt;/em&gt; operation. Although this appears to put PATRICIA on the same
+&nbsp; *  footing as binary trees, this time complexity represents the number of
+&nbsp; *  single-bit test operations (under PATRICIA), and not full-key comparisons
+&nbsp; *  (as required by binary trees). After the single-bit tests conclude, PATRICIA
+&nbsp; *  requires just one full-key comparison to confirm the existence (or absence)
+&nbsp; *  of the key (per &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;put&lt;/em&gt;, or &lt;em&gt;delete&lt;/em&gt; operation).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  In practice, decent implementations of PATRICIA can often outperform
+&nbsp; *  balanced binary trees, and even hash tables. Although this particular
+&nbsp; *  implementation performs well, the source code was written with an emphasis
+&nbsp; *  on clarity, and not performance. PATRICIA performs admirably when its
+&nbsp; *  bit-testing loops are well tuned. Consider using the source code as a guide,
+&nbsp; *  should you need to produce an optimized implementation, for anther key type,
+&nbsp; *  or in another programming language.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  Other resources for PATRICIA:&lt;br&gt;
+&nbsp; *  Sedgewick, R. (1990) &lt;i&gt;Algorithms in C&lt;/i&gt;, Addison-Wesley&lt;br&gt;
+&nbsp; *  Knuth, D. (1973) &lt;i&gt;The Art of Computer Programming&lt;/i&gt;, Addison-Wesley&lt;br&gt;
+&nbsp; *
+&nbsp; *  @author John Hentosh (based on an implementation by Robert Sedgewick)
+&nbsp; */
+&nbsp;public class PatriciaST&lt;Value&gt; {
+&nbsp;    private Node head;
+&nbsp;    private int count;
+&nbsp;
+&nbsp;    /* An inner Node class specifies the objects that hold each key-value pair.
+&nbsp;     * The b value indicates the relevant bit position.
+&nbsp;     */
+&nbsp;    private class Node {
+&nbsp;        private Node left, right;
+&nbsp;        private String key;
+&nbsp;        private Value val;
+&nbsp;        private int b;
+&nbsp;
+<b class="nc">&nbsp;        public Node(String key, Value val, int b) {</b>
+<b class="nc">&nbsp;            this.key = key;</b>
+<b class="nc">&nbsp;            this.val = val;</b>
+<b class="nc">&nbsp;            this.b = b;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    };
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty PATRICIA-based symbol table.
+&nbsp;     */
+&nbsp;    /* The constructor creates a head (sentinel) node that contains a
+&nbsp;     * zero-length string.
+&nbsp;     */
+<b class="nc">&nbsp;    public PatriciaST() {</b>
+<b class="nc">&nbsp;        head = new Node(&quot;&quot;, null, 0);</b>
+<b class="nc">&nbsp;        head.left = head;</b>
+<b class="nc">&nbsp;        head.right = head;</b>
+<b class="nc">&nbsp;        count = 0;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Places a key-value pair into the symbol table. If the table already
+&nbsp;     * contains the specified key, then its associated value becomes updated.
+&nbsp;     * If the value provided is {@code null}, then the key becomes removed
+&nbsp;     * from the symbol table.
+&nbsp;     * @param key the key
+&nbsp;     * @param val the value
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     * @throws IllegalArgumentException if {@code key} is the empty string.
+&nbsp;     */
+&nbsp;    public void put(String key, Value val) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;called put(null)&quot;);</b>
+<b class="nc">&nbsp;        if (key.length() == 0) throw new IllegalArgumentException(&quot;invalid key&quot;);</b>
+<b class="nc">&nbsp;        if (val == null) delete(key);</b>
+&nbsp;        Node p;
+<b class="nc">&nbsp;        Node x = head;</b>
+&nbsp;        do {
+<b class="nc">&nbsp;            p = x;</b>
+<b class="nc">&nbsp;            if (safeBitTest(key, x.b)) x = x.right;</b>
+<b class="nc">&nbsp;            else                       x = x.left;</b>
+<b class="nc">&nbsp;        } while (p.b &lt; x.b);</b>
+<b class="nc">&nbsp;        if (!x.key.equals(key)) {</b>
+<b class="nc">&nbsp;            int b = firstDifferingBit(x.key, key);</b>
+<b class="nc">&nbsp;            x = head;</b>
+&nbsp;            do {
+<b class="nc">&nbsp;                p = x;</b>
+<b class="nc">&nbsp;                if (safeBitTest(key, x.b)) x = x.right;</b>
+<b class="nc">&nbsp;                else                       x = x.left;</b>
+<b class="nc">&nbsp;            } while (p.b &lt; x.b &amp;&amp; x.b &lt; b);</b>
+<b class="nc">&nbsp;            Node t = new Node(key, val, b);</b>
+<b class="nc">&nbsp;            if (safeBitTest(key, b)) {</b>
+<b class="nc">&nbsp;                t.left  = x;</b>
+<b class="nc">&nbsp;                t.right = t;</b>
+&nbsp;            }
+&nbsp;            else {
+<b class="nc">&nbsp;                t.left  = t;</b>
+<b class="nc">&nbsp;                t.right = x;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (safeBitTest(key, p.b)) p.right = t;</b>
+<b class="nc">&nbsp;            else                       p.left  = t;</b>
+<b class="nc">&nbsp;            count++;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else x.val = val;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the value associated with the given key.
+&nbsp;     * @param key the key
+&nbsp;     * @return the value associated with the given key if the key is in the
+&nbsp;     * symbol table and {@code null} if the key is not in the symbol table
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     * @throws IllegalArgumentException if {@code key} is the empty string.
+&nbsp;     */
+&nbsp;    public Value get(String key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;called get(null)&quot;);</b>
+<b class="nc">&nbsp;        if (key.length() == 0) throw new IllegalArgumentException(&quot;invalid key&quot;);</b>
+&nbsp;        Node p;
+<b class="nc">&nbsp;        Node x = head;</b>
+&nbsp;        do {
+<b class="nc">&nbsp;            p = x;</b>
+<b class="nc">&nbsp;            if (safeBitTest(key, x.b)) x = x.right;</b>
+<b class="nc">&nbsp;            else                       x = x.left;</b>
+<b class="nc">&nbsp;        } while (p.b &lt; x.b);</b>
+<b class="nc">&nbsp;        if (x.key.equals(key)) return x.val;</b>
+<b class="nc">&nbsp;        else                   return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes a key and its associated value from the symbol table, if it
+&nbsp;     * exists.
+&nbsp;     * @param key the key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     * @throws IllegalArgumentException if {@code key} is the empty string.
+&nbsp;     */
+&nbsp;    public void delete(String key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;called delete(null)&quot;);</b>
+<b class="nc">&nbsp;        if (key.length() == 0) throw new IllegalArgumentException(&quot;invalid key&quot;);</b>
+&nbsp;        Node g;             // previous previous (grandparent)
+<b class="nc">&nbsp;        Node p = head;      // previous (parent)</b>
+<b class="nc">&nbsp;        Node x = head;      // node to delete</b>
+&nbsp;        do {
+<b class="nc">&nbsp;            g = p;</b>
+<b class="nc">&nbsp;            p = x;</b>
+<b class="nc">&nbsp;            if (safeBitTest(key, x.b)) x = x.right;</b>
+<b class="nc">&nbsp;            else                       x = x.left;</b>
+<b class="nc">&nbsp;        } while (p.b &lt; x.b);</b>
+<b class="nc">&nbsp;        if (x.key.equals(key)) {</b>
+&nbsp;            Node z;
+<b class="nc">&nbsp;            Node y = head;</b>
+&nbsp;            do {            // find the true parent (z) of x
+<b class="nc">&nbsp;                z = y;</b>
+<b class="nc">&nbsp;                if (safeBitTest(key, y.b)) y = y.right;</b>
+<b class="nc">&nbsp;                else                       y = y.left;</b>
+<b class="nc">&nbsp;            } while (y != x);</b>
+<b class="nc">&nbsp;            if (x == p) {   // case 1: remove (leaf node) x</b>
+&nbsp;                Node c;     // child of x
+<b class="nc">&nbsp;                if (safeBitTest(key, x.b)) c = x.left;</b>
+<b class="nc">&nbsp;                else                       c = x.right;</b>
+<b class="nc">&nbsp;                if (safeBitTest(key, z.b)) z.right = c;</b>
+<b class="nc">&nbsp;                else                       z.left  = c;</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;            else {          // case 2: p replaces (internal node) x
+&nbsp;                Node c;     // child of p
+<b class="nc">&nbsp;                if (safeBitTest(key, p.b)) c = p.left;</b>
+<b class="nc">&nbsp;                else                       c = p.right;</b>
+<b class="nc">&nbsp;                if (safeBitTest(key, g.b)) g.right = c;</b>
+<b class="nc">&nbsp;                else                       g.left  = c;</b>
+<b class="nc">&nbsp;                if (safeBitTest(key, z.b)) z.right = p;</b>
+<b class="nc">&nbsp;                else                       z.left  = p;</b>
+<b class="nc">&nbsp;                p.left = x.left;</b>
+<b class="nc">&nbsp;                p.right = x.right;</b>
+<b class="nc">&nbsp;                p.b = x.b;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            count--;</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns {@code true} if the key-value pair, specified by the given
+&nbsp;     * key, exists within the symbol table.
+&nbsp;     * @param key the key
+&nbsp;     * @return {@code true} if this symbol table contains the given
+&nbsp;     * {@code key} and {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     * @throws IllegalArgumentException if {@code key} is the empty string.
+&nbsp;     */
+&nbsp;    public boolean contains(String key) {
+<b class="nc">&nbsp;        return get(key) != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns {@code true} if the symbol table is empty.
+&nbsp;     * @return {@code true} if this symbol table is empty and
+&nbsp;     * {@code false} otherwise
+&nbsp;     */
+&nbsp;    boolean isEmpty() {
+<b class="nc">&nbsp;        return count == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of key-value pairs within the symbol table.
+&nbsp;     * @return the number of key-value pairs within this symbol table
+&nbsp;     */
+&nbsp;    int size() {
+<b class="nc">&nbsp;        return count;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all keys in the symbol table as an {@code Iterable}.
+&nbsp;     * To iterate over all of the keys in the symbol table named
+&nbsp;     * {@code st}, use the foreach notation:
+&nbsp;     * {@code for (Key key : st.keys())}.
+&nbsp;     * @return all keys in the symbol table as an {@code Iterable}
+&nbsp;     */
+&nbsp;    public Iterable&lt;String&gt; keys() {
+<b class="nc">&nbsp;        Queue&lt;String&gt; queue = new Queue&lt;String&gt;();</b>
+<b class="nc">&nbsp;        if (head.left  != head) keys(head.left,  0, queue);</b>
+<b class="nc">&nbsp;        if (head.right != head) keys(head.right, 0, queue);</b>
+<b class="nc">&nbsp;        return queue;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void keys(Node x, int b, Queue&lt;String&gt; queue) {
+<b class="nc">&nbsp;        if (x.b &gt; b) {</b>
+<b class="nc">&nbsp;            keys(x.left, x.b, queue);</b>
+<b class="nc">&nbsp;            queue.enqueue(x.key);</b>
+<b class="nc">&nbsp;            keys(x.right, x.b, queue);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /* The safeBitTest function logically appends a terminating sequence (when
+&nbsp;     * required) to extend (logically) the string beyond its length.
+&nbsp;     *
+&nbsp;     * The inner loops of the get and put methods flow much better when they
+&nbsp;     * are not concerned with the lengths of strings, so a trick is employed to
+&nbsp;     * allow the get and put methods to view every string as an &quot;infinite&quot;
+&nbsp;     * sequence of bits. Logically, every string gets a &#39;\uffff&#39; character,
+&nbsp;     * followed by an &quot;infinite&quot; sequence of &#39;\u0000&#39; characters, appended to
+&nbsp;     * the end.
+&nbsp;     *
+&nbsp;     * Note that the &#39;\uffff&#39; character serves to mark the end of the string,
+&nbsp;     * and it is necessary. Simply padding with &#39;\u0000&#39; is insufficient to
+&nbsp;     * make all unique Unicode strings &quot;look&quot; unique to the get and put methods
+&nbsp;     * (because these methods do not regard string lengths).
+&nbsp;     */
+&nbsp;    private static boolean safeBitTest(String key, int b) {
+<b class="nc">&nbsp;        if (b &lt; key.length() * 16)      return bitTest(key, b) != 0;</b>
+<b class="nc">&nbsp;        if (b &gt; key.length() * 16 + 15) return false;   // padding</b>
+<b class="nc">&nbsp;        /* 16 bits of 0xffff */         return true;    // end marker</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static int bitTest(String key, int b) {
+<b class="nc">&nbsp;        return (key.charAt(b &gt;&gt;&gt; 4) &gt;&gt;&gt; (b &amp; 0xf)) &amp; 1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /* Like the safeBitTest function, the safeCharAt function makes every
+&nbsp;     * string look like an &quot;infinite&quot; sequence of characters. Logically, every
+&nbsp;     * string gets a &#39;\uffff&#39; character, followed by an &quot;infinite&quot; sequence of
+&nbsp;     * &#39;\u0000&#39; characters, appended to the end.
+&nbsp;     */
+&nbsp;    private static int safeCharAt(String key, int i) {
+<b class="nc">&nbsp;        if (i &lt; key.length()) return key.charAt(i);</b>
+<b class="nc">&nbsp;        if (i &gt; key.length()) return 0x0000;            // padding</b>
+<b class="nc">&nbsp;        else                  return 0xffff;            // end marker</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /* For efficiency&#39;s sake, the firstDifferingBit function compares entire
+&nbsp;     * characters first, and then considers the individual bits (once it finds
+&nbsp;     * two characters that do not match). Also, the least significant bits of
+&nbsp;     * an individual character are examined first. There are many Unicode
+&nbsp;     * alphabets where most (if not all) of the &quot;action&quot; occurs in the least
+&nbsp;     * significant bits.
+&nbsp;     *
+&nbsp;     * Notice that the very first character comparison excludes the
+&nbsp;     * least-significant bit. The firstDifferingBit function must never return
+&nbsp;     * zero; otherwise, a node would become created as a child to the head
+&nbsp;     * (sentinel) node that matches the bit-index value (zero) stored in the
+&nbsp;     * head node. This would violate the invariant that bit-index values
+&nbsp;     * increase as you descend into the trie.
+&nbsp;     */
+&nbsp;    private static int firstDifferingBit(String k1, String k2) {
+<b class="nc">&nbsp;        int i = 0;</b>
+<b class="nc">&nbsp;        int c1 = safeCharAt(k1, 0) &amp; ~1;</b>
+<b class="nc">&nbsp;        int c2 = safeCharAt(k2, 0) &amp; ~1;</b>
+<b class="nc">&nbsp;        if (c1 == c2) {</b>
+<b class="nc">&nbsp;            i = 1;</b>
+<b class="nc">&nbsp;            while (safeCharAt(k1, i) == safeCharAt(k2, i)) i++;</b>
+<b class="nc">&nbsp;            c1 = safeCharAt(k1, i);</b>
+<b class="nc">&nbsp;            c2 = safeCharAt(k2, i);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        int b = 0;</b>
+<b class="nc">&nbsp;        while (((c1 &gt;&gt;&gt; b) &amp; 1) == ((c2 &gt;&gt;&gt; b) &amp; 1)) b++;</b>
+<b class="nc">&nbsp;        return i * 16 + b;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code PatriciaST} data type.
+&nbsp;     * This test fixture runs a series of tests on a randomly generated dataset.
+&nbsp;     * You may specify up to two integer parameters on the command line. The
+&nbsp;     * first parameter indicates the size of the dataset. The second parameter
+&nbsp;     * controls the number of passes (a new random dataset becomes generated at
+&nbsp;     * the start of each pass).
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        PatriciaST&lt;Integer&gt; st = new PatriciaST&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        int limitItem = 1000000;</b>
+<b class="nc">&nbsp;        int limitPass = 1;</b>
+<b class="nc">&nbsp;        int countPass = 0;</b>
+<b class="nc">&nbsp;        boolean ok = true;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (args.length &gt; 0) limitItem = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;        if (args.length &gt; 1) limitPass = Integer.parseInt(args[1]);</b>
+&nbsp;
+&nbsp;        do {
+<b class="nc">&nbsp;            String[] a = new String[limitItem];</b>
+<b class="nc">&nbsp;            int[]    v = new int[limitItem];</b>
+&nbsp;
+<b class="nc">&nbsp;            StdOut.printf(&quot;Creating dataset (%d items)...\n&quot;, limitItem);</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; limitItem; i++) {</b>
+<b class="nc">&nbsp;                a[i] = Integer.toString(i, 16);</b>
+<b class="nc">&nbsp;                v[i] = i;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            StdOut.printf(&quot;Shuffling...\n&quot;);</b>
+<b class="nc">&nbsp;            StdRandom.shuffle(v);</b>
+&nbsp;
+<b class="nc">&nbsp;            StdOut.printf(&quot;Adding (%d items)...\n&quot;, limitItem);</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; limitItem; i++)</b>
+<b class="nc">&nbsp;                st.put(a[v[i]], v[i]);</b>
+&nbsp;
+<b class="nc">&nbsp;            int countKeys = 0;</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;Iterating...\n&quot;);</b>
+<b class="nc">&nbsp;            for (String key : st.keys()) countKeys++;</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;%d items iterated\n&quot;, countKeys);</b>
+<b class="nc">&nbsp;            if (countKeys != limitItem) ok = false;</b>
+<b class="nc">&nbsp;            if (countKeys != st.size()) ok = false;</b>
+&nbsp;
+<b class="nc">&nbsp;            StdOut.printf(&quot;Shuffling...\n&quot;);</b>
+<b class="nc">&nbsp;            StdRandom.shuffle(v);</b>
+&nbsp;
+<b class="nc">&nbsp;            int limitDelete = limitItem / 2;</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;Deleting (%d items)...\n&quot;, limitDelete);</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; limitDelete; i++)</b>
+<b class="nc">&nbsp;                st.delete(a[v[i]]);</b>
+&nbsp;
+<b class="nc">&nbsp;            countKeys = 0;</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;Iterating...\n&quot;);</b>
+<b class="nc">&nbsp;            for (String key : st.keys()) countKeys++;</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;%d items iterated\n&quot;, countKeys);</b>
+<b class="nc">&nbsp;            if (countKeys != limitItem - limitDelete) ok = false;</b>
+<b class="nc">&nbsp;            if (countKeys != st.size())               ok = false;</b>
+&nbsp;
+<b class="nc">&nbsp;            int countDelete = 0;</b>
+<b class="nc">&nbsp;            int countRemain = 0;</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;Checking...\n&quot;);</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; limitItem; i++) {</b>
+<b class="nc">&nbsp;                if (i &lt; limitDelete) {</b>
+<b class="nc">&nbsp;                    if (!st.contains(a[v[i]])) countDelete++;</b>
+&nbsp;                }
+&nbsp;                else {
+<b class="nc">&nbsp;                    int val = st.get(a[v[i]]);</b>
+<b class="nc">&nbsp;                    if (val == v[i]) countRemain++;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            StdOut.printf(&quot;%d items found and %d (deleted) items missing\n&quot;,</b>
+<b class="nc">&nbsp;                countRemain, countDelete);</b>
+<b class="nc">&nbsp;            if (countRemain + countDelete != limitItem) ok = false;</b>
+<b class="nc">&nbsp;            if (countRemain               != st.size()) ok = false;</b>
+<b class="nc">&nbsp;            if (st.isEmpty())                           ok = false;</b>
+&nbsp;
+<b class="nc">&nbsp;            StdOut.printf(&quot;Deleting the rest (%d items)...\n&quot;,</b>
+<b class="nc">&nbsp;                limitItem - countDelete);</b>
+<b class="nc">&nbsp;            for (int i = countDelete; i &lt; limitItem; i++)</b>
+<b class="nc">&nbsp;                st.delete(a[v[i]]);</b>
+<b class="nc">&nbsp;            if (!st.isEmpty()) ok = false;</b>
+&nbsp;
+<b class="nc">&nbsp;            countPass++;</b>
+<b class="nc">&nbsp;            if (ok) StdOut.printf(&quot;PASS %d TESTS SUCCEEDED\n&quot;, countPass);</b>
+<b class="nc">&nbsp;            else    StdOut.printf(&quot;PASS %d TESTS FAILED\n&quot;,    countPass);</b>
+<b class="nc">&nbsp;        } while (ok &amp;&amp; countPass &lt; limitPass);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (!ok) throw new java.lang.RuntimeException(&quot;TESTS FAILED&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

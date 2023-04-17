@@ -1,0 +1,492 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > TwoPersonZeroSumGame</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: TwoPersonZeroSumGame (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TwoPersonZeroSumGame</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/66)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/137)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac TwoPersonZeroSumGame.java
+&nbsp; *  Execution:    java TwoPersonZeroSumGame m n
+&nbsp; *  Dependencies: LinearProgramming.java StdOut.java
+&nbsp; *
+&nbsp; *  Solve an m-by-n two-person zero-sum game by reducing it to
+&nbsp; *  linear programming. Assuming A is a strictly positive payoff
+&nbsp; *  matrix, the optimal row and column player strategies are x* an y*,
+&nbsp; *  scaled to be probability distributions.
+&nbsp; *
+&nbsp; *  (P)  max  y^T 1         (D)  min   1^T x
+&nbsp; *       s.t  A^T y &lt;= 1         s.t   A x &gt;= 1
+&nbsp; *                y &gt;= 0                 x &gt;= 0
+&nbsp; *
+&nbsp; *  Row player is x, column player is y.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code TwoPersonZeroSumGame} class represents a data type for
+&nbsp; *  computing optimal row and column strategies to two-person zero-sum games.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation solves an &lt;em&gt;m&lt;/em&gt;-by-&lt;em&gt;n&lt;/em&gt; two-person
+&nbsp; *  zero-sum game by reducing it to a linear programming problem.
+&nbsp; *  Assuming the payoff matrix &lt;em&gt;A&lt;/em&gt; is strictly positive, the
+&nbsp; *  optimal row and column player strategies x* and y* are obtained
+&nbsp; *  by solving the following primal and dual pair of linear programs,
+&nbsp; *  scaling the results to be probability distributions.
+&nbsp; *  &lt;blockquote&gt;&lt;pre&gt;
+&nbsp; *  (P)  max  y^T 1           (D)  min   1^T x
+&nbsp; *       s.t  A^T y &amp;le; 1         s.t   A x &amp;ge; 1
+&nbsp; *                y &amp;le; 0                 x &amp;ge; 0
+&nbsp; *  &lt;/pre&gt;&lt;/blockquote&gt;
+&nbsp; *  &lt;p&gt;
+&nbsp; *  If the payoff matrix &lt;em&gt;A&lt;/em&gt; has any negative entries, we add
+&nbsp; *  the same constant to every entry so that every entry is positive.
+&nbsp; *  This increases the value of the game by that constant, but does not
+&nbsp; *  change solutions to the two-person zero-sum game.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation is not suitable for large inputs, as it calls
+&nbsp; *  a bare-bones linear programming solver that is neither fast nor
+&nbsp; *  robust with respect to floating-point roundoff error.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/65reductions&quot;&gt;Section 6.5&lt;/a&gt;
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class TwoPersonZeroSumGame {</b>
+&nbsp;    private static final double EPSILON = 1E-8;
+&nbsp;
+&nbsp;    private final int m;            // number of rows
+&nbsp;    private final int n;            // number of columns
+&nbsp;    private LinearProgramming lp;   // linear program solver
+&nbsp;    private double constant;        // constant added to each entry in payoff matrix
+&nbsp;                                    // (0 if all entries are strictly positive)
+&nbsp; 
+&nbsp;    /**
+&nbsp;     * Determines an optimal solution to the two-sum zero-sum game
+&nbsp;     * with the specified payoff matrix.
+&nbsp;     *
+&nbsp;     * @param  payoff the &lt;em&gt;m&lt;/em&gt;-by-&lt;em&gt;n&lt;/em&gt; payoff matrix
+&nbsp;     */ 
+<b class="nc">&nbsp;    public TwoPersonZeroSumGame(double[][] payoff) {</b>
+<b class="nc">&nbsp;        m = payoff.length;</b>
+<b class="nc">&nbsp;        n = payoff[0].length;</b>
+&nbsp;
+<b class="nc">&nbsp;        double[] c = new double[n];</b>
+<b class="nc">&nbsp;        double[] b = new double[m];</b>
+<b class="nc">&nbsp;        double[][] A = new double[m][n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m; i++)</b>
+<b class="nc">&nbsp;            b[i] = 1.0;</b>
+<b class="nc">&nbsp;        for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;            c[j] = 1.0;</b>
+&nbsp;
+&nbsp;        // find smallest entry
+<b class="nc">&nbsp;        constant = Double.POSITIVE_INFINITY;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m; i++)</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;                if (payoff[i][j] &lt; constant)</b>
+<b class="nc">&nbsp;                    constant = payoff[i][j];</b>
+&nbsp;
+&nbsp;        // add constant  to every entry to make strictly positive
+<b class="nc">&nbsp;        if (constant &lt;= 0) constant = -constant + 1;</b>
+<b class="nc">&nbsp;        else               constant = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m; i++)</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;                A[i][j] = payoff[i][j] + constant;</b>
+&nbsp;
+<b class="nc">&nbsp;        lp = new LinearProgramming(A, b, c);</b>
+&nbsp;
+<b class="nc">&nbsp;        assert certifySolution(payoff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the optimal value of this two-person zero-sum game.
+&nbsp;     *
+&nbsp;     * @return the optimal value of this two-person zero-sum game
+&nbsp;     *
+&nbsp;     */
+&nbsp;    public double value() {
+<b class="nc">&nbsp;        return 1.0 / scale() - constant;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // sum of x[j]
+&nbsp;    private double scale() {
+<b class="nc">&nbsp;        double[] x = lp.primal();</b>
+<b class="nc">&nbsp;        double sum = 0.0;</b>
+<b class="nc">&nbsp;        for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;            sum += x[j];</b>
+<b class="nc">&nbsp;        return sum;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the optimal row strategy of this two-person zero-sum game.
+&nbsp;     *
+&nbsp;     * @return the optimal row strategy &lt;em&gt;x&lt;/em&gt; of this two-person zero-sum game
+&nbsp;     */
+&nbsp;    public double[] row() {
+<b class="nc">&nbsp;        double scale = scale();</b>
+<b class="nc">&nbsp;        double[] x = lp.primal();</b>
+<b class="nc">&nbsp;        for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;            x[j] /= scale;</b>
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the optimal column strategy of this two-person zero-sum game.
+&nbsp;     *
+&nbsp;     * @return the optimal column strategy &lt;em&gt;y&lt;/em&gt; of this two-person zero-sum game
+&nbsp;     */
+&nbsp;    public double[] column() {
+<b class="nc">&nbsp;        double scale = scale();</b>
+<b class="nc">&nbsp;        double[] y = lp.dual();</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m; i++)</b>
+<b class="nc">&nbsp;            y[i] /= scale;</b>
+<b class="nc">&nbsp;        return y;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**************************************************************************
+&nbsp;     *
+&nbsp;     *  The code below is solely for testing correctness of the data type.
+&nbsp;     *
+&nbsp;     **************************************************************************/
+&nbsp;
+&nbsp;    // is the row vector x primal feasible?
+&nbsp;    private boolean isPrimalFeasible() {
+<b class="nc">&nbsp;        double[] x = row();</b>
+<b class="nc">&nbsp;        double sum = 0.0;</b>
+<b class="nc">&nbsp;        for (int j = 0; j &lt; n; j++) {</b>
+<b class="nc">&nbsp;            if (x[j] &lt; 0) {</b>
+<b class="nc">&nbsp;                StdOut.println(&quot;row vector not a probability distribution&quot;);</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;    x[%d] = %f\n&quot;, j, x[j]);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            sum += x[j];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (Math.abs(sum - 1.0) &gt; EPSILON) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;row vector x[] is not a probability distribution&quot;);</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;    sum = &quot; + sum);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // is the column vector y dual feasible?
+&nbsp;    private boolean isDualFeasible() {
+<b class="nc">&nbsp;        double[] y = column();</b>
+<b class="nc">&nbsp;        double sum = 0.0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m; i++) {</b>
+<b class="nc">&nbsp;            if (y[i] &lt; 0) {</b>
+<b class="nc">&nbsp;                StdOut.println(&quot;column vector y[] is not a probability distribution&quot;);</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;    y[%d] = %f\n&quot;, i, y[i]);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            sum += y[i];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (Math.abs(sum - 1.0) &gt; EPSILON) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;column vector not a probability distribution&quot;);</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;    sum = &quot; + sum);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // is the solution a Nash equilibrium?
+&nbsp;    private boolean isNashEquilibrium(double[][] payoff) {
+<b class="nc">&nbsp;        double[] x = row();</b>
+<b class="nc">&nbsp;        double[] y = column();</b>
+<b class="nc">&nbsp;        double value = value();</b>
+&nbsp;
+&nbsp;        // given row player&#39;s mixed strategy, find column player&#39;s best pure strategy
+<b class="nc">&nbsp;        double opt1 = Double.NEGATIVE_INFINITY;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m; i++) {</b>
+<b class="nc">&nbsp;            double sum = 0.0;</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++) {</b>
+<b class="nc">&nbsp;                sum += payoff[i][j] * x[j];</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (sum &gt; opt1) opt1 = sum;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (Math.abs(opt1 - value) &gt; EPSILON) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;Optimal value = &quot; + value);</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;Optimal best response for column player = &quot; + opt1);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // given column player&#39;s mixed strategy, find row player&#39;s best pure strategy
+<b class="nc">&nbsp;        double opt2 = Double.POSITIVE_INFINITY;</b>
+<b class="nc">&nbsp;        for (int j = 0; j &lt; n; j++) {</b>
+<b class="nc">&nbsp;            double sum = 0.0;</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; m; i++) {</b>
+<b class="nc">&nbsp;                sum += payoff[i][j] * y[i];</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (sum &lt; opt2) opt2 = sum;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (Math.abs(opt2 - value) &gt; EPSILON) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;Optimal value = &quot; + value);</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;Optimal best response for row player = &quot; + opt2);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private boolean certifySolution(double[][] payoff) {
+<b class="nc">&nbsp;        return isPrimalFeasible() &amp;&amp; isDualFeasible() &amp;&amp; isNashEquilibrium(payoff);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private static void test(String description, double[][] payoff) {
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;        StdOut.println(description);</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;------------------------------------&quot;);</b>
+<b class="nc">&nbsp;        int m = payoff.length;</b>
+<b class="nc">&nbsp;        int n = payoff[0].length;</b>
+<b class="nc">&nbsp;        TwoPersonZeroSumGame zerosum = new TwoPersonZeroSumGame(payoff);</b>
+<b class="nc">&nbsp;        double[] x = zerosum.row();</b>
+<b class="nc">&nbsp;        double[] y = zerosum.column();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.print(&quot;x[] = [&quot;);</b>
+<b class="nc">&nbsp;        for (int j = 0; j &lt; n-1; j++)</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;%8.4f, &quot;, x[j]);</b>
+<b class="nc">&nbsp;        StdOut.printf(&quot;%8.4f]\n&quot;, x[n-1]);</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.print(&quot;y[] = [&quot;);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m-1; i++)</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;%8.4f, &quot;, y[i]);</b>
+<b class="nc">&nbsp;        StdOut.printf(&quot;%8.4f]\n&quot;, y[m-1]);</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;value =  &quot; + zerosum.value());</b>
+&nbsp;        
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // row = { 4/7, 3/7 }, column = { 0, 4/7, 3/7 }, value = 20/7
+&nbsp;    // http://en.wikipedia.org/wiki/Zero-sum
+&nbsp;    private static void test1() {
+<b class="nc">&nbsp;        double[][] payoff = {</b>
+&nbsp;            { 30, -10,  20 },
+&nbsp;            { 10,  20, -20 }
+&nbsp;        };
+<b class="nc">&nbsp;        test(&quot;wikipedia&quot;, payoff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // skew-symmetric =&gt; value = 0
+&nbsp;    // Linear Programming by Chvatal, p. 230
+&nbsp;    private static void test2() {
+<b class="nc">&nbsp;        double[][] payoff = {</b>
+&nbsp;            {  0,  2, -3,  0 },
+&nbsp;            { -2,  0,  0,  3 },
+&nbsp;            {  3,  0,  0, -4 },
+&nbsp;            {  0, -3,  4,  0 }
+&nbsp;        };
+<b class="nc">&nbsp;        test(&quot;Chvatal, p. 230&quot;, payoff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // Linear Programming by Chvatal, p. 234
+&nbsp;    // row    = { 0, 56/99, 40/99, 0, 0, 2/99, 0, 1/99 }
+&nbsp;    // column = { 28/99, 30/99, 21/99, 20/99 }
+&nbsp;    // value  = 4/99
+&nbsp;    private static void test3() {
+<b class="nc">&nbsp;        double[][] payoff = {</b>
+&nbsp;            {  0,  2, -3,  0 },
+&nbsp;            { -2,  0,  0,  3 },
+&nbsp;            {  3,  0,  0, -4 },
+&nbsp;            {  0, -3,  4,  0 },
+&nbsp;            {  0,  0, -3,  3 },
+&nbsp;            { -2,  2,  0,  0 },
+&nbsp;            {  3, -3,  0,  0 },
+&nbsp;            {  0,  0,  4, -4 }
+&nbsp;        };
+<b class="nc">&nbsp;        test(&quot;Chvatal, p. 234&quot;, payoff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // Linear Programming by Chvatal, p. 236
+&nbsp;    // row    = { 0, 2/5, 7/15, 0, 2/15, 0, 0, 0 }
+&nbsp;    // column = { 2/3, 0, 0, 1/3 }
+&nbsp;    // value  = -1/3
+&nbsp;    private static void test4() {
+<b class="nc">&nbsp;        double[][] payoff = {</b>
+&nbsp;            {  0,  2, -1, -1 },
+&nbsp;            {  0,  1, -2, -1 },
+&nbsp;            { -1, -1,  1,  1 },
+&nbsp;            { -1,  0,  0,  1 },
+&nbsp;            {  1, -2,  0, -3 },
+&nbsp;            {  1, -1, -1, -3 },
+&nbsp;            {  0, -3,  2, -1 },
+&nbsp;            {  0, -2,  1, -1 },
+&nbsp;        };
+<b class="nc">&nbsp;        test(&quot;Chvatal p. 236&quot;, payoff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // rock, paper, scissors
+&nbsp;    // row    = { 1/3, 1/3, 1/3 }
+&nbsp;    // column = { 1/3, 1/3, 1/3 }
+&nbsp;    private static void test5() {
+<b class="nc">&nbsp;        double[][] payoff = {</b>
+&nbsp;            {  0, -1,  1 },
+&nbsp;            {  1,  0, -1 },
+&nbsp;            { -1,  1,  0 }
+&nbsp;        };
+<b class="nc">&nbsp;        test(&quot;rock, paper, scisssors&quot;, payoff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code ZeroSumGameToLP} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        test1();</b>
+<b class="nc">&nbsp;        test2();</b>
+<b class="nc">&nbsp;        test3();</b>
+<b class="nc">&nbsp;        test4();</b>
+<b class="nc">&nbsp;        test5();</b>
+&nbsp;
+<b class="nc">&nbsp;        int m = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;        int n = Integer.parseInt(args[1]);</b>
+<b class="nc">&nbsp;        double[][] payoff = new double[m][n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m; i++)</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;                payoff[i][j] = StdRandom.uniform(-0.5, 0.5);</b>
+<b class="nc">&nbsp;        test(&quot;random &quot; + m + &quot;-by-&quot; + n, payoff);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

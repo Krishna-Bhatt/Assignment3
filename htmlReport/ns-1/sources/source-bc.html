@@ -1,0 +1,209 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > TopM</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: TopM (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TopM</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac TopM.java
+&nbsp; *  Execution:    java TopM m &lt; input.txt
+&nbsp; *  Dependencies: MinPQ.java Transaction.java StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/24pq/tinyBatch.txt
+&nbsp; * 
+&nbsp; *  Given an integer m from the command line and an input stream where
+&nbsp; *  each line contains a String and a long value, this MinPQ client
+&nbsp; *  prints the m lines whose numbers are the highest.
+&nbsp; * 
+&nbsp; *  % java TopM 5 &lt; tinyBatch.txt 
+&nbsp; *  Thompson    2/27/2000  4747.08
+&nbsp; *  vonNeumann  2/12/1994  4732.35
+&nbsp; *  vonNeumann  1/11/1999  4409.74
+&nbsp; *  Hoare       8/18/1992  4381.21
+&nbsp; *  vonNeumann  3/26/2002  4121.85
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code TopM} class provides a client that reads a sequence of
+&nbsp; *  transactions from standard input and prints the &lt;em&gt;m&lt;/em&gt; largest ones
+&nbsp; *  to standard output. This implementation uses a {@link MinPQ} of size
+&nbsp; *  at most &lt;em&gt;m&lt;/em&gt; + 1 to identify the &lt;em&gt;M&lt;/em&gt; largest transactions
+&nbsp; *  and a {@link Stack} to output them in the proper order.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/24pq&quot;&gt;Section 2.4&lt;/a&gt;
+&nbsp; *  of &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class TopM {   
+&nbsp;
+&nbsp;    // This class should not be instantiated.
+&nbsp;    private TopM() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  Reads a sequence of transactions from standard input; takes a
+&nbsp;     *  command-line integer m; prints to standard output the m largest
+&nbsp;     *  transactions in descending order.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int m = Integer.parseInt(args[0]); </b>
+<b class="nc">&nbsp;        MinPQ&lt;Transaction&gt; pq = new MinPQ&lt;Transaction&gt;(m+1);</b>
+&nbsp;
+<b class="nc">&nbsp;        while (StdIn.hasNextLine()) {</b>
+&nbsp;            // Create an entry from the next line and put on the PQ. 
+<b class="nc">&nbsp;            String line = StdIn.readLine();</b>
+<b class="nc">&nbsp;            Transaction transaction = new Transaction(line);</b>
+<b class="nc">&nbsp;            pq.insert(transaction); </b>
+&nbsp;
+&nbsp;            // remove minimum if m+1 entries on the PQ
+<b class="nc">&nbsp;            if (pq.size() &gt; m) </b>
+<b class="nc">&nbsp;                pq.delMin();</b>
+<b class="nc">&nbsp;        }   // top m entries are on the PQ</b>
+&nbsp;
+&nbsp;        // print entries on PQ in reverse order
+<b class="nc">&nbsp;        Stack&lt;Transaction&gt; stack = new Stack&lt;Transaction&gt;();</b>
+<b class="nc">&nbsp;        for (Transaction transaction : pq)</b>
+<b class="nc">&nbsp;            stack.push(transaction);</b>
+<b class="nc">&nbsp;        for (Transaction transaction : stack)</b>
+<b class="nc">&nbsp;            StdOut.println(transaction);</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;} 
+&nbsp;
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

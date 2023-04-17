@@ -1,0 +1,220 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FileIndex</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: FileIndex (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FileIndex</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/21)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac FileIndex.java
+&nbsp; *  Execution:    java FileIndex file1.txt file2.txt file3.txt ...
+&nbsp; *  Dependencies: ST.java SET.java In.java StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/35applications/ex1.txt
+&nbsp; *                https://algs4.cs.princeton.edu/35applications/ex2.txt
+&nbsp; *                https://algs4.cs.princeton.edu/35applications/ex3.txt
+&nbsp; *                https://algs4.cs.princeton.edu/35applications/ex4.txt
+&nbsp; *
+&nbsp; *  % java FileIndex ex*.txt
+&nbsp; *  age
+&nbsp; *   ex3.txt
+&nbsp; *   ex4.txt 
+&nbsp; * best
+&nbsp; *   ex1.txt 
+&nbsp; * was
+&nbsp; *   ex1.txt
+&nbsp; *   ex2.txt
+&nbsp; *   ex3.txt
+&nbsp; *   ex4.txt 
+&nbsp; *
+&nbsp; *  % java FileIndex *.txt
+&nbsp; *
+&nbsp; *  % java FileIndex *.java
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code FileIndex} class provides a client for indexing a set of files,
+&nbsp; *  specified as command-line arguments. It takes queries from standard input
+&nbsp; *  and prints each file that contains the given query.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/35applications&quot;&gt;Section 3.5&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *  
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class FileIndex { 
+&nbsp;
+&nbsp;    // Do not instantiate.
+&nbsp;    private FileIndex() { }
+&nbsp;
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // key = word, value = set of files containing that word
+<b class="nc">&nbsp;        ST&lt;String, SET&lt;File&gt;&gt; st = new ST&lt;String, SET&lt;File&gt;&gt;();</b>
+&nbsp;
+&nbsp;        // create inverted index of all files
+<b class="nc">&nbsp;        StdOut.println(&quot;Indexing files&quot;);</b>
+<b class="nc">&nbsp;        for (String filename : args) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;  &quot; + filename);</b>
+<b class="nc">&nbsp;            File file = new File(filename);</b>
+<b class="nc">&nbsp;            In in = new In(file);</b>
+<b class="nc">&nbsp;            while (!in.isEmpty()) {</b>
+<b class="nc">&nbsp;                String word = in.readString();</b>
+<b class="nc">&nbsp;                if (!st.contains(word)) st.put(word, new SET&lt;File&gt;());</b>
+<b class="nc">&nbsp;                SET&lt;File&gt; set = st.get(word);</b>
+<b class="nc">&nbsp;                set.add(file);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;        // read queries from standard input, one per line
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            String query = StdIn.readString();</b>
+<b class="nc">&nbsp;            if (st.contains(query)) {</b>
+<b class="nc">&nbsp;                SET&lt;File&gt; set = st.get(query);</b>
+<b class="nc">&nbsp;                for (File file : set) {</b>
+<b class="nc">&nbsp;                    StdOut.println(&quot;  &quot; + file.getName());</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

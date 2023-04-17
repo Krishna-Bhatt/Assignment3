@@ -1,0 +1,307 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > KMP</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: KMP (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KMP</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/51)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac KMP.java
+&nbsp; *  Execution:    java KMP pattern text
+&nbsp; *  Dependencies: StdOut.java
+&nbsp; *
+&nbsp; *  Reads in two strings, the pattern and the input text, and
+&nbsp; *  searches for the pattern in the input text using the
+&nbsp; *  KMP algorithm.
+&nbsp; *
+&nbsp; *  % java KMP abracadabra abacadabrabracabracadabrabrabracad
+&nbsp; *  text:    abacadabrabracabracadabrabrabracad 
+&nbsp; *  pattern:               abracadabra          
+&nbsp; *
+&nbsp; *  % java KMP rab abacadabrabracabracadabrabrabracad
+&nbsp; *  text:    abacadabrabracabracadabrabrabracad 
+&nbsp; *  pattern:         rab
+&nbsp; *
+&nbsp; *  % java KMP bcara abacadabrabracabracadabrabrabracad
+&nbsp; *  text:    abacadabrabracabracadabrabrabracad 
+&nbsp; *  pattern:                                   bcara
+&nbsp; *
+&nbsp; *  % java KMP rabrabracad abacadabrabracabracadabrabrabracad 
+&nbsp; *  text:    abacadabrabracabracadabrabrabracad
+&nbsp; *  pattern:                        rabrabracad
+&nbsp; *
+&nbsp; *  % java KMP abacad abacadabrabracabracadabrabrabracad
+&nbsp; *  text:    abacadabrabracabracadabrabrabracad
+&nbsp; *  pattern: abacad
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code KMP} class finds the first occurrence of a pattern string
+&nbsp; *  in a text string.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a version of the Knuth-Morris-Pratt substring search
+&nbsp; *  algorithm. The version takes time proportional to &lt;em&gt;n&lt;/em&gt; + &lt;em&gt;m R&lt;/em&gt;
+&nbsp; *  in the worst case, where &lt;em&gt;n&lt;/em&gt; is the length of the text string,
+&nbsp; *  &lt;em&gt;m&lt;/em&gt; is the length of the pattern, and &lt;em&gt;R&lt;/em&gt; is the alphabet size.
+&nbsp; *  It uses extra space proportional to &lt;em&gt;m R&lt;/em&gt;.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/53substring&quot;&gt;Section 5.3&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; */
+&nbsp;public class KMP {
+&nbsp;    private final int R;       // the radix
+&nbsp;    private final int m;       // length of pattern
+&nbsp;    private int[][] dfa;       // the KMP automoton
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Preprocesses the pattern string.
+&nbsp;     *
+&nbsp;     * @param pat the pattern string
+&nbsp;     */
+<b class="nc">&nbsp;    public KMP(String pat) {</b>
+<b class="nc">&nbsp;        this.R = 256;</b>
+<b class="nc">&nbsp;        this.m = pat.length();</b>
+&nbsp;
+&nbsp;        // build DFA from pattern
+<b class="nc">&nbsp;        dfa = new int[R][m]; </b>
+<b class="nc">&nbsp;        dfa[pat.charAt(0)][0] = 1; </b>
+<b class="nc">&nbsp;        for (int x = 0, j = 1; j &lt; m; j++) {</b>
+<b class="nc">&nbsp;            for (int c = 0; c &lt; R; c++) </b>
+<b class="nc">&nbsp;                dfa[c][j] = dfa[c][x];     // Copy mismatch cases. </b>
+<b class="nc">&nbsp;            dfa[pat.charAt(j)][j] = j+1;   // Set match case. </b>
+<b class="nc">&nbsp;            x = dfa[pat.charAt(j)][x];     // Update restart state. </b>
+&nbsp;        } 
+<b class="nc">&nbsp;    } </b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Preprocesses the pattern string.
+&nbsp;     *
+&nbsp;     * @param pattern the pattern string
+&nbsp;     * @param R the alphabet size
+&nbsp;     */
+<b class="nc">&nbsp;    public KMP(char[] pattern, int R) {</b>
+<b class="nc">&nbsp;        this.R = R;</b>
+<b class="nc">&nbsp;        this.m = pattern.length;</b>
+&nbsp;
+&nbsp;        // build DFA from pattern
+<b class="nc">&nbsp;        int m = pattern.length;</b>
+<b class="nc">&nbsp;        dfa = new int[R][m]; </b>
+<b class="nc">&nbsp;        dfa[pattern[0]][0] = 1; </b>
+<b class="nc">&nbsp;        for (int x = 0, j = 1; j &lt; m; j++) {</b>
+<b class="nc">&nbsp;            for (int c = 0; c &lt; R; c++) </b>
+<b class="nc">&nbsp;                dfa[c][j] = dfa[c][x];     // Copy mismatch cases. </b>
+<b class="nc">&nbsp;            dfa[pattern[j]][j] = j+1;      // Set match case. </b>
+<b class="nc">&nbsp;            x = dfa[pattern[j]][x];        // Update restart state. </b>
+&nbsp;        } 
+<b class="nc">&nbsp;    } </b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the index of the first occurrrence of the pattern string
+&nbsp;     * in the text string.
+&nbsp;     *
+&nbsp;     * @param  txt the text string
+&nbsp;     * @return the index of the first occurrence of the pattern string
+&nbsp;     *         in the text string; N if no such match
+&nbsp;     */
+&nbsp;    public int search(String txt) {
+&nbsp;
+&nbsp;        // simulate operation of DFA on text
+<b class="nc">&nbsp;        int n = txt.length();</b>
+&nbsp;        int i, j;
+<b class="nc">&nbsp;        for (i = 0, j = 0; i &lt; n &amp;&amp; j &lt; m; i++) {</b>
+<b class="nc">&nbsp;            j = dfa[txt.charAt(i)][j];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (j == m) return i - m;    // found</b>
+<b class="nc">&nbsp;        return n;                    // not found</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the index of the first occurrrence of the pattern string
+&nbsp;     * in the text string.
+&nbsp;     *
+&nbsp;     * @param  text the text string
+&nbsp;     * @return the index of the first occurrence of the pattern string
+&nbsp;     *         in the text string; N if no such match
+&nbsp;     */
+&nbsp;    public int search(char[] text) {
+&nbsp;
+&nbsp;        // simulate operation of DFA on text
+<b class="nc">&nbsp;        int n = text.length;</b>
+&nbsp;        int i, j;
+<b class="nc">&nbsp;        for (i = 0, j = 0; i &lt; n &amp;&amp; j &lt; m; i++) {</b>
+<b class="nc">&nbsp;            j = dfa[text[i]][j];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (j == m) return i - m;    // found</b>
+<b class="nc">&nbsp;        return n;                    // not found</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /** 
+&nbsp;     * Takes a pattern string and an input string as command-line arguments;
+&nbsp;     * searches for the pattern string in the text string; and prints
+&nbsp;     * the first occurrence of the pattern string in the text string.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String pat = args[0];</b>
+<b class="nc">&nbsp;        String txt = args[1];</b>
+<b class="nc">&nbsp;        char[] pattern = pat.toCharArray();</b>
+<b class="nc">&nbsp;        char[] text    = txt.toCharArray();</b>
+&nbsp;
+<b class="nc">&nbsp;        KMP kmp1 = new KMP(pat);</b>
+<b class="nc">&nbsp;        int offset1 = kmp1.search(txt);</b>
+&nbsp;
+<b class="nc">&nbsp;        KMP kmp2 = new KMP(pattern, 256);</b>
+<b class="nc">&nbsp;        int offset2 = kmp2.search(text);</b>
+&nbsp;
+&nbsp;        // print results
+<b class="nc">&nbsp;        StdOut.println(&quot;text:    &quot; + txt);</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.print(&quot;pattern: &quot;);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; offset1; i++)</b>
+<b class="nc">&nbsp;            StdOut.print(&quot; &quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(pat);</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.print(&quot;pattern: &quot;);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; offset2; i++)</b>
+<b class="nc">&nbsp;            StdOut.print(&quot; &quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(pat);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

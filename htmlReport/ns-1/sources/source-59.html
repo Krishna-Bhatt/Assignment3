@@ -1,0 +1,651 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GraphGenerator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: GraphGenerator (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GraphGenerator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/108)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/198)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GraphGenerator$Edge</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/118)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/210)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac GraphGenerator.java
+&nbsp; *  Execution:    java GraphGenerator V E
+&nbsp; *  Dependencies: Graph.java
+&nbsp; *
+&nbsp; *  A graph generator.
+&nbsp; *
+&nbsp; *  For many more graph generators, see
+&nbsp; *  http://networkx.github.io/documentation/latest/reference/generators.html
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code GraphGenerator} class provides static methods for creating
+&nbsp; *  various graphs, including Erdos-Renyi random graphs, random bipartite
+&nbsp; *  graphs, random k-regular graphs, and random rooted trees.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/41graph&quot;&gt;Section 4.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class GraphGenerator {
+&nbsp;    private static final class Edge implements Comparable&lt;Edge&gt; {
+&nbsp;        private int v;
+&nbsp;        private int w;
+&nbsp;
+<b class="nc">&nbsp;        private Edge(int v, int w) {</b>
+<b class="nc">&nbsp;            if (v &lt; w) {</b>
+<b class="nc">&nbsp;                this.v = v;</b>
+<b class="nc">&nbsp;                this.w = w;</b>
+&nbsp;            }
+&nbsp;            else {
+<b class="nc">&nbsp;                this.v = w;</b>
+<b class="nc">&nbsp;                this.w = v;</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        public int compareTo(Edge that) {
+<b class="nc">&nbsp;            if (this.v &lt; that.v) return -1;</b>
+<b class="nc">&nbsp;            if (this.v &gt; that.v) return +1;</b>
+<b class="nc">&nbsp;            if (this.w &lt; that.w) return -1;</b>
+<b class="nc">&nbsp;            if (this.w &gt; that.w) return +1;</b>
+<b class="nc">&nbsp;            return 0;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // this class cannot be instantiated
+&nbsp;    private GraphGenerator() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a random simple graph containing {@code V} vertices and {@code E} edges.
+&nbsp;     * @param V the number of vertices
+&nbsp;     * @param E the number of vertices
+&nbsp;     * @return a random simple graph on {@code V} vertices, containing a total
+&nbsp;     *     of {@code E} edges
+&nbsp;     * @throws IllegalArgumentException if no such simple graph exists
+&nbsp;     */
+&nbsp;    public static Graph simple(int V, int E) {
+<b class="nc">&nbsp;        if (E &gt; (long) V*(V-1)/2) throw new IllegalArgumentException(&quot;Too many edges&quot;);</b>
+<b class="nc">&nbsp;        if (E &lt; 0)                throw new IllegalArgumentException(&quot;Too few edges&quot;);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+<b class="nc">&nbsp;        SET&lt;Edge&gt; set = new SET&lt;Edge&gt;();</b>
+<b class="nc">&nbsp;        while (G.E() &lt; E) {</b>
+<b class="nc">&nbsp;            int v = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;            int w = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;            Edge e = new Edge(v, w);</b>
+<b class="nc">&nbsp;            if ((v != w) &amp;&amp; !set.contains(e)) {</b>
+<b class="nc">&nbsp;                set.add(e);</b>
+<b class="nc">&nbsp;                G.addEdge(v, w);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a random simple graph on {@code V} vertices, with an 
+&nbsp;     * edge between any two vertices with probability {@code p}. This is sometimes
+&nbsp;     * referred to as the Erdos-Renyi random graph model.
+&nbsp;     * @param V the number of vertices
+&nbsp;     * @param p the probability of choosing an edge
+&nbsp;     * @return a random simple graph on {@code V} vertices, with an edge between
+&nbsp;     *     any two vertices with probability {@code p}
+&nbsp;     * @throws IllegalArgumentException if probability is not between 0 and 1
+&nbsp;     */
+&nbsp;    public static Graph simple(int V, double p) {
+<b class="nc">&nbsp;        if (p &lt; 0.0 || p &gt; 1.0)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Probability must be between 0 and 1&quot;);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; V; v++)</b>
+<b class="nc">&nbsp;            for (int w = v+1; w &lt; V; w++)</b>
+<b class="nc">&nbsp;                if (StdRandom.bernoulli(p))</b>
+<b class="nc">&nbsp;                    G.addEdge(v, w);</b>
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the complete graph on {@code V} vertices.
+&nbsp;     * @param V the number of vertices
+&nbsp;     * @return the complete graph on {@code V} vertices
+&nbsp;     */
+&nbsp;    public static Graph complete(int V) {
+<b class="nc">&nbsp;        return simple(V, 1.0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a complete bipartite graph on {@code V1} and {@code V2} vertices.
+&nbsp;     * @param V1 the number of vertices in one partition
+&nbsp;     * @param V2 the number of vertices in the other partition
+&nbsp;     * @return a complete bipartite graph on {@code V1} and {@code V2} vertices
+&nbsp;     * @throws IllegalArgumentException if probability is not between 0 and 1
+&nbsp;     */
+&nbsp;    public static Graph completeBipartite(int V1, int V2) {
+<b class="nc">&nbsp;        return bipartite(V1, V2, V1*V2);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a random simple bipartite graph on {@code V1} and {@code V2} vertices
+&nbsp;     * with {@code E} edges.
+&nbsp;     * @param V1 the number of vertices in one partition
+&nbsp;     * @param V2 the number of vertices in the other partition
+&nbsp;     * @param E the number of edges
+&nbsp;     * @return a random simple bipartite graph on {@code V1} and {@code V2} vertices,
+&nbsp;     *    containing a total of {@code E} edges
+&nbsp;     * @throws IllegalArgumentException if no such simple bipartite graph exists
+&nbsp;     */
+&nbsp;    public static Graph bipartite(int V1, int V2, int E) {
+<b class="nc">&nbsp;        if (E &gt; (long) V1*V2) throw new IllegalArgumentException(&quot;Too many edges&quot;);</b>
+<b class="nc">&nbsp;        if (E &lt; 0)            throw new IllegalArgumentException(&quot;Too few edges&quot;);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(V1 + V2);</b>
+&nbsp;
+<b class="nc">&nbsp;        int[] vertices = new int[V1 + V2];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V1 + V2; i++)</b>
+<b class="nc">&nbsp;            vertices[i] = i;</b>
+<b class="nc">&nbsp;        StdRandom.shuffle(vertices);</b>
+&nbsp;
+<b class="nc">&nbsp;        SET&lt;Edge&gt; set = new SET&lt;Edge&gt;();</b>
+<b class="nc">&nbsp;        while (G.E() &lt; E) {</b>
+<b class="nc">&nbsp;            int i = StdRandom.uniform(V1);</b>
+<b class="nc">&nbsp;            int j = V1 + StdRandom.uniform(V2);</b>
+<b class="nc">&nbsp;            Edge e = new Edge(vertices[i], vertices[j]);</b>
+<b class="nc">&nbsp;            if (!set.contains(e)) {</b>
+<b class="nc">&nbsp;                set.add(e);</b>
+<b class="nc">&nbsp;                G.addEdge(vertices[i], vertices[j]);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a random simple bipartite graph on {@code V1} and {@code V2} vertices,
+&nbsp;     * containing each possible edge with probability {@code p}.
+&nbsp;     * @param V1 the number of vertices in one partition
+&nbsp;     * @param V2 the number of vertices in the other partition
+&nbsp;     * @param p the probability that the graph contains an edge with one endpoint in either side
+&nbsp;     * @return a random simple bipartite graph on {@code V1} and {@code V2} vertices,
+&nbsp;     *    containing each possible edge with probability {@code p}
+&nbsp;     * @throws IllegalArgumentException if probability is not between 0 and 1
+&nbsp;     */
+&nbsp;    public static Graph bipartite(int V1, int V2, double p) {
+<b class="nc">&nbsp;        if (p &lt; 0.0 || p &gt; 1.0)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Probability must be between 0 and 1&quot;);</b>
+<b class="nc">&nbsp;        int[] vertices = new int[V1 + V2];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V1 + V2; i++)</b>
+<b class="nc">&nbsp;            vertices[i] = i;</b>
+<b class="nc">&nbsp;        StdRandom.shuffle(vertices);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(V1 + V2);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V1; i++)</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; V2; j++)</b>
+<b class="nc">&nbsp;                if (StdRandom.bernoulli(p))</b>
+<b class="nc">&nbsp;                    G.addEdge(vertices[i], vertices[V1+j]);</b>
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a path graph on {@code V} vertices.
+&nbsp;     * @param V the number of vertices in the path
+&nbsp;     * @return a path graph on {@code V} vertices
+&nbsp;     */
+&nbsp;    public static Graph path(int V) {
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+<b class="nc">&nbsp;        int[] vertices = new int[V];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V; i++)</b>
+<b class="nc">&nbsp;            vertices[i] = i;</b>
+<b class="nc">&nbsp;        StdRandom.shuffle(vertices);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V-1; i++) {</b>
+<b class="nc">&nbsp;            G.addEdge(vertices[i], vertices[i+1]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a complete binary tree graph on {@code V} vertices.
+&nbsp;     * @param V the number of vertices in the binary tree
+&nbsp;     * @return a complete binary tree graph on {@code V} vertices
+&nbsp;     */
+&nbsp;    public static Graph binaryTree(int V) {
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+<b class="nc">&nbsp;        int[] vertices = new int[V];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V; i++)</b>
+<b class="nc">&nbsp;            vertices[i] = i;</b>
+<b class="nc">&nbsp;        StdRandom.shuffle(vertices);</b>
+<b class="nc">&nbsp;        for (int i = 1; i &lt; V; i++) {</b>
+<b class="nc">&nbsp;            G.addEdge(vertices[i], vertices[(i-1)/2]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a cycle graph on {@code V} vertices.
+&nbsp;     * @param V the number of vertices in the cycle
+&nbsp;     * @return a cycle graph on {@code V} vertices
+&nbsp;     */
+&nbsp;    public static Graph cycle(int V) {
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+<b class="nc">&nbsp;        int[] vertices = new int[V];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V; i++)</b>
+<b class="nc">&nbsp;            vertices[i] = i;</b>
+<b class="nc">&nbsp;        StdRandom.shuffle(vertices);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V-1; i++) {</b>
+<b class="nc">&nbsp;            G.addEdge(vertices[i], vertices[i+1]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        G.addEdge(vertices[V-1], vertices[0]);</b>
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an Eulerian cycle graph on {@code V} vertices.
+&nbsp;     *
+&nbsp;     * @param  V the number of vertices in the cycle
+&nbsp;     * @param  E the number of edges in the cycle
+&nbsp;     * @return a graph that is an Eulerian cycle on {@code V} vertices
+&nbsp;     *         and {@code E} edges
+&nbsp;     * @throws IllegalArgumentException if either {@code V &lt;= 0} or {@code E &lt;= 0}
+&nbsp;     */
+&nbsp;    public static Graph eulerianCycle(int V, int E) {
+<b class="nc">&nbsp;        if (E &lt;= 0)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;An Eulerian cycle must have at least one edge&quot;);</b>
+<b class="nc">&nbsp;        if (V &lt;= 0)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;An Eulerian cycle must have at least one vertex&quot;);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+<b class="nc">&nbsp;        int[] vertices = new int[E];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; E; i++)</b>
+<b class="nc">&nbsp;            vertices[i] = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; E-1; i++) {</b>
+<b class="nc">&nbsp;            G.addEdge(vertices[i], vertices[i+1]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        G.addEdge(vertices[E-1], vertices[0]);</b>
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an Eulerian path graph on {@code V} vertices.
+&nbsp;     *
+&nbsp;     * @param  V the number of vertices in the path
+&nbsp;     * @param  E the number of edges in the path
+&nbsp;     * @return a graph that is an Eulerian path on {@code V} vertices
+&nbsp;     *         and {@code E} edges
+&nbsp;     * @throws IllegalArgumentException if either {@code V &lt;= 0} or {@code E &lt; 0}
+&nbsp;     */
+&nbsp;    public static Graph eulerianPath(int V, int E) {
+<b class="nc">&nbsp;        if (E &lt; 0)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;negative number of edges&quot;);</b>
+<b class="nc">&nbsp;        if (V &lt;= 0)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;An Eulerian path must have at least one vertex&quot;);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+<b class="nc">&nbsp;        int[] vertices = new int[E+1];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; E+1; i++)</b>
+<b class="nc">&nbsp;            vertices[i] = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; E; i++) {</b>
+<b class="nc">&nbsp;            G.addEdge(vertices[i], vertices[i+1]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a wheel graph on {@code V} vertices.
+&nbsp;     * @param V the number of vertices in the wheel
+&nbsp;     * @return a wheel graph on {@code V} vertices: a single vertex connected to
+&nbsp;     *     every vertex in a cycle on {@code V-1} vertices
+&nbsp;     */
+&nbsp;    public static Graph wheel(int V) {
+<b class="nc">&nbsp;        if (V &lt;= 1) throw new IllegalArgumentException(&quot;Number of vertices must be at least 2&quot;);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+<b class="nc">&nbsp;        int[] vertices = new int[V];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V; i++)</b>
+<b class="nc">&nbsp;            vertices[i] = i;</b>
+<b class="nc">&nbsp;        StdRandom.shuffle(vertices);</b>
+&nbsp;
+&nbsp;        // simple cycle on V-1 vertices
+<b class="nc">&nbsp;        for (int i = 1; i &lt; V-1; i++) {</b>
+<b class="nc">&nbsp;            G.addEdge(vertices[i], vertices[i+1]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        G.addEdge(vertices[V-1], vertices[1]);</b>
+&nbsp;
+&nbsp;        // connect vertices[0] to every vertex on cycle
+<b class="nc">&nbsp;        for (int i = 1; i &lt; V; i++) {</b>
+<b class="nc">&nbsp;            G.addEdge(vertices[0], vertices[i]);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a star graph on {@code V} vertices.
+&nbsp;     * @param V the number of vertices in the star
+&nbsp;     * @return a star graph on {@code V} vertices: a single vertex connected to
+&nbsp;     *     every other vertex
+&nbsp;     */
+&nbsp;    public static Graph star(int V) {
+<b class="nc">&nbsp;        if (V &lt;= 0) throw new IllegalArgumentException(&quot;Number of vertices must be at least 1&quot;);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+<b class="nc">&nbsp;        int[] vertices = new int[V];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V; i++)</b>
+<b class="nc">&nbsp;            vertices[i] = i;</b>
+<b class="nc">&nbsp;        StdRandom.shuffle(vertices);</b>
+&nbsp;
+&nbsp;        // connect vertices[0] to every other vertex
+<b class="nc">&nbsp;        for (int i = 1; i &lt; V; i++) {</b>
+<b class="nc">&nbsp;            G.addEdge(vertices[0], vertices[i]);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a uniformly random {@code k}-regular graph on {@code V} vertices
+&nbsp;     * (not necessarily simple). The graph is simple with probability only about e^(-k^2/4),
+&nbsp;     * which is tiny when k = 14.
+&nbsp;     *
+&nbsp;     * @param V the number of vertices in the graph
+&nbsp;     * @param k degree of each vertex
+&nbsp;     * @return a uniformly random {@code k}-regular graph on {@code V} vertices.
+&nbsp;     */
+&nbsp;    public static Graph regular(int V, int k) {
+<b class="nc">&nbsp;        if (V*k % 2 != 0) throw new IllegalArgumentException(&quot;Number of vertices * k must be even&quot;);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+&nbsp;
+&nbsp;        // create k copies of each vertex
+<b class="nc">&nbsp;        int[] vertices = new int[V*k];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; V; v++) {</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; k; j++) {</b>
+<b class="nc">&nbsp;                vertices[v + V*j] = v;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // pick a random perfect matching
+<b class="nc">&nbsp;        StdRandom.shuffle(vertices);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V*k/2; i++) {</b>
+<b class="nc">&nbsp;            G.addEdge(vertices[2*i], vertices[2*i + 1]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // http://www.proofwiki.org/wiki/Labeled_Tree_from_Prüfer_Sequence
+&nbsp;    // http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.36.6484&amp;rep=rep1&amp;type=pdf
+&nbsp;    /**
+&nbsp;     * Returns a uniformly random tree on {@code V} vertices.
+&nbsp;     * This algorithm uses a Prufer sequence and takes time proportional to &lt;em&gt;V log V&lt;/em&gt;.
+&nbsp;     * @param V the number of vertices in the tree
+&nbsp;     * @return a uniformly random tree on {@code V} vertices
+&nbsp;     */
+&nbsp;    public static Graph tree(int V) {
+<b class="nc">&nbsp;        Graph G = new Graph(V);</b>
+&nbsp;
+&nbsp;        // special case
+<b class="nc">&nbsp;        if (V == 1) return G;</b>
+&nbsp;
+&nbsp;        // Cayley&#39;s theorem: there are V^(V-2) labeled trees on V vertices
+&nbsp;        // Prufer sequence: sequence of V-2 values between 0 and V-1
+&nbsp;        // Prufer&#39;s proof of Cayley&#39;s theorem: Prufer sequences are in 1-1
+&nbsp;        // with labeled trees on V vertices
+<b class="nc">&nbsp;        int[] prufer = new int[V-2];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V-2; i++)</b>
+<b class="nc">&nbsp;            prufer[i] = StdRandom.uniform(V);</b>
+&nbsp;
+&nbsp;        // degree of vertex v = 1 + number of times it appers in Prufer sequence
+<b class="nc">&nbsp;        int[] degree = new int[V];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; V; v++)</b>
+<b class="nc">&nbsp;            degree[v] = 1;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V-2; i++)</b>
+<b class="nc">&nbsp;            degree[prufer[i]]++;</b>
+&nbsp;
+&nbsp;        // pq contains all vertices of degree 1
+<b class="nc">&nbsp;        MinPQ&lt;Integer&gt; pq = new MinPQ&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; V; v++)</b>
+<b class="nc">&nbsp;            if (degree[v] == 1) pq.insert(v);</b>
+&nbsp;
+&nbsp;        // repeatedly delMin() degree 1 vertex that has the minimum index
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V-2; i++) {</b>
+<b class="nc">&nbsp;            int v = pq.delMin();</b>
+<b class="nc">&nbsp;            G.addEdge(v, prufer[i]);</b>
+<b class="nc">&nbsp;            degree[v]--;</b>
+<b class="nc">&nbsp;            degree[prufer[i]]--;</b>
+<b class="nc">&nbsp;            if (degree[prufer[i]] == 1) pq.insert(prufer[i]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        G.addEdge(pq.delMin(), pq.delMin());</b>
+<b class="nc">&nbsp;        return G;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code GraphGenerator} library.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int V = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;        int E = Integer.parseInt(args[1]);</b>
+<b class="nc">&nbsp;        int V1 = V/2;</b>
+<b class="nc">&nbsp;        int V2 = V - V1;</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;complete graph&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(complete(V));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;simple&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(simple(V, E));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Erdos-Renyi&quot;);</b>
+<b class="nc">&nbsp;        double p = (double) E / (V*(V-1)/2.0);</b>
+<b class="nc">&nbsp;        StdOut.println(simple(V, p));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;complete bipartite&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(completeBipartite(V1, V2));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;bipartite&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(bipartite(V1, V2, E));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Erdos Renyi bipartite&quot;);</b>
+<b class="nc">&nbsp;        double q = (double) E / (V1*V2);</b>
+<b class="nc">&nbsp;        StdOut.println(bipartite(V1, V2, q));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;path&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(path(V));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;cycle&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(cycle(V));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;binary tree&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(binaryTree(V));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;tree&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(tree(V));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;4-regular&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(regular(V, 4));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;star&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(star(V));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;wheel&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(wheel(V));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

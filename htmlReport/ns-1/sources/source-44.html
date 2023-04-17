@@ -1,0 +1,424 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EdgeWeightedGraph</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: EdgeWeightedGraph (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EdgeWeightedGraph</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/90)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac EdgeWeightedGraph.java
+&nbsp; *  Execution:    java EdgeWeightedGraph filename.txt
+&nbsp; *  Dependencies: Bag.java Edge.java In.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/43mst/tinyEWG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/43mst/mediumEWG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/43mst/largeEWG.txt
+&nbsp; *
+&nbsp; *  An edge-weighted undirected graph, implemented using adjacency lists.
+&nbsp; *  Parallel edges and self-loops are permitted.
+&nbsp; *
+&nbsp; *  % java EdgeWeightedGraph tinyEWG.txt 
+&nbsp; *  8 16
+&nbsp; *  0: 6-0 0.58000  0-2 0.26000  0-4 0.38000  0-7 0.16000  
+&nbsp; *  1: 1-3 0.29000  1-2 0.36000  1-7 0.19000  1-5 0.32000  
+&nbsp; *  2: 6-2 0.40000  2-7 0.34000  1-2 0.36000  0-2 0.26000  2-3 0.17000  
+&nbsp; *  3: 3-6 0.52000  1-3 0.29000  2-3 0.17000  
+&nbsp; *  4: 6-4 0.93000  0-4 0.38000  4-7 0.37000  4-5 0.35000  
+&nbsp; *  5: 1-5 0.32000  5-7 0.28000  4-5 0.35000  
+&nbsp; *  6: 6-4 0.93000  6-0 0.58000  3-6 0.52000  6-2 0.40000
+&nbsp; *  7: 2-7 0.34000  1-7 0.19000  0-7 0.16000  5-7 0.28000  4-7 0.37000
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code EdgeWeightedGraph} class represents an edge-weighted
+&nbsp; *  graph of vertices named 0 through &lt;em&gt;V&lt;/em&gt; – 1, where each
+&nbsp; *  undirected edge is of type {@link Edge} and has a real-valued weight.
+&nbsp; *  It supports the following two primary operations: add an edge to the graph,
+&nbsp; *  iterate over all of the edges incident to a vertex. It also provides
+&nbsp; *  methods for returning the degree of a vertex, the number of vertices
+&nbsp; *  &lt;em&gt;V&lt;/em&gt; in the graph, and the number of edges &lt;em&gt;E&lt;/em&gt; in the graph.
+&nbsp; *  Parallel edges and self-loops are permitted.
+&nbsp; *  By convention, a self-loop &lt;em&gt;v&lt;/em&gt;-&lt;em&gt;v&lt;/em&gt; appears in the
+&nbsp; *  adjacency list of &lt;em&gt;v&lt;/em&gt; twice and contributes two to the degree
+&nbsp; *  of &lt;em&gt;v&lt;/em&gt;.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses an &lt;em&gt;adjacency-lists representation&lt;/em&gt;, which
+&nbsp; *  is a vertex-indexed array of {@link Bag} objects.
+&nbsp; *  It uses &amp;Theta;(&lt;em&gt;E&lt;/em&gt; + &lt;em&gt;V&lt;/em&gt;) space, where &lt;em&gt;E&lt;/em&gt; is
+&nbsp; *  the number of edges and &lt;em&gt;V&lt;/em&gt; is the number of vertices.
+&nbsp; *  All instance methods take &amp;Theta;(1) time. (Though, iterating over
+&nbsp; *  the edges returned by {@link #adj(int)} takes time proportional
+&nbsp; *  to the degree of the vertex.)
+&nbsp; *  Constructing an empty edge-weighted graph with &lt;em&gt;V&lt;/em&gt; vertices takes
+&nbsp; *  &amp;Theta;(&lt;em&gt;V&lt;/em&gt;) time; constructing a edge-weighted graph with
+&nbsp; *  &lt;em&gt;E&lt;/em&gt; edges and &lt;em&gt;V&lt;/em&gt; vertices takes
+&nbsp; *  &amp;Theta;(&lt;em&gt;E&lt;/em&gt; + &lt;em&gt;V&lt;/em&gt;) time. 
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/43mst&quot;&gt;Section 4.3&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class EdgeWeightedGraph {
+<b class="nc">&nbsp;    private static final String NEWLINE = System.getProperty(&quot;line.separator&quot;);</b>
+&nbsp;
+&nbsp;    private final int V;
+&nbsp;    private int E;
+&nbsp;    private Bag&lt;Edge&gt;[] adj;
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Initializes an empty edge-weighted graph with {@code V} vertices and 0 edges.
+&nbsp;     *
+&nbsp;     * @param  V the number of vertices
+&nbsp;     * @throws IllegalArgumentException if {@code V &lt; 0}
+&nbsp;     */
+<b class="nc">&nbsp;    public EdgeWeightedGraph(int V) {</b>
+<b class="nc">&nbsp;        if (V &lt; 0) throw new IllegalArgumentException(&quot;Number of vertices must be non-negative&quot;);</b>
+<b class="nc">&nbsp;        this.V = V;</b>
+<b class="nc">&nbsp;        this.E = 0;</b>
+<b class="nc">&nbsp;        adj = (Bag&lt;Edge&gt;[]) new Bag[V];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; V; v++) {</b>
+<b class="nc">&nbsp;            adj[v] = new Bag&lt;Edge&gt;();</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a random edge-weighted graph with {@code V} vertices and &lt;em&gt;E&lt;/em&gt; edges.
+&nbsp;     *
+&nbsp;     * @param  V the number of vertices
+&nbsp;     * @param  E the number of edges
+&nbsp;     * @throws IllegalArgumentException if {@code V &lt; 0}
+&nbsp;     * @throws IllegalArgumentException if {@code E &lt; 0}
+&nbsp;     */
+&nbsp;    public EdgeWeightedGraph(int V, int E) {
+<b class="nc">&nbsp;        this(V);</b>
+<b class="nc">&nbsp;        if (E &lt; 0) throw new IllegalArgumentException(&quot;Number of edges must be non-negative&quot;);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; E; i++) {</b>
+<b class="nc">&nbsp;            int v = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;            int w = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;            double weight = Math.round(100 * StdRandom.uniform()) / 100.0;</b>
+<b class="nc">&nbsp;            Edge e = new Edge(v, w, weight);</b>
+<b class="nc">&nbsp;            addEdge(e);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**  
+&nbsp;     * Initializes an edge-weighted graph from an input stream.
+&nbsp;     * The format is the number of vertices &lt;em&gt;V&lt;/em&gt;,
+&nbsp;     * followed by the number of edges &lt;em&gt;E&lt;/em&gt;,
+&nbsp;     * followed by &lt;em&gt;E&lt;/em&gt; pairs of vertices and edge weights,
+&nbsp;     * with each entry separated by whitespace.
+&nbsp;     *
+&nbsp;     * @param  in the input stream
+&nbsp;     * @throws IllegalArgumentException if {@code in} is {@code null}
+&nbsp;     * @throws IllegalArgumentException if the endpoints of any edge are not in prescribed range
+&nbsp;     * @throws IllegalArgumentException if the number of vertices or edges is negative
+&nbsp;     */
+<b class="nc">&nbsp;    public EdgeWeightedGraph(In in) {</b>
+<b class="nc">&nbsp;        if (in == null) throw new IllegalArgumentException(&quot;argument is null&quot;);</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            V = in.readInt();</b>
+<b class="nc">&nbsp;            adj = (Bag&lt;Edge&gt;[]) new Bag[V];</b>
+<b class="nc">&nbsp;            for (int v = 0; v &lt; V; v++) {</b>
+<b class="nc">&nbsp;                adj[v] = new Bag&lt;Edge&gt;();</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            int E = in.readInt();</b>
+<b class="nc">&nbsp;            if (E &lt; 0) throw new IllegalArgumentException(&quot;Number of edges must be non-negative&quot;);</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; E; i++) {</b>
+<b class="nc">&nbsp;                int v = in.readInt();</b>
+<b class="nc">&nbsp;                int w = in.readInt();</b>
+<b class="nc">&nbsp;                validateVertex(v);</b>
+<b class="nc">&nbsp;                validateVertex(w);</b>
+<b class="nc">&nbsp;                double weight = in.readDouble();</b>
+<b class="nc">&nbsp;                Edge e = new Edge(v, w, weight);</b>
+<b class="nc">&nbsp;                addEdge(e);</b>
+&nbsp;            }
+&nbsp;        }   
+<b class="nc">&nbsp;        catch (NoSuchElementException e) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;invalid input format in EdgeWeightedGraph constructor&quot;, e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a new edge-weighted graph that is a deep copy of {@code G}.
+&nbsp;     *
+&nbsp;     * @param  G the edge-weighted graph to copy
+&nbsp;     */
+&nbsp;    public EdgeWeightedGraph(EdgeWeightedGraph G) {
+<b class="nc">&nbsp;        this(G.V());</b>
+<b class="nc">&nbsp;        this.E = G.E();</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+&nbsp;            // reverse so that adjacency list is in same order as original
+<b class="nc">&nbsp;            Stack&lt;Edge&gt; reverse = new Stack&lt;Edge&gt;();</b>
+<b class="nc">&nbsp;            for (Edge e : G.adj[v]) {</b>
+<b class="nc">&nbsp;                reverse.push(e);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            for (Edge e : reverse) {</b>
+<b class="nc">&nbsp;                adj[v].add(e);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of vertices in this edge-weighted graph.
+&nbsp;     *
+&nbsp;     * @return the number of vertices in this edge-weighted graph
+&nbsp;     */
+&nbsp;    public int V() {
+<b class="nc">&nbsp;        return V;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of edges in this edge-weighted graph.
+&nbsp;     *
+&nbsp;     * @return the number of edges in this edge-weighted graph
+&nbsp;     */
+&nbsp;    public int E() {
+<b class="nc">&nbsp;        return E;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // throw an IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;    private void validateVertex(int v) {
+<b class="nc">&nbsp;        if (v &lt; 0 || v &gt;= V)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;vertex &quot; + v + &quot; is not between 0 and &quot; + (V-1));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the undirected edge {@code e} to this edge-weighted graph.
+&nbsp;     *
+&nbsp;     * @param  e the edge
+&nbsp;     * @throws IllegalArgumentException unless both endpoints are between {@code 0} and {@code V-1}
+&nbsp;     */
+&nbsp;    public void addEdge(Edge e) {
+<b class="nc">&nbsp;        int v = e.either();</b>
+<b class="nc">&nbsp;        int w = e.other(v);</b>
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        validateVertex(w);</b>
+<b class="nc">&nbsp;        adj[v].add(e);</b>
+<b class="nc">&nbsp;        adj[w].add(e);</b>
+<b class="nc">&nbsp;        E++;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the edges incident on vertex {@code v}.
+&nbsp;     *
+&nbsp;     * @param  v the vertex
+&nbsp;     * @return the edges incident on vertex {@code v} as an Iterable
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public Iterable&lt;Edge&gt; adj(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        return adj[v];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the degree of vertex {@code v}.
+&nbsp;     *
+&nbsp;     * @param  v the vertex
+&nbsp;     * @return the degree of vertex {@code v}               
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public int degree(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        return adj[v].size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all edges in this edge-weighted graph.
+&nbsp;     * To iterate over the edges in this edge-weighted graph, use foreach notation:
+&nbsp;     * {@code for (Edge e : G.edges())}.
+&nbsp;     *
+&nbsp;     * @return all edges in this edge-weighted graph, as an iterable
+&nbsp;     */
+&nbsp;    public Iterable&lt;Edge&gt; edges() {
+<b class="nc">&nbsp;        Bag&lt;Edge&gt; list = new Bag&lt;Edge&gt;();</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; V; v++) {</b>
+<b class="nc">&nbsp;            int selfLoops = 0;</b>
+<b class="nc">&nbsp;            for (Edge e : adj(v)) {</b>
+<b class="nc">&nbsp;                if (e.other(v) &gt; v) {</b>
+<b class="nc">&nbsp;                    list.add(e);</b>
+&nbsp;                }
+&nbsp;                // add only one copy of each self loop (self loops will be consecutive)
+<b class="nc">&nbsp;                else if (e.other(v) == v) {</b>
+<b class="nc">&nbsp;                    if (selfLoops % 2 == 0) list.add(e);</b>
+<b class="nc">&nbsp;                    selfLoops++;</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return list;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of the edge-weighted graph.
+&nbsp;     * This method takes time proportional to &lt;em&gt;E&lt;/em&gt; + &lt;em&gt;V&lt;/em&gt;.
+&nbsp;     *
+&nbsp;     * @return the number of vertices &lt;em&gt;V&lt;/em&gt;, followed by the number of edges &lt;em&gt;E&lt;/em&gt;,
+&nbsp;     *         followed by the &lt;em&gt;V&lt;/em&gt; adjacency lists of edges
+&nbsp;     */
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        StringBuilder s = new StringBuilder();</b>
+<b class="nc">&nbsp;        s.append(V + &quot; &quot; + E + NEWLINE);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; V; v++) {</b>
+<b class="nc">&nbsp;            s.append(v + &quot;: &quot;);</b>
+<b class="nc">&nbsp;            for (Edge e : adj[v]) {</b>
+<b class="nc">&nbsp;                s.append(e + &quot;  &quot;);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            s.append(NEWLINE);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return s.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code EdgeWeightedGraph} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        In in = new In(args[0]);</b>
+<b class="nc">&nbsp;        EdgeWeightedGraph G = new EdgeWeightedGraph(in);</b>
+<b class="nc">&nbsp;        StdOut.println(G);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LongestRepeatedSubstring</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: LongestRepeatedSubstring (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LongestRepeatedSubstring</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac LongestRepeatedSubstring.java
+&nbsp; *  Execution:    java LongestRepeatedSubstring &lt; file.txt
+&nbsp; *  Dependencies: StdIn.java SuffixArray.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/63suffix/tale.txt
+&nbsp; *                https://algs4.cs.princeton.edu/63suffix/tinyTale.txt
+&nbsp; *                https://algs4.cs.princeton.edu/63suffix/mobydick.txt
+&nbsp; *  
+&nbsp; *  Reads a text string from stdin, replaces all consecutive blocks of
+&nbsp; *  whitespace with a single space, and then computes the longest
+&nbsp; *  repeated substring in that text using a suffix array.
+&nbsp; * 
+&nbsp; *  % java LongestRepeatedSubstring &lt; tinyTale.txt 
+&nbsp; *  &#39;st of times it was the &#39;
+&nbsp; *
+&nbsp; *  % java LongestRepeatedSubstring &lt; mobydick.txt
+&nbsp; *  &#39;,- Such a funny, sporty, gamy, jesty, joky, hoky-poky lad, is the Ocean, oh! Th&#39;
+&nbsp; * 
+&nbsp; *  % java LongestRepeatedSubstring
+&nbsp; *  aaaaaaaaa
+&nbsp; *  &#39;aaaaaaaa&#39;
+&nbsp; *
+&nbsp; *  % java LongestRepeatedSubstring
+&nbsp; *  abcdefg
+&nbsp; *  &#39;&#39;
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code LongestRepeatedSubstring} class provides a {@link SuffixArray}
+&nbsp; *  client for computing the longest repeated substring of a string that
+&nbsp; *  appears at least twice. The repeated substrings may overlap (but must
+&nbsp; *  be distinct).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/63suffix&quot;&gt;Section 6.3&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  See also {@link LongestCommonSubstring}.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class LongestRepeatedSubstring {
+&nbsp;
+&nbsp;    // Do not instantiate.
+&nbsp;    private LongestRepeatedSubstring() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the longest common string of the two specified strings.
+&nbsp;     *
+&nbsp;     * @param  s one string
+&nbsp;     * @param  t the other string
+&nbsp;     * @return the longest common string that appears as a substring
+&nbsp;     */
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the longest repeated substring of the specified string.
+&nbsp;     *
+&nbsp;     * @param  text the string
+&nbsp;     * @return the longest repeated substring that appears in {@code text};
+&nbsp;     *         the empty string if no such string
+&nbsp;     */
+&nbsp;    public static String lrs(String text) {
+<b class="nc">&nbsp;        int n = text.length();</b>
+<b class="nc">&nbsp;        SuffixArray sa = new SuffixArray(text);</b>
+<b class="nc">&nbsp;        String lrs = &quot;&quot;;</b>
+<b class="nc">&nbsp;        for (int i = 1; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            int length = sa.lcp(i);</b>
+<b class="nc">&nbsp;            if (length &gt; lrs.length()) {</b>
+&nbsp;                // lrs = sa.select(i).substring(0, length);
+<b class="nc">&nbsp;                lrs = text.substring(sa.index(i), sa.index(i) + length);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return lrs;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code lrs()} method.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String text = StdIn.readAll().replaceAll(&quot;\\s+&quot;, &quot; &quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;&#39;&quot; + lrs(text) + &quot;&#39;&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

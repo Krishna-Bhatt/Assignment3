@@ -1,0 +1,321 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Cycle</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Cycle (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Cycle</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/58)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Cycle.java
+&nbsp; *  Execution:    java  Cycle filename.txt
+&nbsp; *  Dependencies: Graph.java Stack.java In.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/41graph/tinyG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/41graph/mediumG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/41graph/largeG.txt  
+&nbsp; *
+&nbsp; *  Identifies a cycle.
+&nbsp; *  Runs in O(E + V) time.
+&nbsp; *
+&nbsp; *  % java Cycle tinyG.txt
+&nbsp; *  3 4 5 3 
+&nbsp; * 
+&nbsp; *  % java Cycle mediumG.txt 
+&nbsp; *  15 0 225 15 
+&nbsp; * 
+&nbsp; *  % java Cycle largeG.txt 
+&nbsp; *  996673 762 840164 4619 785187 194717 996673 
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Cycle} class represents a data type for 
+&nbsp; *  determining whether an undirected graph has a simple cycle.
+&nbsp; *  The &lt;em&gt;hasCycle&lt;/em&gt; operation determines whether the graph has
+&nbsp; *  a cycle and, if so, the &lt;em&gt;cycle&lt;/em&gt; operation returns one.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses depth-first search.
+&nbsp; *  The constructor takes &amp;Theta;(&lt;em&gt;V&lt;/em&gt; + &lt;em&gt;E&lt;/em&gt;) time in the
+&nbsp; *  worst case, where &lt;em&gt;V&lt;/em&gt; is the number of vertices and
+&nbsp; *  &lt;em&gt;E&lt;/em&gt; is the number of edges.
+&nbsp; *  (The depth-first search part takes only &lt;em&gt;O&lt;/em&gt;(&lt;em&gt;V&lt;/em&gt;) time;
+&nbsp; *  however, checking for self-loops and parallel edges takes
+&nbsp; *  &amp;Theta;(&lt;em&gt;V&lt;/em&gt; + &lt;em&gt;E&lt;/em&gt;) time in the worst case.)
+&nbsp; *  Each instance method takes &amp;Theta;(1) time.
+&nbsp; *  It uses &amp;Theta;(&lt;em&gt;V&lt;/em&gt;) extra space (not including the graph).
+&nbsp; *  
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/41graph&quot;&gt;Section 4.1&lt;/a&gt;   
+&nbsp; *  of &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class Cycle {
+&nbsp;    private boolean[] marked;
+&nbsp;    private int[] edgeTo;
+&nbsp;    private Stack&lt;Integer&gt; cycle;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines whether the undirected graph {@code G} has a cycle and,
+&nbsp;     * if so, finds such a cycle.
+&nbsp;     *
+&nbsp;     * @param G the undirected graph
+&nbsp;     */
+<b class="nc">&nbsp;    public Cycle(Graph G) {</b>
+&nbsp;        // need special case to identify parallel edge as a cycle
+<b class="nc">&nbsp;        if (hasParallelEdges(G)) return;</b>
+&nbsp;
+&nbsp;        // don&#39;t need special case to identify self-loop as a cycle
+&nbsp;        // if (hasSelfLoop(G)) return;
+&nbsp;
+<b class="nc">&nbsp;        marked = new boolean[G.V()];</b>
+<b class="nc">&nbsp;        edgeTo = new int[G.V()];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            if (!marked[v])</b>
+<b class="nc">&nbsp;                dfs(G, -1, v);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    // does this graph have a self loop?
+&nbsp;    // side effect: initialize cycle to be self loop
+&nbsp;    private boolean hasSelfLoop(Graph G) {
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            for (int w : G.adj(v)) {</b>
+<b class="nc">&nbsp;                if (v == w) {</b>
+<b class="nc">&nbsp;                    cycle = new Stack&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;                    cycle.push(v);</b>
+<b class="nc">&nbsp;                    cycle.push(v);</b>
+<b class="nc">&nbsp;                    return true;</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // does this graph have two parallel edges?
+&nbsp;    // side effect: initialize cycle to be two parallel edges
+&nbsp;    private boolean hasParallelEdges(Graph G) {
+<b class="nc">&nbsp;        marked = new boolean[G.V()];</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+&nbsp;
+&nbsp;            // check for parallel edges incident to v
+<b class="nc">&nbsp;            for (int w : G.adj(v)) {</b>
+<b class="nc">&nbsp;                if (marked[w]) {</b>
+<b class="nc">&nbsp;                    cycle = new Stack&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;                    cycle.push(v);</b>
+<b class="nc">&nbsp;                    cycle.push(w);</b>
+<b class="nc">&nbsp;                    cycle.push(v);</b>
+<b class="nc">&nbsp;                    return true;</b>
+&nbsp;                }
+<b class="nc">&nbsp;                marked[w] = true;</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+&nbsp;            // reset so marked[v] = false for all v
+<b class="nc">&nbsp;            for (int w : G.adj(v)) {</b>
+<b class="nc">&nbsp;                marked[w] = false;</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the graph {@code G} has a cycle.
+&nbsp;     *
+&nbsp;     * @return {@code true} if the graph has a cycle; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean hasCycle() {
+<b class="nc">&nbsp;        return cycle != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;     /**
+&nbsp;     * Returns a cycle in the graph {@code G}.
+&nbsp;     * @return a cycle if the graph {@code G} has a cycle,
+&nbsp;     *         and {@code null} otherwise
+&nbsp;     */
+&nbsp;    public Iterable&lt;Integer&gt; cycle() {
+<b class="nc">&nbsp;        return cycle;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void dfs(Graph G, int u, int v) {
+<b class="nc">&nbsp;        marked[v] = true;</b>
+<b class="nc">&nbsp;        for (int w : G.adj(v)) {</b>
+&nbsp;
+&nbsp;            // short circuit if cycle already found
+<b class="nc">&nbsp;            if (cycle != null) return;</b>
+&nbsp;
+<b class="nc">&nbsp;            if (!marked[w]) {</b>
+<b class="nc">&nbsp;                edgeTo[w] = v;</b>
+<b class="nc">&nbsp;                dfs(G, v, w);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // check for cycle (but disregard reverse of edge leading to v)
+<b class="nc">&nbsp;            else if (w != u) {</b>
+<b class="nc">&nbsp;                cycle = new Stack&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;                for (int x = v; x != w; x = edgeTo[x]) {</b>
+<b class="nc">&nbsp;                    cycle.push(x);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                cycle.push(w);</b>
+<b class="nc">&nbsp;                cycle.push(v);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code Cycle} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        In in = new In(args[0]);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(in);</b>
+<b class="nc">&nbsp;        Cycle finder = new Cycle(G);</b>
+<b class="nc">&nbsp;        if (finder.hasCycle()) {</b>
+<b class="nc">&nbsp;            for (int v : finder.cycle()) {</b>
+<b class="nc">&nbsp;                StdOut.print(v + &quot; &quot;);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            StdOut.println();</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            StdOut.println(&quot;Graph is acyclic&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

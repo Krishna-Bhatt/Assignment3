@@ -1,0 +1,520 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BinaryIn</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: BinaryIn (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BinaryIn</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/52)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/124)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac BinaryIn.java
+&nbsp; *  Execution:    java BinaryIn input output
+&nbsp; *  Dependencies: none             
+&nbsp; *  
+&nbsp; *  This library is for reading binary data from an input stream.
+&nbsp; *
+&nbsp; *  % java BinaryIn https://introcs.cs.princeton.edu/java/cover.png output.png
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.io.BufferedInputStream;
+&nbsp;import java.io.File;
+&nbsp;import java.io.FileInputStream;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.InputStream;
+&nbsp;import java.net.Socket;
+&nbsp;import java.net.URL;
+&nbsp;import java.net.URLConnection;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  &lt;i&gt;Binary input&lt;/i&gt;. This class provides methods for reading
+&nbsp; *  in bits from a binary input stream, either
+&nbsp; *  one bit at a time (as a {@code boolean}),
+&nbsp; *  8 bits at a time (as a {@code byte} or {@code char}),
+&nbsp; *  16 bits at a time (as a {@code short}),
+&nbsp; *  32 bits at a time (as an {@code int} or {@code float}), or
+&nbsp; *  64 bits at a time (as a {@code double} or {@code long}).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The binary input stream can be from standard input, a filename,
+&nbsp; *  a URL name, a Socket, or an InputStream.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  All primitive types are assumed to be represented using their 
+&nbsp; *  standard Java representations, in big-endian (most significant
+&nbsp; *  byte first) order.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The client should not intermix calls to {@code BinaryIn} with calls
+&nbsp; *  to {@code In}; otherwise unexpected behavior will result.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public final class BinaryIn {
+&nbsp;    private static final int EOF = -1;   // end of file
+&nbsp;
+&nbsp;    private BufferedInputStream in;      // the input stream
+&nbsp;    private int buffer;                  // one character buffer
+&nbsp;    private int n;                       // number of bits left in buffer
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Initializes a binary input stream from standard input.
+&nbsp;     */
+<b class="nc">&nbsp;    public BinaryIn() {</b>
+<b class="nc">&nbsp;        in = new BufferedInputStream(System.in);</b>
+<b class="nc">&nbsp;        fillBuffer();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Initializes a binary input stream from an {@code InputStream}.
+&nbsp;     *
+&nbsp;     * @param is the {@code InputStream} object
+&nbsp;     */
+<b class="nc">&nbsp;    public BinaryIn(InputStream is) {</b>
+<b class="nc">&nbsp;        in = new BufferedInputStream(is);</b>
+<b class="nc">&nbsp;        fillBuffer();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Initializes a binary input stream from a socket.
+&nbsp;     *
+&nbsp;     * @param socket the socket
+&nbsp;     */
+<b class="nc">&nbsp;    public BinaryIn(Socket socket) {</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            InputStream is = socket.getInputStream();</b>
+<b class="nc">&nbsp;            in = new BufferedInputStream(is);</b>
+<b class="nc">&nbsp;            fillBuffer();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException ioe) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Could not open &quot; + socket);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Initializes a binary input stream from a URL.
+&nbsp;     *
+&nbsp;     * @param url the URL
+&nbsp;     */
+<b class="nc">&nbsp;    public BinaryIn(URL url) {</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            URLConnection site = url.openConnection();</b>
+<b class="nc">&nbsp;            InputStream is     = site.getInputStream();</b>
+<b class="nc">&nbsp;            in = new BufferedInputStream(is);</b>
+<b class="nc">&nbsp;            fillBuffer();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException ioe) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Could not open &quot; + url);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Initializes a binary input stream from a filename or URL name.
+&nbsp;     *
+&nbsp;     * @param name the name of the file or URL
+&nbsp;     */
+<b class="nc">&nbsp;    public BinaryIn(String name) {</b>
+&nbsp;
+&nbsp;        try {
+&nbsp;            // first try to read file from local file system
+<b class="nc">&nbsp;            File file = new File(name);</b>
+<b class="nc">&nbsp;            if (file.exists()) {</b>
+<b class="nc">&nbsp;                FileInputStream fis = new FileInputStream(file);</b>
+<b class="nc">&nbsp;                in = new BufferedInputStream(fis);</b>
+<b class="nc">&nbsp;                fillBuffer();</b>
+<b class="nc">&nbsp;                return;</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // next try for files included in jar
+<b class="nc">&nbsp;            URL url = getClass().getResource(name);</b>
+&nbsp;
+&nbsp;            // or URL from web
+<b class="nc">&nbsp;            if (url == null) {</b>
+<b class="nc">&nbsp;                url = new URL(name);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            URLConnection site = url.openConnection();</b>
+<b class="nc">&nbsp;            InputStream is     = site.getInputStream();</b>
+<b class="nc">&nbsp;            in = new BufferedInputStream(is);</b>
+<b class="nc">&nbsp;            fillBuffer();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException ioe) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Could not open &quot; + name);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private void fillBuffer() {
+&nbsp;        try {
+<b class="nc">&nbsp;            buffer = in.read();</b>
+<b class="nc">&nbsp;            n = 8;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;EOF&quot;);</b>
+<b class="nc">&nbsp;            buffer = EOF;</b>
+<b class="nc">&nbsp;            n = -1;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this binary input stream exists.
+&nbsp;     *
+&nbsp;     * @return {@code true} if this binary input stream exists;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean exists()  {
+<b class="nc">&nbsp;        return in != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns true if this binary input stream is empty.
+&nbsp;     *
+&nbsp;     * @return {@code true} if this binary input stream is empty;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return buffer == EOF;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next bit of data from this binary input stream and return as a boolean.
+&nbsp;     *
+&nbsp;     * @return the next bit of data from this binary input stream as a {@code boolean}
+&nbsp;     * @throws NoSuchElementException if this binary input stream is empty
+&nbsp;     */
+&nbsp;    public boolean readBoolean() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Reading from empty input stream&quot;);</b>
+<b class="nc">&nbsp;        n--;</b>
+<b class="nc">&nbsp;        boolean bit = ((buffer &gt;&gt; n) &amp; 1) == 1;</b>
+<b class="nc">&nbsp;        if (n == 0) fillBuffer();</b>
+<b class="nc">&nbsp;        return bit;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 8 bits from this binary input stream and return as an 8-bit char.
+&nbsp;     *
+&nbsp;     * @return the next 8 bits of data from this binary input stream as a {@code char}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 8 bits available
+&nbsp;     */
+&nbsp;    public char readChar() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Reading from empty input stream&quot;);</b>
+&nbsp;
+&nbsp;        // special case when aligned byte
+<b class="nc">&nbsp;        if (n == 8) {</b>
+<b class="nc">&nbsp;            int x = buffer;</b>
+<b class="nc">&nbsp;            fillBuffer();</b>
+<b class="nc">&nbsp;            return (char) (x &amp; 0xff);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // combine last N bits of current buffer with first 8-N bits of new buffer
+<b class="nc">&nbsp;        int x = buffer;</b>
+<b class="nc">&nbsp;        x &lt;&lt;= (8 - n);</b>
+<b class="nc">&nbsp;        int oldN = n;</b>
+<b class="nc">&nbsp;        fillBuffer();</b>
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Reading from empty input stream&quot;);</b>
+<b class="nc">&nbsp;        n = oldN;</b>
+<b class="nc">&nbsp;        x |= (buffer &gt;&gt;&gt; n);</b>
+<b class="nc">&nbsp;        return (char) (x &amp; 0xff);</b>
+&nbsp;        // the above code doesn&#39;t quite work for the last character if N = 8
+&nbsp;        // because buffer will be -1
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next &lt;em&gt;r&lt;/em&gt; bits from this binary input stream and return
+&nbsp;     * as an &lt;em&gt;r&lt;/em&gt;-bit character.
+&nbsp;     *
+&nbsp;     * @param  r number of bits to read
+&nbsp;     * @return the next {@code r} bits of data from this binary input streamt as a {@code char}
+&nbsp;     * @throws NoSuchElementException if there are fewer than {@code r} bits available
+&nbsp;     * @throws IllegalArgumentException unless {@code 1 &lt;= r &lt;= 16}
+&nbsp;     */
+&nbsp;    public char readChar(int r) {
+<b class="nc">&nbsp;        if (r &lt; 1 || r &gt; 16) throw new IllegalArgumentException(&quot;Illegal value of r = &quot; + r);</b>
+&nbsp;
+&nbsp;        // optimize r = 8 case
+<b class="nc">&nbsp;        if (r == 8) return readChar();</b>
+&nbsp;
+<b class="nc">&nbsp;        char x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; r; i++) {</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 1;</b>
+<b class="nc">&nbsp;            boolean bit = readBoolean();</b>
+<b class="nc">&nbsp;            if (bit) x |= 1;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the remaining bytes of data from this binary input stream and return as a string. 
+&nbsp;     *
+&nbsp;     * @return the remaining bytes of data from this binary input stream as a {@code String}
+&nbsp;     * @throws NoSuchElementException if this binary input stream is empty or if the number of bits
+&nbsp;     *         available is not a multiple of 8 (byte-aligned)
+&nbsp;     */
+&nbsp;    public String readString() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Reading from empty input stream&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        StringBuilder sb = new StringBuilder();</b>
+<b class="nc">&nbsp;        while (!isEmpty()) {</b>
+<b class="nc">&nbsp;            char c = readChar();</b>
+<b class="nc">&nbsp;            sb.append(c);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return sb.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 16 bits from this binary input stream and return as a 16-bit short.
+&nbsp;     *
+&nbsp;     * @return the next 16 bits of data from this binary input stream as a {@code short}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 16 bits available
+&nbsp;     */
+&nbsp;    public short readShort() {
+<b class="nc">&nbsp;        short x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 2; i++) {</b>
+<b class="nc">&nbsp;            char c = readChar();</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 8;</b>
+<b class="nc">&nbsp;            x |= c;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 32 bits from this binary input stream and return as a 32-bit int.
+&nbsp;     *
+&nbsp;     * @return the next 32 bits of data from this binary input stream as a {@code int}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 32 bits available
+&nbsp;     */
+&nbsp;    public int readInt() {
+<b class="nc">&nbsp;        int x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 4; i++) {</b>
+<b class="nc">&nbsp;            char c = readChar();</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 8;</b>
+<b class="nc">&nbsp;            x |= c;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next &lt;em&gt;r&lt;/em&gt; bits from this binary input stream return
+&nbsp;     * as an &lt;em&gt;r&lt;/em&gt;-bit int.
+&nbsp;     *
+&nbsp;     * @param  r number of bits to read
+&nbsp;     * @return the next {@code r} bits of data from this binary input stream as a {@code int}
+&nbsp;     * @throws NoSuchElementException if there are fewer than r bits available
+&nbsp;     * @throws IllegalArgumentException unless {@code 1 &lt;= r &lt;= 32}
+&nbsp;     */
+&nbsp;    public int readInt(int r) {
+<b class="nc">&nbsp;        if (r &lt; 1 || r &gt; 32) throw new IllegalArgumentException(&quot;Illegal value of r = &quot; + r);</b>
+&nbsp;
+&nbsp;        // optimize r = 32 case
+<b class="nc">&nbsp;        if (r == 32) return readInt();</b>
+&nbsp;
+<b class="nc">&nbsp;        int x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; r; i++) {</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 1;</b>
+<b class="nc">&nbsp;            boolean bit = readBoolean();</b>
+<b class="nc">&nbsp;            if (bit) x |= 1;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 64 bits from this binary input stream and return as a 64-bit long.
+&nbsp;     *
+&nbsp;     * @return the next 64 bits of data from this binary input stream as a {@code long}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 64 bits available
+&nbsp;     */
+&nbsp;    public long readLong() {
+<b class="nc">&nbsp;        long x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 8; i++) {</b>
+<b class="nc">&nbsp;            char c = readChar();</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 8;</b>
+<b class="nc">&nbsp;            x |= c;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 64 bits from this binary input stream and return as a 64-bit double.
+&nbsp;     *
+&nbsp;     * @return the next 64 bits of data from this binary input stream as a {@code double}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 64 bits available
+&nbsp;     */
+&nbsp;    public double readDouble() {
+<b class="nc">&nbsp;        return Double.longBitsToDouble(readLong());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 32 bits from this binary input stream and return as a 32-bit float.
+&nbsp;     *
+&nbsp;     * @return the next 32 bits of data from this binary input stream as a {@code float}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 32 bits available
+&nbsp;     */
+&nbsp;    public float readFloat() {
+<b class="nc">&nbsp;        return Float.intBitsToFloat(readInt());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 8 bits from this binary input stream and return as an 8-bit byte.
+&nbsp;     *
+&nbsp;     * @return the next 8 bits of data from this binary input stream as a {@code byte}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 8 bits available
+&nbsp;     */
+&nbsp;    public byte readByte() {
+<b class="nc">&nbsp;        char c = readChar();</b>
+<b class="nc">&nbsp;        return (byte) (c &amp; 0xff);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;   /**
+&nbsp;     * Unit tests the {@code BinaryIn} data type.
+&nbsp;     * Reads the name of a file or URL (first command-line argument)
+&nbsp;     * and writes it to a file (second command-line argument).
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        BinaryIn  in  = new BinaryIn(args[0]);</b>
+<b class="nc">&nbsp;        BinaryOut out = new BinaryOut(args[1]);</b>
+&nbsp;
+&nbsp;        // read one 8-bit char at a time
+<b class="nc">&nbsp;        while (!in.isEmpty()) {</b>
+<b class="nc">&nbsp;            char c = in.readChar();</b>
+<b class="nc">&nbsp;            out.write(c);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,351 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Bipartite</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Bipartite (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Bipartite</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/46)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/74)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Bipartite.java
+&nbsp; *  Execution:    java  Bipartite V E F
+&nbsp; *  Dependencies: Graph.java 
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/41graph/tinyG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/41graph/mediumG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/41graph/largeG.txt
+&nbsp; *
+&nbsp; *  Given a graph, find either (i) a bipartition or (ii) an odd-length cycle.
+&nbsp; *  Runs in O(E + V) time.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Bipartite} class represents a data type for 
+&nbsp; *  determining whether an undirected graph is &lt;em&gt;bipartite&lt;/em&gt; or whether
+&nbsp; *  it has an &lt;em&gt;odd-length cycle&lt;/em&gt;.
+&nbsp; *  A graph is bipartite if and only if it has no odd-length cycle.
+&nbsp; *  The &lt;em&gt;isBipartite&lt;/em&gt; operation determines whether the graph is
+&nbsp; *  bipartite. If so, the &lt;em&gt;color&lt;/em&gt; operation determines a
+&nbsp; *  bipartition; if not, the &lt;em&gt;oddCycle&lt;/em&gt; operation determines a
+&nbsp; *  cycle with an odd number of edges.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses &lt;em&gt;depth-first search&lt;/em&gt;.
+&nbsp; *  The constructor takes &amp;Theta;(&lt;em&gt;V&lt;/em&gt; + &lt;em&gt;E&lt;/em&gt;) time in
+&nbsp; *  the worst case, where &lt;em&gt;V&lt;/em&gt; is the number of vertices and &lt;em&gt;E&lt;/em&gt;
+&nbsp; *  is the number of edges.
+&nbsp; *  Each instance method takes &amp;Theta;(1) time.
+&nbsp; *  It uses &amp;Theta;(&lt;em&gt;V&lt;/em&gt;) extra space (not including the graph).
+&nbsp; *  See {@link BipartiteX} for a nonrecursive version that uses breadth-first
+&nbsp; *  search.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/41graph&quot;&gt;Section 4.1&lt;/a&gt;   
+&nbsp; *  of &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class Bipartite {</b>
+&nbsp;    private boolean isBipartite;   // is the graph bipartite?
+&nbsp;    private boolean[] color;       // color[v] gives vertices on one side of bipartition
+&nbsp;    private boolean[] marked;      // marked[v] = true iff v has been visited in DFS
+&nbsp;    private int[] edgeTo;          // edgeTo[v] = last edge on path to v
+&nbsp;    private Stack&lt;Integer&gt; cycle;  // odd-length cycle
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines whether an undirected graph is bipartite and finds either a
+&nbsp;     * bipartition or an odd-length cycle.
+&nbsp;     *
+&nbsp;     * @param  G the graph
+&nbsp;     */
+<b class="nc">&nbsp;    public Bipartite(Graph G) {</b>
+<b class="nc">&nbsp;        isBipartite = true;</b>
+<b class="nc">&nbsp;        color  = new boolean[G.V()];</b>
+<b class="nc">&nbsp;        marked = new boolean[G.V()];</b>
+<b class="nc">&nbsp;        edgeTo = new int[G.V()];</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            if (!marked[v]) {</b>
+<b class="nc">&nbsp;                dfs(G, v);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        assert check(G);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private void dfs(Graph G, int v) { 
+<b class="nc">&nbsp;        marked[v] = true;</b>
+<b class="nc">&nbsp;        for (int w : G.adj(v)) {</b>
+&nbsp;
+&nbsp;            // short circuit if odd-length cycle found
+<b class="nc">&nbsp;            if (cycle != null) return;</b>
+&nbsp;
+&nbsp;            // found uncolored vertex, so recur
+<b class="nc">&nbsp;            if (!marked[w]) {</b>
+<b class="nc">&nbsp;                edgeTo[w] = v;</b>
+<b class="nc">&nbsp;                color[w] = !color[v];</b>
+<b class="nc">&nbsp;                dfs(G, w);</b>
+&nbsp;            } 
+&nbsp;
+&nbsp;            // if v-w create an odd-length cycle, find it
+<b class="nc">&nbsp;            else if (color[w] == color[v]) {</b>
+<b class="nc">&nbsp;                isBipartite = false;</b>
+<b class="nc">&nbsp;                cycle = new Stack&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;                cycle.push(w);  // don&#39;t need this unless you want to include start vertex twice</b>
+<b class="nc">&nbsp;                for (int x = v; x != w; x = edgeTo[x]) {</b>
+<b class="nc">&nbsp;                    cycle.push(x);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                cycle.push(w);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the graph is bipartite.
+&nbsp;     *
+&nbsp;     * @return {@code true} if the graph is bipartite; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isBipartite() {
+<b class="nc">&nbsp;        return isBipartite;</b>
+&nbsp;    }
+&nbsp; 
+&nbsp;    /**
+&nbsp;     * Returns the side of the bipartite that vertex {@code v} is on.
+&nbsp;     *
+&nbsp;     * @param  v the vertex
+&nbsp;     * @return the side of the bipartition that vertex {@code v} is on; two vertices
+&nbsp;     *         are in the same side of the bipartition if and only if they have the
+&nbsp;     *         same color
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V} 
+&nbsp;     * @throws UnsupportedOperationException if this method is called when the graph
+&nbsp;     *         is not bipartite
+&nbsp;     */
+&nbsp;    public boolean color(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        if (!isBipartite)</b>
+<b class="nc">&nbsp;            throw new UnsupportedOperationException(&quot;graph is not bipartite&quot;);</b>
+<b class="nc">&nbsp;        return color[v];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an odd-length cycle if the graph is not bipartite, and
+&nbsp;     * {@code null} otherwise.
+&nbsp;     *
+&nbsp;     * @return an odd-length cycle if the graph is not bipartite
+&nbsp;     *         (and hence has an odd-length cycle), and {@code null}
+&nbsp;     *         otherwise
+&nbsp;     */
+&nbsp;    public Iterable&lt;Integer&gt; oddCycle() {
+<b class="nc">&nbsp;        return cycle; </b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private boolean check(Graph G) {
+&nbsp;        // graph is bipartite
+<b class="nc">&nbsp;        if (isBipartite) {</b>
+<b class="nc">&nbsp;            for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;                for (int w : G.adj(v)) {</b>
+<b class="nc">&nbsp;                    if (color[v] == color[w]) {</b>
+<b class="nc">&nbsp;                        System.err.printf(&quot;edge %d-%d with %d and %d in same side of bipartition\n&quot;, v, w, v, w);</b>
+<b class="nc">&nbsp;                        return false;</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // graph has an odd-length cycle
+&nbsp;        else {
+&nbsp;            // verify cycle
+<b class="nc">&nbsp;            int first = -1, last = -1;</b>
+<b class="nc">&nbsp;            for (int v : oddCycle()) {</b>
+<b class="nc">&nbsp;                if (first == -1) first = v;</b>
+<b class="nc">&nbsp;                last = v;</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            if (first != last) {</b>
+<b class="nc">&nbsp;                System.err.printf(&quot;cycle begins with %d and ends with %d\n&quot;, first, last);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // throw an IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;    private void validateVertex(int v) {
+<b class="nc">&nbsp;        int V = marked.length;</b>
+<b class="nc">&nbsp;        if (v &lt; 0 || v &gt;= V)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;vertex &quot; + v + &quot; is not between 0 and &quot; + (V-1));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code Bipartite} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int V1 = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;        int V2 = Integer.parseInt(args[1]);</b>
+<b class="nc">&nbsp;        int E  = Integer.parseInt(args[2]);</b>
+<b class="nc">&nbsp;        int F  = Integer.parseInt(args[3]);</b>
+&nbsp;
+&nbsp;        // create random bipartite graph with V1 vertices on left side,
+&nbsp;        // V2 vertices on right side, and E edges; then add F random edges
+<b class="nc">&nbsp;        Graph G = GraphGenerator.bipartite(V1, V2, E);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; F; i++) {</b>
+<b class="nc">&nbsp;            int v = StdRandom.uniform(V1 + V2);</b>
+<b class="nc">&nbsp;            int w = StdRandom.uniform(V1 + V2);</b>
+<b class="nc">&nbsp;            G.addEdge(v, w);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(G);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        Bipartite b = new Bipartite(G);</b>
+<b class="nc">&nbsp;        if (b.isBipartite()) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;Graph is bipartite&quot;);</b>
+<b class="nc">&nbsp;            for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;                StdOut.println(v + &quot;: &quot; + b.color(v));</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            StdOut.print(&quot;Graph has an odd-length cycle: &quot;);</b>
+<b class="nc">&nbsp;            for (int x : b.oddCycle()) {</b>
+<b class="nc">&nbsp;                StdOut.print(x + &quot; &quot;);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            StdOut.println();</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

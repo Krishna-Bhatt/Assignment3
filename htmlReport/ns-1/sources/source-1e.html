@@ -1,0 +1,207 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BlockFilter</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: BlockFilter (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BlockFilter</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac BlockFilter.java
+&nbsp; *  Execution:    java BlockFilter blocklist.txt &lt; input.txt
+&nbsp; *  Dependencies: SET In.java StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/35applications/tinyTale.txt
+&nbsp; *                https://algs4.cs.princeton.edu/35applications/blocklist.txt
+&nbsp; *
+&nbsp; *  Read in a blocklist of words from a file. Then read in a list of
+&nbsp; *  words from standard input and print out all those words that
+&nbsp; *  are not in the first file.
+&nbsp; * 
+&nbsp; *  % more tinyTale.txt 
+&nbsp; *  it was the best of times it was the worst of times 
+&nbsp; *  it was the age of wisdom it was the age of foolishness 
+&nbsp; *  it was the epoch of belief it was the epoch of incredulity 
+&nbsp; *  it was the season of light it was the season of darkness 
+&nbsp; *  it was the spring of hope it was the winter of despair
+&nbsp; *
+&nbsp; *  % more list.txt 
+&nbsp; *  was it the of 
+&nbsp; * 
+&nbsp; *  % java BlockFilter list.txt &lt; tinyTale.txt 
+&nbsp; *  best times worst times 
+&nbsp; *  age wisdom age foolishness 
+&nbsp; *  epoch belief epoch incredulity 
+&nbsp; *  season light season darkness 
+&nbsp; *  spring hope winter despair 
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code BlockFilter} class provides a client for reading in a &lt;em&gt;blocklist&lt;/em&gt;
+&nbsp; *  of words from a file; then, reading in a sequence of words from standard input, 
+&nbsp; *  printing out each word that &lt;em&gt;does not&lt;/em&gt; appear in the file. 
+&nbsp; *  It is useful as a test client for various symbol table implementations.   
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/35applications&quot;&gt;Section 3.5&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *  
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class BlockFilter {  
+&nbsp;
+&nbsp;    // Do not instantiate.
+&nbsp;    private BlockFilter() { }
+&nbsp;
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        SET&lt;String&gt; set = new SET&lt;String&gt;();</b>
+&nbsp;
+&nbsp;        // read in strings and add to set
+<b class="nc">&nbsp;        In in = new In(args[0]);</b>
+<b class="nc">&nbsp;        while (!in.isEmpty()) {</b>
+<b class="nc">&nbsp;            String word = in.readString();</b>
+<b class="nc">&nbsp;            set.add(word);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // read in string from standard input, printing out all exceptions
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            String word = StdIn.readString();</b>
+<b class="nc">&nbsp;            if (!set.contains(word))</b>
+<b class="nc">&nbsp;                StdOut.println(word);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

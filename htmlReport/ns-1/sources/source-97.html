@@ -1,0 +1,310 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > QuickUnionUF</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: QuickUnionUF (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">QuickUnionUF</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac QuickUnionUF.java
+&nbsp; *  Execution:  java QuickUnionUF &lt; input.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/15uf/tinyUF.txt
+&nbsp; *                https://algs4.cs.princeton.edu/15uf/mediumUF.txt
+&nbsp; *                https://algs4.cs.princeton.edu/15uf/largeUF.txt
+&nbsp; *
+&nbsp; *  Quick-union algorithm.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code QuickUnionUF} class represents a &lt;em&gt;union–find data type&lt;/em&gt;
+&nbsp; *  (also known as the &lt;em&gt;disjoint-sets data type&lt;/em&gt;).
+&nbsp; *  It supports the classic &lt;em&gt;union&lt;/em&gt; and &lt;em&gt;find&lt;/em&gt; operations,
+&nbsp; *  along with a &lt;em&gt;count&lt;/em&gt; operation that returns the total number
+&nbsp; *  of sets.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The union–find data type models a collection of sets containing
+&nbsp; *  &lt;em&gt;n&lt;/em&gt; elements, with each element in exactly one set.
+&nbsp; *  The elements are named 0 through &lt;em&gt;n&lt;/em&gt;–1.
+&nbsp; *  Initially, there are &lt;em&gt;n&lt;/em&gt; sets, with each element in its
+&nbsp; *  own set. The &lt;em&gt;canonical element&lt;/em&gt; of a set
+&nbsp; *  (also known as the &lt;em&gt;root&lt;/em&gt;, &lt;em&gt;identifier&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;leader&lt;/em&gt;, or &lt;em&gt;set representative&lt;/em&gt;)
+&nbsp; *  is one distinguished element in the set. Here is a summary of
+&nbsp; *  the operations:
+&nbsp; *  &lt;ul&gt;
+&nbsp; *  &lt;li&gt;&lt;em&gt;find&lt;/em&gt;(&lt;em&gt;p&lt;/em&gt;) returns the canonical element
+&nbsp; *      of the set containing &lt;em&gt;p&lt;/em&gt;. The &lt;em&gt;find&lt;/em&gt; operation
+&nbsp; *      returns the same value for two elements if and only if
+&nbsp; *      they are in the same set.
+&nbsp; *  &lt;li&gt;&lt;em&gt;union&lt;/em&gt;(&lt;em&gt;p&lt;/em&gt;, &lt;em&gt;q&lt;/em&gt;) merges the set
+&nbsp; *      containing element &lt;em&gt;p&lt;/em&gt; with the set containing
+&nbsp; *      element &lt;em&gt;q&lt;/em&gt;. That is, if &lt;em&gt;p&lt;/em&gt; and &lt;em&gt;q&lt;/em&gt;
+&nbsp; *      are in different sets, replace these two sets
+&nbsp; *      with a new set that is the union of the two.
+&nbsp; *  &lt;li&gt;&lt;em&gt;count&lt;/em&gt;() returns the number of sets.
+&nbsp; *  &lt;/ul&gt;
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The canonical element of a set can change only when the set
+&nbsp; *  itself changes during a call to &lt;em&gt;union&lt;/em&gt;&amp;mdash;it cannot
+&nbsp; *  change during a call to either &lt;em&gt;find&lt;/em&gt; or &lt;em&gt;count&lt;/em&gt;.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses &lt;em&gt;quick union&lt;/em&gt;.
+&nbsp; *  The constructor takes &amp;Theta;(&lt;em&gt;n&lt;/em&gt;) time, where
+&nbsp; *  &lt;em&gt;n&lt;/em&gt; is the number of sites.
+&nbsp; *  The &lt;em&gt;union&lt;/em&gt; and &lt;em&gt;find&lt;/em&gt; operations take
+&nbsp; *  &amp;Theta;(&lt;em&gt;n&lt;/em&gt;) time in the worst case.
+&nbsp; *  The &lt;em&gt;count&lt;/em&gt; operation takes &amp;Theta;(1) time.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For alternative implementations of the same API, see
+&nbsp; *  {@link UF}, {@link QuickFindUF}, and {@link WeightedQuickUnionUF}.
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/15uf&quot;&gt;Section 1.5&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class QuickUnionUF {
+&nbsp;    private int[] parent;  // parent[i] = parent of i
+&nbsp;    private int count;     // number of components
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty union-find data structure with
+&nbsp;     * {@code n} elements {@code 0} through {@code n-1}. 
+&nbsp;     * Initially, each element is in its own set.
+&nbsp;     *
+&nbsp;     * @param  n the number of elements
+&nbsp;     * @throws IllegalArgumentException if {@code n &lt; 0}
+&nbsp;     */
+<b class="nc">&nbsp;    public QuickUnionUF(int n) {</b>
+<b class="nc">&nbsp;        parent = new int[n];</b>
+<b class="nc">&nbsp;        count = n;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            parent[i] = i;</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of sets.
+&nbsp;     *
+&nbsp;     * @return the number of sets (between {@code 1} and {@code n})
+&nbsp;     */
+&nbsp;    public int count() {
+<b class="nc">&nbsp;        return count;</b>
+&nbsp;    }
+&nbsp;  
+&nbsp;    /**
+&nbsp;     * Returns the canonical element of the set containing element {@code p}.
+&nbsp;     *
+&nbsp;     * @param  p an element
+&nbsp;     * @return the canonical element of the set containing {@code p}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= p &lt; n}
+&nbsp;     */
+&nbsp;    public int find(int p) {
+<b class="nc">&nbsp;        validate(p);</b>
+<b class="nc">&nbsp;        while (p != parent[p])</b>
+<b class="nc">&nbsp;            p = parent[p];</b>
+<b class="nc">&nbsp;        return p;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // validate that p is a valid index
+&nbsp;    private void validate(int p) {
+<b class="nc">&nbsp;        int n = parent.length;</b>
+<b class="nc">&nbsp;        if (p &lt; 0 || p &gt;= n) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;index &quot; + p + &quot; is not between 0 and &quot; + (n-1));</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the two elements are in the same set.
+&nbsp;     * 
+&nbsp;     * @param  p one element
+&nbsp;     * @param  q the other element
+&nbsp;     * @return {@code true} if {@code p} and {@code q} are in the same set;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException unless
+&nbsp;     *         both {@code 0 &lt;= p &lt; n} and {@code 0 &lt;= q &lt; n}
+&nbsp;     * @deprecated Replace with two calls to {@link #find(int)}.
+&nbsp;     */
+&nbsp;    @Deprecated
+&nbsp;    public boolean connected(int p, int q) {
+<b class="nc">&nbsp;        return find(p) == find(q);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Merges the set containing element {@code p} with the 
+&nbsp;     * the set containing element {@code q}.
+&nbsp;     *
+&nbsp;     * @param  p one element
+&nbsp;     * @param  q the other element
+&nbsp;     * @throws IllegalArgumentException unless
+&nbsp;     *         both {@code 0 &lt;= p &lt; n} and {@code 0 &lt;= q &lt; n}
+&nbsp;     */
+&nbsp;    public void union(int p, int q) {
+<b class="nc">&nbsp;        int rootP = find(p);</b>
+<b class="nc">&nbsp;        int rootQ = find(q);</b>
+<b class="nc">&nbsp;        if (rootP == rootQ) return;</b>
+<b class="nc">&nbsp;        parent[rootP] = rootQ; </b>
+<b class="nc">&nbsp;        count--;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads an integer {@code n} and a sequence of pairs of integers
+&nbsp;     * (between {@code 0} and {@code n-1}) from standard input, where each integer
+&nbsp;     * in the pair represents some element;
+&nbsp;     * if the elements are in different sets, merge the two sets
+&nbsp;     * and print the pair to standard output.
+&nbsp;     * 
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int n = StdIn.readInt();</b>
+<b class="nc">&nbsp;        QuickUnionUF uf = new QuickUnionUF(n);</b>
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            int p = StdIn.readInt();</b>
+<b class="nc">&nbsp;            int q = StdIn.readInt();</b>
+<b class="nc">&nbsp;            if (uf.find(p) == uf.find(q)) continue;</b>
+<b class="nc">&nbsp;            uf.union(p, q);</b>
+<b class="nc">&nbsp;            StdOut.println(p + &quot; &quot; + q);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        StdOut.println(uf.count() + &quot; components&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

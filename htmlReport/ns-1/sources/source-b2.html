@@ -1,0 +1,225 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Stopwatch</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Stopwatch (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Stopwatch</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Stopwatch.java
+&nbsp; *  Execution:    java Stopwatch n
+&nbsp; *  Dependencies: none
+&nbsp; *
+&nbsp; *  A utility class to measure the running time (wall clock) of a program.
+&nbsp; *
+&nbsp; *  % java8 Stopwatch 100000000
+&nbsp; *  6.666667e+11  0.5820 seconds
+&nbsp; *  6.666667e+11  8.4530 seconds
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Stopwatch} data type is for measuring
+&nbsp; *  the time that elapses between the start and end of a
+&nbsp; *  programming task (wall-clock time).
+&nbsp; *
+&nbsp; *  See {@link StopwatchCPU} for a version that measures CPU time.
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/14analysis&quot;&gt;Section 1.4&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;
+&nbsp;
+&nbsp;public class Stopwatch { 
+&nbsp;
+&nbsp;    private final long start;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a new stopwatch.
+&nbsp;     */
+<b class="nc">&nbsp;    public Stopwatch() {</b>
+<b class="nc">&nbsp;        start = System.currentTimeMillis();</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the elapsed CPU time (in seconds) since the stopwatch was created.
+&nbsp;     *
+&nbsp;     * @return elapsed CPU time (in seconds) since the stopwatch was created
+&nbsp;     */
+&nbsp;    public double elapsedTime() {
+<b class="nc">&nbsp;        long now = System.currentTimeMillis();</b>
+<b class="nc">&nbsp;        return (now - start) / 1000.0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code Stopwatch} data type.
+&nbsp;     * Takes a command-line argument {@code n} and computes the 
+&nbsp;     * sum of the square roots of the first {@code n} positive integers,
+&nbsp;     * first using {@code Math.sqrt()}, then using {@code Math.pow()}.
+&nbsp;     * It prints to standard output the sum and the amount of time to
+&nbsp;     * compute the sum. Note that the discrete sum can be approximated by
+&nbsp;     * an integral - the sum should be approximately 2/3 * (n^(3/2) - 1).
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int n = Integer.parseInt(args[0]);</b>
+&nbsp;
+&nbsp;        // sum of square roots of integers from 1 to n using Math.sqrt(x).
+<b class="nc">&nbsp;        Stopwatch timer1 = new Stopwatch();</b>
+<b class="nc">&nbsp;        double sum1 = 0.0;</b>
+<b class="nc">&nbsp;        for (int i = 1; i &lt;= n; i++) {</b>
+<b class="nc">&nbsp;            sum1 += Math.sqrt(i);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        double time1 = timer1.elapsedTime();</b>
+<b class="nc">&nbsp;        StdOut.printf(&quot;%e (%.2f seconds)\n&quot;, sum1, time1);</b>
+&nbsp;
+&nbsp;        // sum of square roots of integers from 1 to n using Math.pow(x, 0.5).
+<b class="nc">&nbsp;        Stopwatch timer2 = new Stopwatch();</b>
+<b class="nc">&nbsp;        double sum2 = 0.0;</b>
+<b class="nc">&nbsp;        for (int i = 1; i &lt;= n; i++) {</b>
+<b class="nc">&nbsp;            sum2 += Math.pow(i, 0.5);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        double time2 = timer2.elapsedTime();</b>
+<b class="nc">&nbsp;        StdOut.printf(&quot;%e (%.2f seconds)\n&quot;, sum2, time2);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;} 
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

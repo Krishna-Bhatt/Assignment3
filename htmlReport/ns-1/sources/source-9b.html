@@ -1,0 +1,363 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > RectHV</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: RectHV (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RectHV</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/50)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac RectHV.java
+&nbsp; *  Execution:    none
+&nbsp; *  Dependencies: Point2D.java
+&nbsp; *
+&nbsp; *  Immutable data type for 2D axis-aligned rectangle.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code RectHV} class is an immutable data type to encapsulate a
+&nbsp; *  two-dimensional axis-aligned rectagle with real-value coordinates.
+&nbsp; *  The rectangle is &lt;em&gt;closed&lt;/em&gt;—it includes the points on the boundary.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, 
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/12oop&quot;&gt;Section 1.2&lt;/a&gt; of 
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne. 
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;
+&nbsp;public final class RectHV {
+&nbsp;    private final double xmin, ymin;   // minimum x- and y-coordinates
+&nbsp;    private final double xmax, ymax;   // maximum x- and y-coordinates
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a new rectangle [&lt;em&gt;xmin&lt;/em&gt;, &lt;em&gt;xmax&lt;/em&gt;]
+&nbsp;     * x [&lt;em&gt;ymin&lt;/em&gt;, &lt;em&gt;ymax&lt;/em&gt;].
+&nbsp;     *
+&nbsp;     * @param  xmin the &lt;em&gt;x&lt;/em&gt;-coordinate of the lower-left endpoint
+&nbsp;     * @param  ymin the &lt;em&gt;y&lt;/em&gt;-coordinate of the lower-left endpoint
+&nbsp;     * @param  xmax the &lt;em&gt;x&lt;/em&gt;-coordinate of the upper-right endpoint
+&nbsp;     * @param  ymax the &lt;em&gt;y&lt;/em&gt;-coordinate of the upper-right endpoint
+&nbsp;     * @throws IllegalArgumentException if any of {@code xmin},
+&nbsp;     *         {@code ymin}, {@code xmax}, or {@code ymax}
+&nbsp;     *         is {@code Double.NaN}.
+&nbsp;     * @throws IllegalArgumentException if {@code xmax &lt; xmin} or {@code ymax &lt; ymin}.
+&nbsp;     */
+<b class="nc">&nbsp;    public RectHV(double xmin, double ymin, double xmax, double ymax) {</b>
+<b class="nc">&nbsp;        this.xmin = xmin;</b>
+<b class="nc">&nbsp;        this.ymin = ymin;</b>
+<b class="nc">&nbsp;        this.xmax = xmax;</b>
+<b class="nc">&nbsp;        this.ymax = ymax;</b>
+<b class="nc">&nbsp;        if (Double.isNaN(xmin) || Double.isNaN(xmax)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;x-coordinate is NaN: &quot; + toString());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (Double.isNaN(ymin) || Double.isNaN(ymax)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;y-coordinate is NaN: &quot; + toString());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (xmax &lt; xmin) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;xmax &lt; xmin: &quot; + toString());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (ymax &lt; ymin) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;ymax &lt; ymin: &quot; + toString());</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the minimum &lt;em&gt;x&lt;/em&gt;-coordinate of any point in this rectangle.
+&nbsp;     *
+&nbsp;     * @return the minimum &lt;em&gt;x&lt;/em&gt;-coordinate of any point in this rectangle
+&nbsp;     */
+&nbsp;    public double xmin() {
+<b class="nc">&nbsp;        return xmin;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the maximum &lt;em&gt;x&lt;/em&gt;-coordinate of any point in this rectangle.
+&nbsp;     *
+&nbsp;     * @return the maximum &lt;em&gt;x&lt;/em&gt;-coordinate of any point in this rectangle
+&nbsp;     */
+&nbsp;    public double xmax() {
+<b class="nc">&nbsp;        return xmax;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the minimum &lt;em&gt;y&lt;/em&gt;-coordinate of any point in this rectangle.
+&nbsp;     *
+&nbsp;     * @return the minimum &lt;em&gt;y&lt;/em&gt;-coordinate of any point in this rectangle
+&nbsp;     */
+&nbsp;    public double ymin() {
+<b class="nc">&nbsp;        return ymin;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the maximum &lt;em&gt;y&lt;/em&gt;-coordinate of any point in this rectangle.
+&nbsp;     *
+&nbsp;     * @return the maximum &lt;em&gt;y&lt;/em&gt;-coordinate of any point in this rectangle
+&nbsp;     */
+&nbsp;    public double ymax() {
+<b class="nc">&nbsp;        return ymax;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the width of this rectangle.
+&nbsp;     *
+&nbsp;     * @return the width of this rectangle {@code xmax - xmin}
+&nbsp;     */
+&nbsp;    public double width() {
+<b class="nc">&nbsp;        return xmax - xmin;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the height of this rectangle.
+&nbsp;     *
+&nbsp;     * @return the height of this rectangle {@code ymax - ymin}
+&nbsp;     */
+&nbsp;    public double height() {
+<b class="nc">&nbsp;        return ymax - ymin;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the two rectangles intersect, an false otherwise.
+&nbsp;     * This includes &lt;em&gt;improper intersections&lt;/em&gt; (at points on the
+&nbsp;     * boundary of each rectangle) and &lt;em&gt;nested intersctions&lt;/em&gt;
+&nbsp;     * (when one rectangle is contained inside the other).
+&nbsp;     *
+&nbsp;     * @param  that the other rectangle
+&nbsp;     * @return {@code true} if this rectangle intersect the argument
+&nbsp;               rectangle at one or more points; false otherwise
+&nbsp;     */
+&nbsp;    public boolean intersects(RectHV that) {
+<b class="nc">&nbsp;        return this.xmax &gt;= that.xmin &amp;&amp; this.ymax &gt;= that.ymin</b>
+&nbsp;            &amp;&amp; that.xmax &gt;= this.xmin &amp;&amp; that.ymax &gt;= this.ymin;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this rectangle contain the point, and false otherwise.
+&nbsp;     * @param  p the point
+&nbsp;     * @return {@code true} if this rectangle contain the point {@code p},
+&nbsp;               possibly at the boundary; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean contains(Point2D p) {
+<b class="nc">&nbsp;        return (p.x() &gt;= xmin) &amp;&amp; (p.x() &lt;= xmax)</b>
+<b class="nc">&nbsp;            &amp;&amp; (p.y() &gt;= ymin) &amp;&amp; (p.y() &lt;= ymax);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the Euclidean distance between this rectangle and the point {@code p}.
+&nbsp;     *
+&nbsp;     * @param  p the point
+&nbsp;     * @return the Euclidean distance between the point {@code p} and the closest point
+&nbsp;               on this rectangle; 0 if the point is contained in this rectangle
+&nbsp;     */
+&nbsp;    public double distanceTo(Point2D p) {
+<b class="nc">&nbsp;        return Math.sqrt(this.distanceSquaredTo(p));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the square of the Euclidean distance between this rectangle and the point {@code p}.
+&nbsp;     *
+&nbsp;     * @param  p the point
+&nbsp;     * @return the square of the Euclidean distance between the point {@code p} and
+&nbsp;     *         the closest point on this rectangle; 0 if the point is contained
+&nbsp;     *         in this rectangle
+&nbsp;     */
+&nbsp;    public double distanceSquaredTo(Point2D p) {
+<b class="nc">&nbsp;        double dx = 0.0, dy = 0.0;</b>
+<b class="nc">&nbsp;        if      (p.x() &lt; xmin) dx = p.x() - xmin;</b>
+<b class="nc">&nbsp;        else if (p.x() &gt; xmax) dx = p.x() - xmax;</b>
+<b class="nc">&nbsp;        if      (p.y() &lt; ymin) dy = p.y() - ymin;</b>
+<b class="nc">&nbsp;        else if (p.y() &gt; ymax) dy = p.y() - ymax;</b>
+<b class="nc">&nbsp;        return dx*dx + dy*dy;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares this rectangle to the specified rectangle.
+&nbsp;     *
+&nbsp;     * @param  other the other rectangle
+&nbsp;     * @return {@code true} if this rectangle equals {@code other};
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean equals(Object other) {
+<b class="nc">&nbsp;        if (other == this) return true;</b>
+<b class="nc">&nbsp;        if (other == null) return false;</b>
+<b class="nc">&nbsp;        if (other.getClass() != this.getClass()) return false;</b>
+<b class="nc">&nbsp;        RectHV that = (RectHV) other;</b>
+<b class="nc">&nbsp;        if (this.xmin != that.xmin) return false;</b>
+<b class="nc">&nbsp;        if (this.ymin != that.ymin) return false;</b>
+<b class="nc">&nbsp;        if (this.xmax != that.xmax) return false;</b>
+<b class="nc">&nbsp;        if (this.ymax != that.ymax) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an integer hash code for this rectangle.
+&nbsp;     * @return an integer hash code for this rectangle
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        int hash1 = ((Double) xmin).hashCode();</b>
+<b class="nc">&nbsp;        int hash2 = ((Double) ymin).hashCode();</b>
+<b class="nc">&nbsp;        int hash3 = ((Double) xmax).hashCode();</b>
+<b class="nc">&nbsp;        int hash4 = ((Double) ymax).hashCode();</b>
+<b class="nc">&nbsp;        return 31*(31*(31*hash1 + hash2) + hash3) + hash4;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of this rectangle.
+&nbsp;     *
+&nbsp;     * @return a string representation of this rectangle, using the format
+&nbsp;     *         {@code [xmin, xmax] x [ymin, ymax]}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return &quot;[&quot; + xmin + &quot;, &quot; + xmax + &quot;] x [&quot; + ymin + &quot;, &quot; + ymax + &quot;]&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Draws this rectangle to standard draw.
+&nbsp;     */
+&nbsp;    public void draw() {
+<b class="nc">&nbsp;        StdDraw.line(xmin, ymin, xmax, ymin);</b>
+<b class="nc">&nbsp;        StdDraw.line(xmax, ymin, xmax, ymax);</b>
+<b class="nc">&nbsp;        StdDraw.line(xmax, ymax, xmin, ymax);</b>
+<b class="nc">&nbsp;        StdDraw.line(xmin, ymax, xmin, ymin);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,400 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > CollisionSystem</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: CollisionSystem (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CollisionSystem</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/67)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CollisionSystem$Event</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/56)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/80)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac CollisionSystem.java
+&nbsp; *  Execution:    java CollisionSystem n               (n random particles)
+&nbsp; *                java CollisionSystem &lt; input.txt     (from a file) 
+&nbsp; *  Dependencies: StdDraw.java Particle.java MinPQ.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/61event/diffusion.txt
+&nbsp; *                https://algs4.cs.princeton.edu/61event/diffusion2.txt
+&nbsp; *                https://algs4.cs.princeton.edu/61event/diffusion3.txt
+&nbsp; *                https://algs4.cs.princeton.edu/61event/brownian.txt
+&nbsp; *                https://algs4.cs.princeton.edu/61event/brownian2.txt
+&nbsp; *                https://algs4.cs.princeton.edu/61event/billiards5.txt
+&nbsp; *                https://algs4.cs.princeton.edu/61event/pendulum.txt
+&nbsp; *  
+&nbsp; *  Creates n random particles and simulates their motion according
+&nbsp; *  to the laws of elastic collisions.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.awt.Color;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code CollisionSystem} class represents a collection of particles
+&nbsp; *  moving in the unit box, according to the laws of elastic collision.
+&nbsp; *  This event-based simulation relies on a priority queue.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, 
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/61event&quot;&gt;Section 6.1&lt;/a&gt; of 
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne. 
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class CollisionSystem {
+&nbsp;    private static final double HZ = 0.5;    // number of redraw events per clock tick
+&nbsp;
+&nbsp;    private MinPQ&lt;Event&gt; pq;          // the priority queue
+<b class="nc">&nbsp;    private double t  = 0.0;          // simulation clock time</b>
+&nbsp;    private Particle[] particles;     // the array of particles
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a system with the specified collection of particles.
+&nbsp;     * The individual particles will be mutated during the simulation.
+&nbsp;     *
+&nbsp;     * @param  particles the array of particles
+&nbsp;     */
+<b class="nc">&nbsp;    public CollisionSystem(Particle[] particles) {</b>
+<b class="nc">&nbsp;        this.particles = particles.clone();   // defensive copy</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // updates priority queue with all new events for particle a
+&nbsp;    private void predict(Particle a, double limit) {
+<b class="nc">&nbsp;        if (a == null) return;</b>
+&nbsp;
+&nbsp;        // particle-particle collisions
+<b class="nc">&nbsp;        for (int i = 0; i &lt; particles.length; i++) {</b>
+<b class="nc">&nbsp;            double dt = a.timeToHit(particles[i]);</b>
+<b class="nc">&nbsp;            if (t + dt &lt;= limit)</b>
+<b class="nc">&nbsp;                pq.insert(new Event(t + dt, a, particles[i]));</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // particle-wall collisions
+<b class="nc">&nbsp;        double dtX = a.timeToHitVerticalWall();</b>
+<b class="nc">&nbsp;        double dtY = a.timeToHitHorizontalWall();</b>
+<b class="nc">&nbsp;        if (t + dtX &lt;= limit) pq.insert(new Event(t + dtX, a, null));</b>
+<b class="nc">&nbsp;        if (t + dtY &lt;= limit) pq.insert(new Event(t + dtY, null, a));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // redraw all particles
+&nbsp;    private void redraw(double limit) {
+<b class="nc">&nbsp;        StdDraw.clear();</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; particles.length; i++) {</b>
+<b class="nc">&nbsp;            particles[i].draw();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        StdDraw.show();</b>
+<b class="nc">&nbsp;        StdDraw.pause(20);</b>
+<b class="nc">&nbsp;        if (t &lt; limit) {</b>
+<b class="nc">&nbsp;            pq.insert(new Event(t + 1.0 / HZ, null, null));</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;      
+&nbsp;    /**
+&nbsp;     * Simulates the system of particles for the specified amount of time.
+&nbsp;     *
+&nbsp;     * @param  limit the amount of time
+&nbsp;     */
+&nbsp;    public void simulate(double limit) {
+&nbsp;        
+&nbsp;        // initialize PQ with collision events and redraw event
+<b class="nc">&nbsp;        pq = new MinPQ&lt;Event&gt;();</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; particles.length; i++) {</b>
+<b class="nc">&nbsp;            predict(particles[i], limit);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        pq.insert(new Event(0, null, null));        // redraw event</b>
+&nbsp;
+&nbsp;
+&nbsp;        // the main event-driven simulation loop
+<b class="nc">&nbsp;        while (!pq.isEmpty()) { </b>
+&nbsp;
+&nbsp;            // get impending event, discard if invalidated
+<b class="nc">&nbsp;            Event e = pq.delMin();</b>
+<b class="nc">&nbsp;            if (!e.isValid()) continue;</b>
+<b class="nc">&nbsp;            Particle a = e.a;</b>
+<b class="nc">&nbsp;            Particle b = e.b;</b>
+&nbsp;
+&nbsp;            // physical collision, so update positions, and then simulation clock
+<b class="nc">&nbsp;            for (int i = 0; i &lt; particles.length; i++)</b>
+<b class="nc">&nbsp;                particles[i].move(e.time - t);</b>
+<b class="nc">&nbsp;            t = e.time;</b>
+&nbsp;
+&nbsp;            // process event
+<b class="nc">&nbsp;            if      (a != null &amp;&amp; b != null) a.bounceOff(b);              // particle-particle collision</b>
+<b class="nc">&nbsp;            else if (a != null &amp;&amp; b == null) a.bounceOffVerticalWall();   // particle-wall collision</b>
+<b class="nc">&nbsp;            else if (a == null &amp;&amp; b != null) b.bounceOffHorizontalWall(); // particle-wall collision</b>
+<b class="nc">&nbsp;            else if (a == null &amp;&amp; b == null) redraw(limit);               // redraw event</b>
+&nbsp;
+&nbsp;            // update the priority queue with new collisions involving a or b
+<b class="nc">&nbsp;            predict(a, limit);</b>
+<b class="nc">&nbsp;            predict(b, limit);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;   /***************************************************************************
+&nbsp;    *  An event during a particle collision simulation. Each event contains
+&nbsp;    *  the time at which it will occur (assuming no supervening actions)
+&nbsp;    *  and the particles a and b involved.
+&nbsp;    *
+&nbsp;    *    -  a and b both null:      redraw event
+&nbsp;    *    -  a null, b not null:     collision with vertical wall
+&nbsp;    *    -  a not null, b null:     collision with horizontal wall
+&nbsp;    *    -  a and b both not null:  binary collision between a and b
+&nbsp;    *
+&nbsp;    ***************************************************************************/
+&nbsp;    private static class Event implements Comparable&lt;Event&gt; {
+&nbsp;        private final double time;         // time that event is scheduled to occur
+&nbsp;        private final Particle a, b;       // particles involved in event, possibly null
+&nbsp;        private final int countA, countB;  // collision counts at event creation
+&nbsp;                
+&nbsp;        
+&nbsp;        // create a new event to occur at time t involving a and b
+<b class="nc">&nbsp;        public Event(double t, Particle a, Particle b) {</b>
+<b class="nc">&nbsp;            this.time = t;</b>
+<b class="nc">&nbsp;            this.a    = a;</b>
+<b class="nc">&nbsp;            this.b    = b;</b>
+<b class="nc">&nbsp;            if (a != null) countA = a.count();</b>
+<b class="nc">&nbsp;            else           countA = -1;</b>
+<b class="nc">&nbsp;            if (b != null) countB = b.count();</b>
+<b class="nc">&nbsp;            else           countB = -1;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // compare times when two events will occur
+&nbsp;        public int compareTo(Event that) {
+<b class="nc">&nbsp;            return Double.compare(this.time, that.time);</b>
+&nbsp;        }
+&nbsp;        
+&nbsp;        // has any collision occurred between when event was created and now?
+&nbsp;        public boolean isValid() {
+<b class="nc">&nbsp;            if (a != null &amp;&amp; a.count() != countA) return false;</b>
+<b class="nc">&nbsp;            if (b != null &amp;&amp; b.count() != countB) return false;</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;   
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code CollisionSystem} data type.
+&nbsp;     * Reads in the particle collision system from a standard input
+&nbsp;     * (or generates {@code N} random particles if a command-line integer
+&nbsp;     * is specified); simulates the system.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+<b class="nc">&nbsp;        StdDraw.setCanvasSize(600, 600);</b>
+&nbsp;
+&nbsp;        // enable double buffering
+<b class="nc">&nbsp;        StdDraw.enableDoubleBuffering();</b>
+&nbsp;
+&nbsp;        // the array of particles
+&nbsp;        Particle[] particles;
+&nbsp;
+&nbsp;        // create n random particles
+<b class="nc">&nbsp;        if (args.length == 1) {</b>
+<b class="nc">&nbsp;            int n = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;            particles = new Particle[n];</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;                particles[i] = new Particle();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // or read from standard input
+&nbsp;        else {
+<b class="nc">&nbsp;            int n = StdIn.readInt();</b>
+<b class="nc">&nbsp;            particles = new Particle[n];</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;                double rx     = StdIn.readDouble();</b>
+<b class="nc">&nbsp;                double ry     = StdIn.readDouble();</b>
+<b class="nc">&nbsp;                double vx     = StdIn.readDouble();</b>
+<b class="nc">&nbsp;                double vy     = StdIn.readDouble();</b>
+<b class="nc">&nbsp;                double radius = StdIn.readDouble();</b>
+<b class="nc">&nbsp;                double mass   = StdIn.readDouble();</b>
+<b class="nc">&nbsp;                int r         = StdIn.readInt();</b>
+<b class="nc">&nbsp;                int g         = StdIn.readInt();</b>
+<b class="nc">&nbsp;                int b         = StdIn.readInt();</b>
+<b class="nc">&nbsp;                Color color   = new Color(r, g, b);</b>
+<b class="nc">&nbsp;                particles[i] = new Particle(rx, ry, vx, vy, radius, mass, color);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // create collision system and simulate
+<b class="nc">&nbsp;        CollisionSystem system = new CollisionSystem(particles);</b>
+<b class="nc">&nbsp;        system.simulate(10000);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;      
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

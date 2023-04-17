@@ -1,0 +1,431 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Transaction</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Transaction (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Transaction</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/56)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Transaction$HowMuchOrder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Transaction$WhenOrder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Transaction$WhoOrder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/62)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Transaction.java
+&nbsp; *  Execution:    java Transaction
+&nbsp; *  Dependencies: StdOut.java
+&nbsp; *  
+&nbsp; *  Data type for commercial transactions.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Arrays;
+&nbsp;import java.util.Comparator;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Transaction} class is an immutable data type to encapsulate a
+&nbsp; *  commercial transaction with a customer name, date, and amount.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, 
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/12oop&quot;&gt;Section 1.2&lt;/a&gt; of 
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne. 
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class Transaction implements Comparable&lt;Transaction&gt; {
+&nbsp;    private final String  who;      // customer
+&nbsp;    private final Date    when;     // date
+&nbsp;    private final double  amount;   // amount
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a new transaction from the given arguments.
+&nbsp;     *
+&nbsp;     * @param  who the person involved in this transaction
+&nbsp;     * @param  when the date of this transaction
+&nbsp;     * @param  amount the amount of this transaction
+&nbsp;     * @throws IllegalArgumentException if {@code amount} 
+&nbsp;     *         is {@code Double.NaN}, {@code Double.POSITIVE_INFINITY},
+&nbsp;     *         or {@code Double.NEGATIVE_INFINITY}
+&nbsp;     */
+<b class="nc">&nbsp;    public Transaction(String who, Date when, double amount) {</b>
+<b class="nc">&nbsp;        if (Double.isNaN(amount) || Double.isInfinite(amount))</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Amount cannot be NaN or infinite&quot;);</b>
+<b class="nc">&nbsp;        this.who    = who;</b>
+<b class="nc">&nbsp;        this.when   = when;</b>
+<b class="nc">&nbsp;        this.amount = amount;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a new transaction by parsing a string of the form NAME DATE AMOUNT.
+&nbsp;     *
+&nbsp;     * @param  transaction the string to parse
+&nbsp;     * @throws IllegalArgumentException if {@code amount} 
+&nbsp;     *         is {@code Double.NaN}, {@code Double.POSITIVE_INFINITY},
+&nbsp;     *         or {@code Double.NEGATIVE_INFINITY}
+&nbsp;     */
+<b class="nc">&nbsp;    public Transaction(String transaction) {</b>
+<b class="nc">&nbsp;        String[] a = transaction.split(&quot;\\s+&quot;);</b>
+<b class="nc">&nbsp;        who    = a[0];</b>
+<b class="nc">&nbsp;        when   = new Date(a[1]);</b>
+<b class="nc">&nbsp;        amount = Double.parseDouble(a[2]);</b>
+<b class="nc">&nbsp;        if (Double.isNaN(amount) || Double.isInfinite(amount))</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Amount cannot be NaN or infinite&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the name of the customer involved in this transaction.
+&nbsp;     *
+&nbsp;     * @return the name of the customer involved in this transaction
+&nbsp;     */
+&nbsp;    public String who() {
+<b class="nc">&nbsp;        return who;</b>
+&nbsp;    }
+&nbsp; 
+&nbsp;    /**
+&nbsp;     * Returns the date of this transaction.
+&nbsp;     *
+&nbsp;     * @return the date of this transaction
+&nbsp;     */
+&nbsp;    public Date when() {
+<b class="nc">&nbsp;        return when;</b>
+&nbsp;    }
+&nbsp; 
+&nbsp;    /**
+&nbsp;     * Returns the amount of this transaction.
+&nbsp;     *
+&nbsp;     * @return the amount of this transaction
+&nbsp;     */
+&nbsp;    public double amount() {
+<b class="nc">&nbsp;        return amount;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of this transaction.
+&nbsp;     *
+&nbsp;     * @return a string representation of this transaction
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return String.format(&quot;%-10s %10s %8.2f&quot;, who, when, amount);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares two transactions by amount.
+&nbsp;     *
+&nbsp;     * @param  that the other transaction
+&nbsp;     * @return { a negative integer, zero, a positive integer}, depending
+&nbsp;     *         on whether the amount of this transaction is { less than,
+&nbsp;     *         equal to, or greater than } the amount of that transaction
+&nbsp;     */
+&nbsp;    public int compareTo(Transaction that) {
+<b class="nc">&nbsp;        return Double.compare(this.amount, that.amount);</b>
+&nbsp;    }    
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares this transaction to the specified object.
+&nbsp;     *
+&nbsp;     * @param  other the other transaction
+&nbsp;     * @return true if this transaction is equal to {@code other}; false otherwise
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean equals(Object other) {
+<b class="nc">&nbsp;        if (other == this) return true;</b>
+<b class="nc">&nbsp;        if (other == null) return false;</b>
+<b class="nc">&nbsp;        if (other.getClass() != this.getClass()) return false;</b>
+<b class="nc">&nbsp;        Transaction that = (Transaction) other;</b>
+<b class="nc">&nbsp;        return (this.amount == that.amount) &amp;&amp; (this.who.equals(that.who))</b>
+<b class="nc">&nbsp;                                            &amp;&amp; (this.when.equals(that.when));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a hash code for this transaction.
+&nbsp;     *
+&nbsp;     * @return a hash code for this transaction
+&nbsp;     */
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        int hash = 1;</b>
+<b class="nc">&nbsp;        hash = 31*hash + who.hashCode();</b>
+<b class="nc">&nbsp;        hash = 31*hash + when.hashCode();</b>
+<b class="nc">&nbsp;        hash = 31*hash + ((Double) amount).hashCode();</b>
+<b class="nc">&nbsp;        return hash;</b>
+&nbsp;        // return Objects.hash(who, when, amount);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares two transactions by customer name.
+&nbsp;     */
+<b class="nc">&nbsp;    public static class WhoOrder implements Comparator&lt;Transaction&gt; {</b>
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public int compare(Transaction v, Transaction w) {
+<b class="nc">&nbsp;            return v.who.compareTo(w.who);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares two transactions by date.
+&nbsp;     */
+<b class="nc">&nbsp;    public static class WhenOrder implements Comparator&lt;Transaction&gt; {</b>
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public int compare(Transaction v, Transaction w) {
+<b class="nc">&nbsp;            return v.when.compareTo(w.when);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares two transactions by amount.
+&nbsp;     */
+<b class="nc">&nbsp;    public static class HowMuchOrder implements Comparator&lt;Transaction&gt; {</b>
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public int compare(Transaction v, Transaction w) {
+<b class="nc">&nbsp;            return Double.compare(v.amount, w.amount);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code Transaction} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        Transaction[] a = new Transaction[4];</b>
+<b class="nc">&nbsp;        a[0] = new Transaction(&quot;Turing   6/17/1990  644.08&quot;);</b>
+<b class="nc">&nbsp;        a[1] = new Transaction(&quot;Tarjan   3/26/2002 4121.85&quot;);</b>
+<b class="nc">&nbsp;        a[2] = new Transaction(&quot;Knuth    6/14/1999  288.34&quot;);</b>
+<b class="nc">&nbsp;        a[3] = new Transaction(&quot;Dijkstra 8/22/2007 2678.40&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Unsorted&quot;);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;        
+<b class="nc">&nbsp;        StdOut.println(&quot;Sort by date&quot;);</b>
+<b class="nc">&nbsp;        Arrays.sort(a, new Transaction.WhenOrder());</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Sort by customer&quot;);</b>
+<b class="nc">&nbsp;        Arrays.sort(a, new Transaction.WhoOrder());</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Sort by amount&quot;);</b>
+<b class="nc">&nbsp;        Arrays.sort(a, new Transaction.HowMuchOrder());</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

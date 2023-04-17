@@ -1,0 +1,251 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LZW</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: LZW (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LZW</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/37)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac LZW.java
+&nbsp; *  Execution:    java LZW - &lt; input.txt   (compress)
+&nbsp; *  Execution:    java LZW + &lt; input.txt   (expand)
+&nbsp; *  Dependencies: BinaryIn.java BinaryOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/55compression/abraLZW.txt
+&nbsp; *                https://algs4.cs.princeton.edu/55compression/ababLZW.txt
+&nbsp; *
+&nbsp; *  Compress or expand binary input from standard input using LZW.
+&nbsp; *
+&nbsp;
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code LZW} class provides static methods for compressing
+&nbsp; *  and expanding a binary input using LZW compression over the 8-bit extended
+&nbsp; *  ASCII alphabet with 12-bit codewords.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  WARNING: Starting with Oracle Java 7u6, the substring method takes time and
+&nbsp; *  space linear in the length of the extracted substring (instead of constant
+&nbsp; *  time an space as in earlier versions). As a result, compression takes
+&nbsp; *  quadratic time. TODO: fix.
+&nbsp; *  See &lt;a href = &quot;http://java-performance.info/changes-to-string-java-1-7-0_06/&quot;&gt;this article&lt;/a&gt;
+&nbsp; *  for more details.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/55compression&quot;&gt;Section 5.5&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick  
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class LZW {
+&nbsp;    private static final int R = 256;        // number of input chars
+&nbsp;    private static final int L = 4096;       // number of codewords = 2^W
+&nbsp;    private static final int W = 12;         // codeword width
+&nbsp;
+&nbsp;    // Do not instantiate.
+&nbsp;    private LZW() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads a sequence of 8-bit bytes from standard input; compresses
+&nbsp;     * them using LZW compression with 12-bit codewords; and writes the results
+&nbsp;     * to standard output.
+&nbsp;     */
+&nbsp;    public static void compress() { 
+<b class="nc">&nbsp;        String input = BinaryStdIn.readString();</b>
+<b class="nc">&nbsp;        TST&lt;Integer&gt; st = new TST&lt;Integer&gt;();</b>
+&nbsp;
+&nbsp;        // since TST is not balanced, it would be better to insert in a different order
+<b class="nc">&nbsp;        for (int i = 0; i &lt; R; i++)</b>
+<b class="nc">&nbsp;            st.put(&quot;&quot; + (char) i, i);</b>
+&nbsp;
+<b class="nc">&nbsp;        int code = R+1;  // R is codeword for EOF</b>
+&nbsp;
+<b class="nc">&nbsp;        while (input.length() &gt; 0) {</b>
+<b class="nc">&nbsp;            String s = st.longestPrefixOf(input);  // Find max prefix match s.</b>
+<b class="nc">&nbsp;            BinaryStdOut.write(st.get(s), W);      // Print s&#39;s encoding.</b>
+<b class="nc">&nbsp;            int t = s.length();</b>
+<b class="nc">&nbsp;            if (t &lt; input.length() &amp;&amp; code &lt; L)    // Add s to symbol table.</b>
+<b class="nc">&nbsp;                st.put(input.substring(0, t + 1), code++);</b>
+<b class="nc">&nbsp;            input = input.substring(t);            // Scan past s in input.</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        BinaryStdOut.write(R, W);</b>
+<b class="nc">&nbsp;        BinaryStdOut.close();</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads a sequence of bit encoded using LZW compression with
+&nbsp;     * 12-bit codewords from standard input; expands them; and writes
+&nbsp;     * the results to standard output.
+&nbsp;     */
+&nbsp;    public static void expand() {
+<b class="nc">&nbsp;        String[] st = new String[L];</b>
+&nbsp;        int i; // next available codeword value
+&nbsp;
+&nbsp;        // initialize symbol table with all 1-character strings
+<b class="nc">&nbsp;        for (i = 0; i &lt; R; i++)</b>
+<b class="nc">&nbsp;            st[i] = &quot;&quot; + (char) i;</b>
+<b class="nc">&nbsp;        st[i++] = &quot;&quot;;                        // (unused) lookahead for EOF</b>
+&nbsp;
+<b class="nc">&nbsp;        int codeword = BinaryStdIn.readInt(W);</b>
+<b class="nc">&nbsp;        if (codeword == R) return;           // expanded message is empty string</b>
+<b class="nc">&nbsp;        String val = st[codeword];</b>
+&nbsp;
+&nbsp;        while (true) {
+<b class="nc">&nbsp;            BinaryStdOut.write(val);</b>
+<b class="nc">&nbsp;            codeword = BinaryStdIn.readInt(W);</b>
+<b class="nc">&nbsp;            if (codeword == R) break;</b>
+<b class="nc">&nbsp;            String s = st[codeword];</b>
+<b class="nc">&nbsp;            if (i == codeword) s = val + val.charAt(0);   // special case hack</b>
+<b class="nc">&nbsp;            if (i &lt; L) st[i++] = val + s.charAt(0);</b>
+<b class="nc">&nbsp;            val = s;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        BinaryStdOut.close();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sample client that calls {@code compress()} if the command-line
+&nbsp;     * argument is &quot;-&quot; an {@code expand()} if it is &quot;+&quot;.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        if      (args[0].equals(&quot;-&quot;)) compress();</b>
+<b class="nc">&nbsp;        else if (args[0].equals(&quot;+&quot;)) expand();</b>
+<b class="nc">&nbsp;        else throw new IllegalArgumentException(&quot;Illegal command line argument&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

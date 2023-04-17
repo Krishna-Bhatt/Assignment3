@@ -1,0 +1,268 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > DegreesOfSeparation</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: DegreesOfSeparation (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DegreesOfSeparation</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac DegreesOfSeparation.java
+&nbsp; *  Execution:    java DegreesOfSeparation filename delimiter source
+&nbsp; *  Dependencies: SymbolGraph.java Graph.java BreadthFirstPaths.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/41graph/routes.txt
+&nbsp; *                https://algs4.cs.princeton.edu/41graph/movies.txt
+&nbsp; *  
+&nbsp; *  
+&nbsp; *  %  java DegreesOfSeparation routes.txt &quot; &quot; &quot;JFK&quot;
+&nbsp; *  LAS
+&nbsp; *     JFK
+&nbsp; *     ORD
+&nbsp; *     DEN
+&nbsp; *     LAS
+&nbsp; *  DFW
+&nbsp; *     JFK
+&nbsp; *     ORD
+&nbsp; *     DFW
+&nbsp; *  EWR
+&nbsp; *     Not in database.
+&nbsp; *
+&nbsp; *  % java DegreesOfSeparation movies.txt &quot;/&quot; &quot;Bacon, Kevin&quot;
+&nbsp; *  Kidman, Nicole
+&nbsp; *     Bacon, Kevin
+&nbsp; *     Woodsman, The (2004)
+&nbsp; *     Grier, David Alan
+&nbsp; *     Bewitched (2005)
+&nbsp; *     Kidman, Nicole
+&nbsp; *  Grant, Cary
+&nbsp; *     Bacon, Kevin
+&nbsp; *     Planes, Trains &amp; Automobiles (1987)
+&nbsp; *     Martin, Steve (I)
+&nbsp; *     Dead Men Don&#39;t Wear Plaid (1982)
+&nbsp; *     Grant, Cary
+&nbsp; *
+&nbsp; *  % java DegreesOfSeparation movies.txt &quot;/&quot; &quot;Animal House (1978)&quot;
+&nbsp; *  Titanic (1997)
+&nbsp; *     Animal House (1978)
+&nbsp; *     Allen, Karen (I)
+&nbsp; *     Raiders of the Lost Ark (1981)
+&nbsp; *     Taylor, Rocky (I)
+&nbsp; *     Titanic (1997)
+&nbsp; *  To Catch a Thief (1955)
+&nbsp; *     Animal House (1978)
+&nbsp; *     Vernon, John (I)
+&nbsp; *     Topaz (1969)
+&nbsp; *     Hitchcock, Alfred (I)
+&nbsp; *     To Catch a Thief (1955)
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code DegreesOfSeparation} class provides a client for finding
+&nbsp; *  the degree of separation between one distinguished individual and
+&nbsp; *  every other individual in a social network.
+&nbsp; *  As an example, if the social network consists of actors in which
+&nbsp; *  two actors are connected by a link if they appeared in the same movie,
+&nbsp; *  and Kevin Bacon is the distinguished individual, then the client
+&nbsp; *  computes the Kevin Bacon number of every actor in the network.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The running time is proportional to the number of individuals and
+&nbsp; *  connections in the network. If the connections are given implicitly,
+&nbsp; *  as in the movie network example (where every two actors are connected
+&nbsp; *  if they appear in the same movie), the efficiency of the algorithm
+&nbsp; *  is improved by allowing both movie and actor vertices and connecting
+&nbsp; *  each movie to all of the actors that appear in that movie.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/41graph&quot;&gt;Section 4.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class DegreesOfSeparation {
+&nbsp;
+&nbsp;    // this class cannot be instantiated
+&nbsp;    private DegreesOfSeparation() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  Reads in a social network from a file, and then repeatedly reads in
+&nbsp;     *  individuals from standard input and prints out their degrees of
+&nbsp;     *  separation.
+&nbsp;     *  Takes three command-line arguments: the name of a file,
+&nbsp;     *  a delimiter, and the name of the distinguished individual.
+&nbsp;     *  Each line in the file contains the name of a vertex, followed by a
+&nbsp;     *  list of the names of the vertices adjacent to that vertex,
+&nbsp;     *  separated by the delimiter.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String filename  = args[0];</b>
+<b class="nc">&nbsp;        String delimiter = args[1];</b>
+<b class="nc">&nbsp;        String source    = args[2];</b>
+&nbsp;
+&nbsp;        // StdOut.println(&quot;Source: &quot; + source);
+&nbsp;
+<b class="nc">&nbsp;        SymbolGraph sg = new SymbolGraph(filename, delimiter);</b>
+<b class="nc">&nbsp;        Graph G = sg.graph();</b>
+<b class="nc">&nbsp;        if (!sg.contains(source)) {</b>
+<b class="nc">&nbsp;            StdOut.println(source + &quot; not in database.&quot;);</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        int s = sg.indexOf(source);</b>
+<b class="nc">&nbsp;        BreadthFirstPaths bfs = new BreadthFirstPaths(G, s);</b>
+&nbsp;
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            String sink = StdIn.readLine();</b>
+<b class="nc">&nbsp;            if (sg.contains(sink)) {</b>
+<b class="nc">&nbsp;                int t = sg.indexOf(sink);</b>
+<b class="nc">&nbsp;                if (bfs.hasPathTo(t)) {</b>
+<b class="nc">&nbsp;                    for (int v : bfs.pathTo(t)) {</b>
+<b class="nc">&nbsp;                        StdOut.println(&quot;   &quot; + sg.nameOf(v));</b>
+<b class="nc">&nbsp;                    }</b>
+&nbsp;                }
+&nbsp;                else {
+<b class="nc">&nbsp;                    StdOut.println(&quot;Not connected&quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;            else {
+<b class="nc">&nbsp;                StdOut.println(&quot;   Not in database.&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

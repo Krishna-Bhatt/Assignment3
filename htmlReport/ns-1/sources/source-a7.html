@@ -1,0 +1,267 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Shell</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Shell (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Shell</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/30)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Shell.java
+&nbsp; *  Execution:    java Shell &lt; input.txt
+&nbsp; *  Dependencies: StdOut.java StdIn.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/21elementary/tiny.txt
+&nbsp; *                https://algs4.cs.princeton.edu/21elementary/words3.txt
+&nbsp; *   
+&nbsp; *  Sorts a sequence of strings from standard input using shellsort.
+&nbsp; *
+&nbsp; *  % more tiny.txt
+&nbsp; *  S O R T E X A M P L E
+&nbsp; *
+&nbsp; *  % java Shell &lt; tiny.txt
+&nbsp; *  A E E L M O P R S T X                 [ one string per line ]
+&nbsp; *    
+&nbsp; *  % more words3.txt
+&nbsp; *  bed bug dad yes zoo ... all bad yet
+&nbsp; *  
+&nbsp; *  % java Shell &lt; words3.txt
+&nbsp; *  all bad bed bug dad ... yes yet zoo    [ one string per line ]
+&nbsp; *
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Shell} class provides static methods for sorting an
+&nbsp; *  array using &lt;em&gt;Shellsort&lt;/em&gt; with
+&nbsp; *  &lt;a href = &quot;https://oeis.org/A003462&quot;&gt; Knuth&#39;s increment sequence&lt;/a&gt;
+&nbsp; *  (1, 4, 13, 40, ...). In the worst case, this implementation makes
+&nbsp; *  &amp;Theta;(&lt;em&gt;n&lt;/em&gt;&lt;sup&gt;3/2&lt;/sup&gt;) compares and exchanges to sort
+&nbsp; *  an array of length &lt;em&gt;n&lt;/em&gt;.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This sorting algorithm is not stable.
+&nbsp; *  It uses &amp;Theta;(1) extra memory (not including the input array).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/21elementary&quot;&gt;Section 2.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *  
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class Shell {</b>
+&nbsp;
+&nbsp;    // This class should not be instantiated.
+&nbsp;    private Shell() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rearranges the array in ascending order, using the natural order.
+&nbsp;     * @param a the array to be sorted
+&nbsp;     */
+&nbsp;    public static void sort(Comparable[] a) {
+<b class="nc">&nbsp;        int n = a.length;</b>
+&nbsp;
+&nbsp;        // 3x+1 increment sequence:  1, 4, 13, 40, 121, 364, 1093, ... 
+<b class="nc">&nbsp;        int h = 1;</b>
+<b class="nc">&nbsp;        while (h &lt; n/3) h = 3*h + 1; </b>
+&nbsp;
+<b class="nc">&nbsp;        while (h &gt;= 1) {</b>
+&nbsp;            // h-sort the array
+<b class="nc">&nbsp;            for (int i = h; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;                for (int j = i; j &gt;= h &amp;&amp; less(a[j], a[j-h]); j -= h) {</b>
+<b class="nc">&nbsp;                    exch(a, j, j-h);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            assert isHsorted(a, h); </b>
+<b class="nc">&nbsp;            h /= 3;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        assert isSorted(a);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;   /***************************************************************************
+&nbsp;    *  Helper sorting functions.
+&nbsp;    ***************************************************************************/
+&nbsp;    
+&nbsp;    // is v &lt; w ?
+&nbsp;    private static boolean less(Comparable v, Comparable w) {
+<b class="nc">&nbsp;        return v.compareTo(w) &lt; 0;</b>
+&nbsp;    }
+&nbsp;        
+&nbsp;    // exchange a[i] and a[j]
+&nbsp;    private static void exch(Object[] a, int i, int j) {
+<b class="nc">&nbsp;        Object swap = a[i];</b>
+<b class="nc">&nbsp;        a[i] = a[j];</b>
+<b class="nc">&nbsp;        a[j] = swap;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;   /***************************************************************************
+&nbsp;    *  Check if array is sorted - useful for debugging.
+&nbsp;    ***************************************************************************/
+&nbsp;    private static boolean isSorted(Comparable[] a) {
+<b class="nc">&nbsp;        for (int i = 1; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            if (less(a[i], a[i-1])) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // is the array h-sorted?
+&nbsp;    private static boolean isHsorted(Comparable[] a, int h) {
+<b class="nc">&nbsp;        for (int i = h; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            if (less(a[i], a[i-h])) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // print array to standard output
+&nbsp;    private static void show(Comparable[] a) {
+<b class="nc">&nbsp;        for (int i = 0; i &lt; a.length; i++) {</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads in a sequence of strings from standard input; Shellsorts them; 
+&nbsp;     * and prints them to standard output in ascending order. 
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String[] a = StdIn.readAllStrings();</b>
+<b class="nc">&nbsp;        Shell.sort(a);</b>
+<b class="nc">&nbsp;        show(a);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

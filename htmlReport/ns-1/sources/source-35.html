@@ -1,0 +1,288 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > DijkstraAllPairsSP</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: DijkstraAllPairsSP (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DijkstraAllPairsSP</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac DijkstraAllPairsSP.java
+&nbsp; *  Execution:    none
+&nbsp; *  Dependencies: EdgeWeightedDigraph.java Dijkstra.java
+&nbsp; *
+&nbsp; *  Dijkstra&#39;s algorithm run from each vertex. 
+&nbsp; *  Takes time proportional to E V log V and space proportional to EV.
+&nbsp; *
+&nbsp; *  % java DijkstraAllPairsSP tinyEWD.txt
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code DijkstraAllPairsSP} class represents a data type for solving the
+&nbsp; *  all-pairs shortest paths problem in edge-weighted digraphs
+&nbsp; *  where the edge weights are non-negative.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation runs Dijkstra&#39;s algorithm from each vertex.
+&nbsp; *  The constructor takes &amp;Theta;(&lt;em&gt;V&lt;/em&gt; (&lt;em&gt;E&lt;/em&gt; log &lt;em&gt;V&lt;/em&gt;)) time
+&nbsp; *  in the worst case, where &lt;em&gt;V&lt;/em&gt; is the number of vertices and
+&nbsp; *  &lt;em&gt;E&lt;/em&gt; is the number of edges.
+&nbsp; *  Each instance method takes &amp;Theta;(1) time.
+&nbsp; *  It uses &amp;Theta;(&lt;em&gt;V&lt;/em&gt;&lt;sup&gt;2&lt;/sup&gt;) extra space (not including the
+&nbsp; *  edge-weighted digraph).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,    
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/44sp&quot;&gt;Section 4.4&lt;/a&gt; of    
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne. 
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class DijkstraAllPairsSP {
+&nbsp;    private DijkstraSP[] all;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Computes a shortest paths tree from each vertex to to every other vertex in
+&nbsp;     * the edge-weighted digraph {@code G}.
+&nbsp;     * @param G the edge-weighted digraph
+&nbsp;     * @throws IllegalArgumentException if an edge weight is negative
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= s &lt; V}
+&nbsp;     */
+<b class="nc">&nbsp;    public DijkstraAllPairsSP(EdgeWeightedDigraph G) {</b>
+<b class="nc">&nbsp;        all  = new DijkstraSP[G.V()];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            all[v] = new DijkstraSP(G, v);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a shortest path from vertex {@code s} to vertex {@code t}.
+&nbsp;     * @param  s the source vertex
+&nbsp;     * @param  t the destination vertex
+&nbsp;     * @return a shortest path from vertex {@code s} to vertex {@code t}
+&nbsp;     *         as an iterable of edges, and {@code null} if no such path
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= s &lt; V}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= t &lt; V}
+&nbsp;     */
+&nbsp;    public Iterable&lt;DirectedEdge&gt; path(int s, int t) {
+<b class="nc">&nbsp;        validateVertex(s);</b>
+<b class="nc">&nbsp;        validateVertex(t);</b>
+<b class="nc">&nbsp;        return all[s].pathTo(t);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Is there a path from the vertex {@code s} to vertex {@code t}?
+&nbsp;     * @param  s the source vertex
+&nbsp;     * @param  t the destination vertex
+&nbsp;     * @return {@code true} if there is a path from vertex {@code s} 
+&nbsp;     *         to vertex {@code t}, and {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= s &lt; V}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= t &lt; V}
+&nbsp;     */
+&nbsp;    public boolean hasPath(int s, int t) {
+<b class="nc">&nbsp;        validateVertex(s);</b>
+<b class="nc">&nbsp;        validateVertex(t);</b>
+<b class="nc">&nbsp;        return dist(s, t) &lt; Double.POSITIVE_INFINITY;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the length of a shortest path from vertex {@code s} to vertex {@code t}.
+&nbsp;     * @param  s the source vertex
+&nbsp;     * @param  t the destination vertex
+&nbsp;     * @return the length of a shortest path from vertex {@code s} to vertex {@code t};
+&nbsp;     *         {@code Double.POSITIVE_INFINITY} if no such path
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= s &lt; V}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= t &lt; V}
+&nbsp;     */
+&nbsp;    public double dist(int s, int t) {
+<b class="nc">&nbsp;        validateVertex(s);</b>
+<b class="nc">&nbsp;        validateVertex(t);</b>
+<b class="nc">&nbsp;        return all[s].distTo(t);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // throw an IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;    private void validateVertex(int v) {
+<b class="nc">&nbsp;        int V = all.length;</b>
+<b class="nc">&nbsp;        if (v &lt; 0 || v &gt;= V)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;vertex &quot; + v + &quot; is not between 0 and &quot; + (V-1));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code DijkstraAllPairsSP} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // read edge-weighted digraph
+<b class="nc">&nbsp;        In in = new In(args[0]);</b>
+<b class="nc">&nbsp;        EdgeWeightedDigraph G = new EdgeWeightedDigraph(in);</b>
+&nbsp;
+&nbsp;        // compute shortest paths between all pairs of vertices
+<b class="nc">&nbsp;        DijkstraAllPairsSP spt = new DijkstraAllPairsSP(G);</b>
+&nbsp;
+&nbsp;        // print all-pairs shortest path distances
+<b class="nc">&nbsp;        StdOut.printf(&quot;  &quot;);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;%6d &quot;, v);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;%3d: &quot;, v);</b>
+<b class="nc">&nbsp;            for (int w = 0; w &lt; G.V(); w++) {</b>
+<b class="nc">&nbsp;                if (spt.hasPath(v, w)) StdOut.printf(&quot;%6.2f &quot;, spt.dist(v, w));</b>
+<b class="nc">&nbsp;                else StdOut.printf(&quot;  Inf &quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            StdOut.println();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+&nbsp;        // print all-pairs shortest paths
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            for (int w = 0; w &lt; G.V(); w++) {</b>
+<b class="nc">&nbsp;                if (spt.hasPath(v, w)) {</b>
+<b class="nc">&nbsp;                    StdOut.printf(&quot;%d to %d (%5.2f)  &quot;, v, w, spt.dist(v, w));</b>
+<b class="nc">&nbsp;                    for (DirectedEdge e : spt.path(v, w))</b>
+<b class="nc">&nbsp;                        StdOut.print(e + &quot;  &quot;);</b>
+<b class="nc">&nbsp;                    StdOut.println();</b>
+&nbsp;                }
+&nbsp;                else {
+<b class="nc">&nbsp;                    StdOut.printf(&quot;%d to %d no path\n&quot;, v, w);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,574 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BinarySearchST</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: BinarySearchST (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BinarySearchST</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/118)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/119)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac BinarySearchST.java
+&nbsp; *  Execution:    java BinarySearchST
+&nbsp; *  Dependencies: StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/31elementary/tinyST.txt  
+&nbsp; *  
+&nbsp; *  Symbol table implementation with binary search in an ordered array.
+&nbsp; *
+&nbsp; *  % more tinyST.txt
+&nbsp; *  S E A R C H E X A M P L E
+&nbsp; *  
+&nbsp; *  % java BinarySearchST &lt; tinyST.txt
+&nbsp; *  A 8
+&nbsp; *  C 4
+&nbsp; *  E 12
+&nbsp; *  H 5
+&nbsp; *  L 11
+&nbsp; *  M 9
+&nbsp; *  P 10
+&nbsp; *  R 3
+&nbsp; *  S 0
+&nbsp; *  X 7
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code BST} class represents an ordered symbol table of generic
+&nbsp; *  key-value pairs.
+&nbsp; *  It supports the usual &lt;em&gt;put&lt;/em&gt;, &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;delete&lt;/em&gt;, &lt;em&gt;size&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt; methods.
+&nbsp; *  It also provides ordered methods for finding the &lt;em&gt;minimum&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;maximum&lt;/em&gt;, &lt;em&gt;floor&lt;/em&gt;, &lt;em&gt;select&lt;/em&gt;, and &lt;em&gt;ceiling&lt;/em&gt;.
+&nbsp; *  It also provides a &lt;em&gt;keys&lt;/em&gt; method for iterating over all of the keys.
+&nbsp; *  A symbol table implements the &lt;em&gt;associative array&lt;/em&gt; abstraction:
+&nbsp; *  when associating a value with a key that is already in the symbol table,
+&nbsp; *  the convention is to replace the old value with the new value.
+&nbsp; *  Unlike {@link java.util.Map}, this class uses the convention that
+&nbsp; *  values cannot be {@code null}—setting the
+&nbsp; *  value associated with a key to {@code null} is equivalent to deleting the key
+&nbsp; *  from the symbol table.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  It requires that
+&nbsp; *  the key type implements the {@code Comparable} interface and calls the
+&nbsp; *  {@code compareTo()} and method to compare two keys. It does not call either
+&nbsp; *  {@code equals()} or {@code hashCode()}.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a &lt;em&gt;sorted array&lt;/em&gt;.
+&nbsp; *  The &lt;em&gt;put&lt;/em&gt; and &lt;em&gt;remove&lt;/em&gt; operations take &amp;Theta;(&lt;em&gt;n&lt;/em&gt;)
+&nbsp; *  time in the worst case.
+&nbsp; *  The &lt;em&gt;contains&lt;/em&gt;, &lt;em&gt;ceiling&lt;/em&gt;, &lt;em&gt;floor&lt;/em&gt;,
+&nbsp; *  and &lt;em&gt;rank&lt;/em&gt; operations take &amp;Theta;(log &lt;em&gt;n&lt;/em&gt;) time in the worst
+&nbsp; *  case.
+&nbsp; *  The &lt;em&gt;size&lt;/em&gt;, &lt;em&gt;is-empty&lt;/em&gt;, &lt;em&gt;minimum&lt;/em&gt;, &lt;em&gt;maximum&lt;/em&gt;,
+&nbsp; *  and &lt;em&gt;select&lt;/em&gt; operations take &amp;Theta;(1) time.
+&nbsp; *  Construction takes &amp;Theta;(1) time.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For alternative implementations of the symbol table API,
+&nbsp; *  see {@link ST}, {@link BST}, {@link SequentialSearchST}, {@link RedBlackBST},
+&nbsp; *  {@link SeparateChainingHashST}, and {@link LinearProbingHashST},
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/31elementary&quot;&gt;Section 3.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; */
+<b class="nc">&nbsp;public class BinarySearchST&lt;Key extends Comparable&lt;Key&gt;, Value&gt; {</b>
+&nbsp;    private static final int INIT_CAPACITY = 2;
+&nbsp;    private Key[] keys;
+&nbsp;    private Value[] vals;
+<b class="nc">&nbsp;    private int n = 0;</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty symbol table.
+&nbsp;     */
+&nbsp;    public BinarySearchST() {
+<b class="nc">&nbsp;        this(INIT_CAPACITY);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty symbol table with the specified initial capacity.
+&nbsp;     * @param capacity the maximum capacity
+&nbsp;     */
+<b class="nc">&nbsp;    public BinarySearchST(int capacity) { </b>
+<b class="nc">&nbsp;        keys = (Key[]) new Comparable[capacity]; </b>
+<b class="nc">&nbsp;        vals = (Value[]) new Object[capacity]; </b>
+<b class="nc">&nbsp;    }   </b>
+&nbsp;
+&nbsp;    // resize the underlying arrays
+&nbsp;    private void resize(int capacity) {
+<b class="nc">&nbsp;        assert capacity &gt;= n;</b>
+<b class="nc">&nbsp;        Key[]   tempk = (Key[])   new Comparable[capacity];</b>
+<b class="nc">&nbsp;        Value[] tempv = (Value[]) new Object[capacity];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            tempk[i] = keys[i];</b>
+<b class="nc">&nbsp;            tempv[i] = vals[i];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        vals = tempv;</b>
+<b class="nc">&nbsp;        keys = tempk;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of key-value pairs in this symbol table.
+&nbsp;     *
+&nbsp;     * @return the number of key-value pairs in this symbol table
+&nbsp;     */
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return n;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this symbol table is empty.
+&nbsp;     *
+&nbsp;     * @return {@code true} if this symbol table is empty;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return size() == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Does this symbol table contain the given key?
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return {@code true} if this symbol table contains {@code key} and
+&nbsp;     *         {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public boolean contains(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to contains() is null&quot;);</b>
+<b class="nc">&nbsp;        return get(key) != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the value associated with the given key in this symbol table.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the value associated with the given key if the key is in the symbol table
+&nbsp;     *         and {@code null} if the key is not in the symbol table
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Value get(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to get() is null&quot;); </b>
+<b class="nc">&nbsp;        if (isEmpty()) return null;</b>
+<b class="nc">&nbsp;        int i = rank(key); </b>
+<b class="nc">&nbsp;        if (i &lt; n &amp;&amp; keys[i].compareTo(key) == 0) return vals[i];</b>
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    } 
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of keys in this symbol table strictly less than {@code key}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the number of keys in the symbol table strictly less than {@code key}
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public int rank(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to rank() is null&quot;); </b>
+&nbsp;
+<b class="nc">&nbsp;        int lo = 0, hi = n-1; </b>
+<b class="nc">&nbsp;        while (lo &lt;= hi) { </b>
+<b class="nc">&nbsp;            int mid = lo + (hi - lo) / 2; </b>
+<b class="nc">&nbsp;            int cmp = key.compareTo(keys[mid]);</b>
+<b class="nc">&nbsp;            if      (cmp &lt; 0) hi = mid - 1; </b>
+<b class="nc">&nbsp;            else if (cmp &gt; 0) lo = mid + 1; </b>
+<b class="nc">&nbsp;            else return mid; </b>
+<b class="nc">&nbsp;        } </b>
+<b class="nc">&nbsp;        return lo;</b>
+&nbsp;    } 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserts the specified key-value pair into the symbol table, overwriting the old 
+&nbsp;     * value with the new value if the symbol table already contains the specified key.
+&nbsp;     * Deletes the specified key (and its associated value) from this symbol table
+&nbsp;     * if the specified value is {@code null}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @param  val the value
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void put(Key key, Value val)  {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;first argument to put() is null&quot;); </b>
+&nbsp;
+<b class="nc">&nbsp;        if (val == null) {</b>
+<b class="nc">&nbsp;            delete(key);</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        int i = rank(key);</b>
+&nbsp;
+&nbsp;        // key is already in table
+<b class="nc">&nbsp;        if (i &lt; n &amp;&amp; keys[i].compareTo(key) == 0) {</b>
+<b class="nc">&nbsp;            vals[i] = val;</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // insert new key-value pair
+<b class="nc">&nbsp;        if (n == keys.length) resize(2*keys.length);</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int j = n; j &gt; i; j--)  {</b>
+<b class="nc">&nbsp;            keys[j] = keys[j-1];</b>
+<b class="nc">&nbsp;            vals[j] = vals[j-1];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        keys[i] = key;</b>
+<b class="nc">&nbsp;        vals[i] = val;</b>
+<b class="nc">&nbsp;        n++;</b>
+&nbsp;
+<b class="nc">&nbsp;        assert check();</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the specified key and associated value from this symbol table
+&nbsp;     * (if the key is in the symbol table).
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void delete(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to delete() is null&quot;); </b>
+<b class="nc">&nbsp;        if (isEmpty()) return;</b>
+&nbsp;
+&nbsp;        // compute rank
+<b class="nc">&nbsp;        int i = rank(key);</b>
+&nbsp;
+&nbsp;        // key not in table
+<b class="nc">&nbsp;        if (i == n || keys[i].compareTo(key) != 0) {</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        for (int j = i; j &lt; n-1; j++)  {</b>
+<b class="nc">&nbsp;            keys[j] = keys[j+1];</b>
+<b class="nc">&nbsp;            vals[j] = vals[j+1];</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        n--;</b>
+<b class="nc">&nbsp;        keys[n] = null;  // to avoid loitering</b>
+<b class="nc">&nbsp;        vals[n] = null;</b>
+&nbsp;
+&nbsp;        // resize if 1/4 full
+<b class="nc">&nbsp;        if (n &gt; 0 &amp;&amp; n == keys.length/4) resize(keys.length/2);</b>
+&nbsp;
+<b class="nc">&nbsp;        assert check();</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the smallest key and associated value from this symbol table.
+&nbsp;     *
+&nbsp;     * @throws NoSuchElementException if the symbol table is empty
+&nbsp;     */
+&nbsp;    public void deleteMin() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Symbol table underflow error&quot;);</b>
+<b class="nc">&nbsp;        delete(min());</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the largest key and associated value from this symbol table.
+&nbsp;     *
+&nbsp;     * @throws NoSuchElementException if the symbol table is empty
+&nbsp;     */
+&nbsp;    public void deleteMax() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Symbol table underflow error&quot;);</b>
+<b class="nc">&nbsp;        delete(max());</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;   /***************************************************************************
+&nbsp;    *  Ordered symbol table methods.
+&nbsp;    ***************************************************************************/
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns the smallest key in this symbol table.
+&nbsp;     *
+&nbsp;     * @return the smallest key in this symbol table
+&nbsp;     * @throws NoSuchElementException if this symbol table is empty
+&nbsp;     */
+&nbsp;    public Key min() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called min() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        return keys[0]; </b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the largest key in this symbol table.
+&nbsp;     *
+&nbsp;     * @return the largest key in this symbol table
+&nbsp;     * @throws NoSuchElementException if this symbol table is empty
+&nbsp;     */
+&nbsp;    public Key max() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called max() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        return keys[n-1];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Return the kth smallest key in this symbol table.
+&nbsp;     *
+&nbsp;     * @param  k the order statistic
+&nbsp;     * @return the {@code k}th smallest key in this symbol table
+&nbsp;     * @throws IllegalArgumentException unless {@code k} is between 0 and
+&nbsp;     *        &lt;em&gt;n&lt;/em&gt;–1
+&nbsp;     */
+&nbsp;    public Key select(int k) {
+<b class="nc">&nbsp;        if (k &lt; 0 || k &gt;= size()) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;called select() with invalid argument: &quot; + k);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return keys[k];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the largest key in this symbol table less than or equal to {@code key}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the largest key in this symbol table less than or equal to {@code key}
+&nbsp;     * @throws NoSuchElementException if there is no such key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Key floor(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to floor() is null&quot;); </b>
+<b class="nc">&nbsp;        int i = rank(key);</b>
+<b class="nc">&nbsp;        if (i &lt; n &amp;&amp; key.compareTo(keys[i]) == 0) return keys[i];</b>
+<b class="nc">&nbsp;        if (i == 0) throw new NoSuchElementException(&quot;argument to floor() is too small&quot;);</b>
+<b class="nc">&nbsp;        else return keys[i-1];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the smallest key in this symbol table greater than or equal to {@code key}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the smallest key in this symbol table greater than or equal to {@code key}
+&nbsp;     * @throws NoSuchElementException if there is no such key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Key ceiling(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to ceiling() is null&quot;); </b>
+<b class="nc">&nbsp;        int i = rank(key);</b>
+<b class="nc">&nbsp;        if (i == n) throw new NoSuchElementException(&quot;argument to ceiling() is too large&quot;);</b>
+<b class="nc">&nbsp;        else return keys[i];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of keys in this symbol table in the specified range.
+&nbsp;     *
+&nbsp;     * @param lo minimum endpoint
+&nbsp;     * @param hi maximum endpoint
+&nbsp;     * @return the number of keys in this symbol table between {@code lo} 
+&nbsp;     *         (inclusive) and {@code hi} (inclusive)
+&nbsp;     * @throws IllegalArgumentException if either {@code lo} or {@code hi}
+&nbsp;     *         is {@code null}
+&nbsp;     */
+&nbsp;    public int size(Key lo, Key hi) {
+<b class="nc">&nbsp;        if (lo == null) throw new IllegalArgumentException(&quot;first argument to size() is null&quot;); </b>
+<b class="nc">&nbsp;        if (hi == null) throw new IllegalArgumentException(&quot;second argument to size() is null&quot;); </b>
+&nbsp;
+<b class="nc">&nbsp;        if (lo.compareTo(hi) &gt; 0) return 0;</b>
+<b class="nc">&nbsp;        if (contains(hi)) return rank(hi) - rank(lo) + 1;</b>
+<b class="nc">&nbsp;        else              return rank(hi) - rank(lo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all keys in this symbol table as an {@code Iterable}.
+&nbsp;     * To iterate over all of the keys in the symbol table named {@code st},
+&nbsp;     * use the foreach notation: {@code for (Key key : st.keys())}.
+&nbsp;     *
+&nbsp;     * @return all keys in this symbol table
+&nbsp;     */
+&nbsp;    public Iterable&lt;Key&gt; keys() {
+<b class="nc">&nbsp;        return keys(min(), max());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all keys in this symbol table in the given range,
+&nbsp;     * as an {@code Iterable}.
+&nbsp;     *
+&nbsp;     * @param lo minimum endpoint
+&nbsp;     * @param hi maximum endpoint
+&nbsp;     * @return all keys in this symbol table between {@code lo} 
+&nbsp;     *         (inclusive) and {@code hi} (inclusive)
+&nbsp;     * @throws IllegalArgumentException if either {@code lo} or {@code hi}
+&nbsp;     *         is {@code null}
+&nbsp;     */
+&nbsp;    public Iterable&lt;Key&gt; keys(Key lo, Key hi) {
+<b class="nc">&nbsp;        if (lo == null) throw new IllegalArgumentException(&quot;first argument to keys() is null&quot;); </b>
+<b class="nc">&nbsp;        if (hi == null) throw new IllegalArgumentException(&quot;second argument to keys() is null&quot;); </b>
+&nbsp;
+<b class="nc">&nbsp;        Queue&lt;Key&gt; queue = new Queue&lt;Key&gt;(); </b>
+<b class="nc">&nbsp;        if (lo.compareTo(hi) &gt; 0) return queue;</b>
+<b class="nc">&nbsp;        for (int i = rank(lo); i &lt; rank(hi); i++) </b>
+<b class="nc">&nbsp;            queue.enqueue(keys[i]);</b>
+<b class="nc">&nbsp;        if (contains(hi)) queue.enqueue(keys[rank(hi)]);</b>
+<b class="nc">&nbsp;        return queue; </b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;   /***************************************************************************
+&nbsp;    *  Check internal invariants.
+&nbsp;    ***************************************************************************/
+&nbsp;
+&nbsp;    private boolean check() {
+<b class="nc">&nbsp;        return isSorted() &amp;&amp; rankCheck();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // are the items in the array in ascending order?
+&nbsp;    private boolean isSorted() {
+<b class="nc">&nbsp;        for (int i = 1; i &lt; size(); i++)</b>
+<b class="nc">&nbsp;            if (keys[i].compareTo(keys[i-1]) &lt; 0) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // check that rank(select(i)) = i
+&nbsp;    private boolean rankCheck() {
+<b class="nc">&nbsp;        for (int i = 0; i &lt; size(); i++)</b>
+<b class="nc">&nbsp;            if (i != rank(select(i))) return false;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; size(); i++)</b>
+<b class="nc">&nbsp;            if (keys[i].compareTo(select(rank(keys[i]))) != 0) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code BinarySearchST} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) { 
+<b class="nc">&nbsp;        BinarySearchST&lt;String, Integer&gt; st = new BinarySearchST&lt;String, Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int i = 0; !StdIn.isEmpty(); i++) {</b>
+<b class="nc">&nbsp;            String key = StdIn.readString();</b>
+<b class="nc">&nbsp;            st.put(key, i);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        for (String s : st.keys())</b>
+<b class="nc">&nbsp;            StdOut.println(s + &quot; &quot; + st.get(s));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

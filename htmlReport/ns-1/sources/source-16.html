@@ -1,0 +1,246 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BinarySearch</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: BinarySearch (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BinarySearch</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac BinarySearch.java
+&nbsp; *  Execution:    java BinarySearch allowlist.txt &lt; input.txt
+&nbsp; *  Dependencies: In.java StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/11model/tinyAllowlist.txt
+&nbsp; *                https://algs4.cs.princeton.edu/11model/tinyText.txt
+&nbsp; *                https://algs4.cs.princeton.edu/11model/largeAllowlist.txt
+&nbsp; *                https://algs4.cs.princeton.edu/11model/largeText.txt
+&nbsp; *
+&nbsp; *  % java BinarySearch tinyAllowlist.txt &lt; tinyText.txt
+&nbsp; *  50
+&nbsp; *  99
+&nbsp; *  13
+&nbsp; *
+&nbsp; *  % java BinarySearch largeAllowlist.txt &lt; largeText.txt | more
+&nbsp; *  499569
+&nbsp; *  984875
+&nbsp; *  295754
+&nbsp; *  207807
+&nbsp; *  140925
+&nbsp; *  161828
+&nbsp; *  [367,966 total values]
+&nbsp; *  
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Arrays;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code BinarySearch} class provides a static method for binary
+&nbsp; *  searching for an integer in a sorted array of integers.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The &lt;em&gt;indexOf&lt;/em&gt; operations takes logarithmic time in the worst case.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/11model&quot;&gt;Section 1.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class BinarySearch {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This class should not be instantiated.
+&nbsp;     */
+&nbsp;    private BinarySearch() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the index of the specified key in the specified array.
+&nbsp;     *
+&nbsp;     * @param  a the array of integers, must be sorted in ascending order
+&nbsp;     * @param  key the search key
+&nbsp;     * @return index of key in array {@code a} if present; {@code -1} otherwise
+&nbsp;     */
+&nbsp;    public static int indexOf(int[] a, int key) {
+<b class="nc">&nbsp;        int lo = 0;</b>
+<b class="nc">&nbsp;        int hi = a.length - 1;</b>
+<b class="nc">&nbsp;        while (lo &lt;= hi) {</b>
+&nbsp;            // Key is in a[lo..hi] or not present.
+<b class="nc">&nbsp;            int mid = lo + (hi - lo) / 2;</b>
+<b class="nc">&nbsp;            if      (key &lt; a[mid]) hi = mid - 1;</b>
+<b class="nc">&nbsp;            else if (key &gt; a[mid]) lo = mid + 1;</b>
+<b class="nc">&nbsp;            else return mid;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return -1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the index of the specified key in the specified array.
+&nbsp;     * This function is poorly named because it does not give the &lt;em&gt;rank&lt;/em&gt;
+&nbsp;     * if the array has duplicate keys or if the key is not in the array.
+&nbsp;     *
+&nbsp;     * @param  key the search key
+&nbsp;     * @param  a the array of integers, must be sorted in ascending order
+&nbsp;     * @return index of key in array {@code a} if present; {@code -1} otherwise
+&nbsp;     * @deprecated Replaced by {@link #indexOf(int[], int)}.
+&nbsp;     */
+&nbsp;    @Deprecated
+&nbsp;    public static int rank(int key, int[] a) {
+<b class="nc">&nbsp;        return indexOf(a, key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads in a sequence of integers from the allowlist file, specified as
+&nbsp;     * a command-line argument; reads in integers from standard input;
+&nbsp;     * prints to standard output those integers that do &lt;em&gt;not&lt;/em&gt; appear in the file.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // read the integers from a file
+<b class="nc">&nbsp;        In in = new In(args[0]);</b>
+<b class="nc">&nbsp;        int[] allowlist = in.readAllInts();</b>
+&nbsp;
+&nbsp;        // sort the array
+<b class="nc">&nbsp;        Arrays.sort(allowlist);</b>
+&nbsp;
+&nbsp;        // read integer key from standard input; print if not in allowlist
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            int key = StdIn.readInt();</b>
+<b class="nc">&nbsp;            if (BinarySearch.indexOf(allowlist, key) == -1)</b>
+<b class="nc">&nbsp;                StdOut.println(key);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

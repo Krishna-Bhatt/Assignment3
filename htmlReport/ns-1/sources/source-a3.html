@@ -1,0 +1,507 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SegmentTree</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: SegmentTree (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SegmentTree</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/68)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/106)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SegmentTree$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/68)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/109)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac SegmentTree.java
+&nbsp; *  Execution:    java SegmentTree
+&nbsp; *  
+&nbsp; *  A segment tree data structure.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Arrays;
+&nbsp;
+&nbsp;/**
+&nbsp; * The {@code SegmentTree} class is an structure for efficient search of cummulative data.
+&nbsp; * It performs  Range Minimum Query and Range Sum Query in O(log(n)) time.
+&nbsp; * It can be easily customizable to support Range Max Query, Range Multiplication Query etc.
+&nbsp; * &lt;p&gt;
+&nbsp; * Also it has been develop with  {@code LazyPropagation} for range updates, which means
+&nbsp; * when you perform update operations over a range, the update process affects the least nodes as possible
+&nbsp; * so that the bigger the range you want to update the less time it consumes to update it. Eventually those changes will be propagated
+&nbsp; * to the children and the whole array will be up to date.
+&nbsp; * &lt;p&gt;
+&nbsp; * Example:
+&nbsp; * &lt;p&gt;
+&nbsp; * SegmentTreeHeap st = new SegmentTreeHeap(new Integer[]{1,3,4,2,1, -2, 4});
+&nbsp; * st.update(0,3, 1)
+&nbsp; * In the above case only the node that represents the range [0,3] will be updated (and not their children) so in this case
+&nbsp; * the update task will be less than n*log(n)
+&nbsp; *
+&nbsp; * Memory usage:  O(n)
+&nbsp; *
+&nbsp; * @author Ricardo Pacheco 
+&nbsp; */
+&nbsp;public class SegmentTree {
+&nbsp;
+&nbsp;    private Node[] heap;
+&nbsp;    private int[] array;
+&nbsp;    private int size;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Time-Complexity:  O(n*log(n))
+&nbsp;     *
+&nbsp;     * @param array the Initialization array
+&nbsp;     */
+<b class="nc">&nbsp;    public SegmentTree(int[] array) {</b>
+<b class="nc">&nbsp;        this.array = Arrays.copyOf(array, array.length);</b>
+&nbsp;        //The max size of this array is about 2 * 2 ^ log2(n) + 1
+<b class="nc">&nbsp;        size = (int) (2 * Math.pow(2.0, Math.floor((Math.log((double) array.length) / Math.log(2.0)) + 1)));</b>
+<b class="nc">&nbsp;        heap = new Node[size];</b>
+<b class="nc">&nbsp;        build(1, 0, array.length);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return array.length;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //Initialize the Nodes of the Segment tree
+&nbsp;    private void build(int v, int from, int size) {
+<b class="nc">&nbsp;        heap[v] = new Node();</b>
+<b class="nc">&nbsp;        heap[v].from = from;</b>
+<b class="nc">&nbsp;        heap[v].to = from + size - 1;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (size == 1) {</b>
+<b class="nc">&nbsp;            heap[v].sum = array[from];</b>
+<b class="nc">&nbsp;            heap[v].min = array[from];</b>
+&nbsp;        } else {
+&nbsp;            //Build childs
+<b class="nc">&nbsp;            build(2 * v, from, size / 2);</b>
+<b class="nc">&nbsp;            build(2 * v + 1, from + size / 2, size - size / 2);</b>
+&nbsp;
+<b class="nc">&nbsp;            heap[v].sum = heap[2 * v].sum + heap[2 * v + 1].sum;</b>
+&nbsp;            //min = min of the children
+<b class="nc">&nbsp;            heap[v].min = Math.min(heap[2 * v].min, heap[2 * v + 1].min);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Range Sum Query
+&nbsp;     *
+&nbsp;     * Time-Complexity: O(log(n))
+&nbsp;     *
+&nbsp;     * @param  from from index
+&nbsp;     * @param  to to index
+&nbsp;     * @return sum
+&nbsp;     */
+&nbsp;    public int rsq(int from, int to) {
+<b class="nc">&nbsp;        return rsq(1, from, to);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private int rsq(int v, int from, int to) {
+<b class="nc">&nbsp;        Node n = heap[v];</b>
+&nbsp;
+&nbsp;        //If you did a range update that contained this node, you can infer the Sum without going down the tree
+<b class="nc">&nbsp;        if (n.pendingVal != null &amp;&amp; contains(n.from, n.to, from, to)) {</b>
+<b class="nc">&nbsp;            return (to - from + 1) * n.pendingVal;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (contains(from, to, n.from, n.to)) {</b>
+<b class="nc">&nbsp;            return heap[v].sum;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (intersects(from, to, n.from, n.to)) {</b>
+<b class="nc">&nbsp;            propagate(v);</b>
+<b class="nc">&nbsp;            int leftSum = rsq(2 * v, from, to);</b>
+<b class="nc">&nbsp;            int rightSum = rsq(2 * v + 1, from, to);</b>
+&nbsp;
+<b class="nc">&nbsp;            return leftSum + rightSum;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Range Min Query
+&nbsp;     * 
+&nbsp;     * Time-Complexity: O(log(n))
+&nbsp;     *
+&nbsp;     * @param  from from index
+&nbsp;     * @param  to to index
+&nbsp;     * @return min
+&nbsp;     */
+&nbsp;    public int rMinQ(int from, int to) {
+<b class="nc">&nbsp;        return rMinQ(1, from, to);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private int rMinQ(int v, int from, int to) {
+<b class="nc">&nbsp;        Node n = heap[v];</b>
+&nbsp;
+&nbsp;
+&nbsp;        //If you did a range update that contained this node, you can infer the Min value without going down the tree
+<b class="nc">&nbsp;        if (n.pendingVal != null &amp;&amp; contains(n.from, n.to, from, to)) {</b>
+<b class="nc">&nbsp;            return n.pendingVal;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (contains(from, to, n.from, n.to)) {</b>
+<b class="nc">&nbsp;            return heap[v].min;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (intersects(from, to, n.from, n.to)) {</b>
+<b class="nc">&nbsp;            propagate(v);</b>
+<b class="nc">&nbsp;            int leftMin = rMinQ(2 * v, from, to);</b>
+<b class="nc">&nbsp;            int rightMin = rMinQ(2 * v + 1, from, to);</b>
+&nbsp;
+<b class="nc">&nbsp;            return Math.min(leftMin, rightMin);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return Integer.MAX_VALUE;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Range Update Operation.
+&nbsp;     * With this operation you can update either one position or a range of positions with a given number.
+&nbsp;     * The update operations will update the less it can to update the whole range (Lazy Propagation).
+&nbsp;     * The values will be propagated lazily from top to bottom of the segment tree.
+&nbsp;     * This behavior is really useful for updates on portions of the array
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Time-Complexity: O(log(n))
+&nbsp;     *
+&nbsp;     * @param from  from index
+&nbsp;     * @param to    to index
+&nbsp;     * @param value value
+&nbsp;     */
+&nbsp;    public void update(int from, int to, int value) {
+<b class="nc">&nbsp;        update(1, from, to, value);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private void update(int v, int from, int to, int value) {
+&nbsp;
+&nbsp;        //The Node of the heap tree represents a range of the array with bounds: [n.from, n.to]
+<b class="nc">&nbsp;        Node n = heap[v];</b>
+&nbsp;
+&nbsp;        /**
+&nbsp;         * If the updating-range contains the portion of the current Node  We lazily update it.
+&nbsp;         * This means We do NOT update each position of the vector, but update only some temporal
+&nbsp;         * values into the Node; such values into the Node will be propagated down to its children only when they need to.
+&nbsp;         */
+<b class="nc">&nbsp;        if (contains(from, to, n.from, n.to)) {</b>
+<b class="nc">&nbsp;            change(n, value);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (n.size() == 1) return;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (intersects(from, to, n.from, n.to)) {</b>
+&nbsp;            /**
+&nbsp;             * Before keeping going down to the tree We need to propagate the
+&nbsp;             * the values that have been temporally/lazily saved into this Node to its children
+&nbsp;             * So that when We visit them the values  are properly updated
+&nbsp;             */
+<b class="nc">&nbsp;            propagate(v);</b>
+&nbsp;
+<b class="nc">&nbsp;            update(2 * v, from, to, value);</b>
+<b class="nc">&nbsp;            update(2 * v + 1, from, to, value);</b>
+&nbsp;
+<b class="nc">&nbsp;            n.sum = heap[2 * v].sum + heap[2 * v + 1].sum;</b>
+<b class="nc">&nbsp;            n.min = Math.min(heap[2 * v].min, heap[2 * v + 1].min);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    //Propagate temporal values to children
+&nbsp;    private void propagate(int v) {
+<b class="nc">&nbsp;        Node n = heap[v];</b>
+&nbsp;
+<b class="nc">&nbsp;        if (n.pendingVal != null) {</b>
+<b class="nc">&nbsp;            change(heap[2 * v], n.pendingVal);</b>
+<b class="nc">&nbsp;            change(heap[2 * v + 1], n.pendingVal);</b>
+<b class="nc">&nbsp;            n.pendingVal = null; //unset the pending propagation value</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    //Save the temporal values that will be propagated lazily
+&nbsp;    private void change(Node n, int value) {
+<b class="nc">&nbsp;        n.pendingVal = value;</b>
+<b class="nc">&nbsp;        n.sum = n.size() * value;</b>
+<b class="nc">&nbsp;        n.min = value;</b>
+<b class="nc">&nbsp;        array[n.from] = value;</b>
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    //Test if the range1 contains range2
+&nbsp;    private boolean contains(int from1, int to1, int from2, int to2) {
+<b class="nc">&nbsp;        return from2 &gt;= from1 &amp;&amp; to2 &lt;= to1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //check inclusive intersection, test if range1[from1, to1] intersects range2[from2, to2]
+&nbsp;    private boolean intersects(int from1, int to1, int from2, int to2) {
+<b class="nc">&nbsp;        return from1 &lt;= from2 &amp;&amp; to1 &gt;= from2   //  (.[..)..] or (.[...]..)</b>
+&nbsp;                || from1 &gt;= from2 &amp;&amp; from1 &lt;= to2; // [.(..]..) or [..(..)..
+&nbsp;    }
+&nbsp;
+&nbsp;    //The Node class represents a partition range of the array.
+<b class="nc">&nbsp;    static class Node {</b>
+&nbsp;        int sum;
+&nbsp;        int min;
+&nbsp;        //Here We store the value that will be propagated lazily
+<b class="nc">&nbsp;        Integer pendingVal = null;</b>
+&nbsp;        int from;
+&nbsp;        int to;
+&nbsp;
+&nbsp;        int size() {
+<b class="nc">&nbsp;            return to - from + 1;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Read the following commands:
+&nbsp;     * init n v     Initializes the array of size n with all v&#39;s
+&nbsp;     * set a b c... Initializes the array  with [a, b, c ...]
+&nbsp;     * rsq a b      Range Sum Query for the range [a, b]
+&nbsp;     * rmq a b      Range Min Query for the range [a, b]
+&nbsp;     * up  a b v    Update the [a,b] portion of the array with value v.
+&nbsp;     * exit
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Example:
+&nbsp;     * init
+&nbsp;     * set 1 2 3 4 5 6
+&nbsp;     * rsq 1 3
+&nbsp;     * Sum from 1 to 3 = 6
+&nbsp;     * rmq 1 3
+&nbsp;     * Min from 1 to 3 = 1
+&nbsp;     * input up 1 3
+&nbsp;     * [3,2,3,4,5,6]
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        SegmentTree st = null;</b>
+&nbsp;
+<b class="nc">&nbsp;        String cmd = &quot;cmp&quot;;</b>
+&nbsp;        while (true) {
+<b class="nc">&nbsp;            String[] line = StdIn.readLine().split(&quot; &quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (line[0].equals(&quot;exit&quot;)) break;</b>
+&nbsp;
+<b class="nc">&nbsp;            int arg1 = 0, arg2 = 0, arg3 = 0;</b>
+&nbsp;
+<b class="nc">&nbsp;            if (line.length &gt; 1) {</b>
+<b class="nc">&nbsp;                arg1 = Integer.parseInt(line[1]);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (line.length &gt; 2) {</b>
+<b class="nc">&nbsp;                arg2 = Integer.parseInt(line[2]);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (line.length &gt; 3) {</b>
+<b class="nc">&nbsp;                arg3 = Integer.parseInt(line[3]);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if ((!line[0].equals(&quot;set&quot;) &amp;&amp; !line[0].equals(&quot;init&quot;)) &amp;&amp; st == null) {</b>
+<b class="nc">&nbsp;                StdOut.println(&quot;Segment Tree not initialized&quot;);</b>
+<b class="nc">&nbsp;                continue;</b>
+&nbsp;            }
+&nbsp;            int array[];
+<b class="nc">&nbsp;            if (line[0].equals(&quot;set&quot;)) {</b>
+<b class="nc">&nbsp;                array = new int[line.length - 1];</b>
+<b class="nc">&nbsp;                for (int i = 0; i &lt; line.length - 1; i++) {</b>
+<b class="nc">&nbsp;                    array[i] = Integer.parseInt(line[i + 1]);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                st = new SegmentTree(array);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            else if (line[0].equals(&quot;init&quot;)) {</b>
+<b class="nc">&nbsp;                array = new int[arg1];</b>
+<b class="nc">&nbsp;                Arrays.fill(array, arg2);</b>
+<b class="nc">&nbsp;                st = new SegmentTree(array);</b>
+&nbsp;
+<b class="nc">&nbsp;                for (int i = 0; i &lt; st.size(); i++) {</b>
+<b class="nc">&nbsp;                    StdOut.print(st.rsq(i, i) + &quot; &quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                StdOut.println();</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            else if (line[0].equals(&quot;up&quot;)) {</b>
+<b class="nc">&nbsp;                st.update(arg1, arg2, arg3);</b>
+<b class="nc">&nbsp;                for (int i = 0; i &lt; st.size(); i++) {</b>
+<b class="nc">&nbsp;                    StdOut.print(st.rsq(i, i) + &quot; &quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                StdOut.println();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            else if (line[0].equals(&quot;rsq&quot;)) {</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;Sum from %d to %d = %d%n&quot;, arg1, arg2, st.rsq(arg1, arg2));</b>
+&nbsp;            }
+<b class="nc">&nbsp;            else if (line[0].equals(&quot;rmq&quot;)) {</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;Min from %d to %d = %d%n&quot;, arg1, arg2, st.rMinQ(arg1, arg2));</b>
+&nbsp;            }
+&nbsp;            else {
+<b class="nc">&nbsp;                StdOut.println(&quot;Invalid command&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

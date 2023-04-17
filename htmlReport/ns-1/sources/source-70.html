@@ -1,0 +1,294 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LSD</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: LSD (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LSD</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/50)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac LSD.java
+&nbsp; *  Execution:    java LSD &lt; input.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java 
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/51radix/words3.txt
+&nbsp; *
+&nbsp; *  LSD radix sort
+&nbsp; *
+&nbsp; *    - Sort a String[] array of n extended ASCII strings (R = 256), each of length w.
+&nbsp; *
+&nbsp; *    - Sort an int[] array of n 32-bit integers, treating each integer as 
+&nbsp; *      a sequence of w = 4 bytes (R = 256).
+&nbsp; *
+&nbsp; *  Uses extra space proportional to n + R.
+&nbsp; *
+&nbsp; *
+&nbsp; *  % java LSD &lt; words3.txt
+&nbsp; *  all
+&nbsp; *  bad
+&nbsp; *  bed
+&nbsp; *  bug
+&nbsp; *  dad
+&nbsp; *  ...
+&nbsp; *  yes
+&nbsp; *  yet
+&nbsp; *  zoo
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code LSD} class provides static methods for sorting an
+&nbsp; *  array of &lt;em&gt;w&lt;/em&gt;-character strings or 32-bit integers using LSD radix sort.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/51radix&quot;&gt;Section 5.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class LSD {</b>
+&nbsp;    private static final int BITS_PER_BYTE = 8;
+&nbsp;
+&nbsp;    // do not instantiate
+&nbsp;    private LSD() { }
+&nbsp;
+&nbsp;   /**  
+&nbsp;     * Rearranges the array of w-character strings in ascending order.
+&nbsp;     *
+&nbsp;     * @param a the array to be sorted
+&nbsp;     * @param w the number of characters per string
+&nbsp;     */
+&nbsp;    public static void sort(String[] a, int w) {
+<b class="nc">&nbsp;        int n = a.length;</b>
+<b class="nc">&nbsp;        int R = 256;   // extend ASCII alphabet size</b>
+<b class="nc">&nbsp;        String[] aux = new String[n];</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int d = w-1; d &gt;= 0; d--) {</b>
+&nbsp;            // sort by key-indexed counting on dth character
+&nbsp;
+&nbsp;            // compute frequency counts
+<b class="nc">&nbsp;            int[] count = new int[R+1];</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;                count[a[i].charAt(d) + 1]++;</b>
+&nbsp;
+&nbsp;            // compute cumulates
+<b class="nc">&nbsp;            for (int r = 0; r &lt; R; r++)</b>
+<b class="nc">&nbsp;                count[r+1] += count[r];</b>
+&nbsp;
+&nbsp;            // move data
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;                aux[count[a[i].charAt(d)]++] = a[i];</b>
+&nbsp;
+&nbsp;            // copy back
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;                a[i] = aux[i];</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Rearranges the array of 32-bit integers in ascending order.
+&nbsp;     * This is about 2-3x faster than Arrays.sort().
+&nbsp;     *
+&nbsp;     * @param a the array to be sorted
+&nbsp;     */
+&nbsp;    public static void sort(int[] a) {
+<b class="nc">&nbsp;        final int BITS = 32;                 // each int is 32 bits </b>
+<b class="nc">&nbsp;        final int R = 1 &lt;&lt; BITS_PER_BYTE;    // each bytes is between 0 and 255</b>
+<b class="nc">&nbsp;        final int MASK = R - 1;              // 0xFF</b>
+<b class="nc">&nbsp;        final int w = BITS / BITS_PER_BYTE;  // each int is 4 bytes</b>
+&nbsp;
+<b class="nc">&nbsp;        int n = a.length;</b>
+<b class="nc">&nbsp;        int[] aux = new int[n];</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int d = 0; d &lt; w; d++) {         </b>
+&nbsp;
+&nbsp;            // compute frequency counts
+<b class="nc">&nbsp;            int[] count = new int[R+1];</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++) {           </b>
+<b class="nc">&nbsp;                int c = (a[i] &gt;&gt; BITS_PER_BYTE*d) &amp; MASK;</b>
+<b class="nc">&nbsp;                count[c + 1]++;</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // compute cumulates
+<b class="nc">&nbsp;            for (int r = 0; r &lt; R; r++)</b>
+<b class="nc">&nbsp;                count[r+1] += count[r];</b>
+&nbsp;
+&nbsp;            // for most significant byte, 0x80-0xFF comes before 0x00-0x7F
+<b class="nc">&nbsp;            if (d == w-1) {</b>
+<b class="nc">&nbsp;                int shift1 = count[R] - count[R/2];</b>
+<b class="nc">&nbsp;                int shift2 = count[R/2];</b>
+<b class="nc">&nbsp;                for (int r = 0; r &lt; R/2; r++)</b>
+<b class="nc">&nbsp;                    count[r] += shift1;</b>
+<b class="nc">&nbsp;                for (int r = R/2; r &lt; R; r++)</b>
+<b class="nc">&nbsp;                    count[r] -= shift2;</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // move data
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;                int c = (a[i] &gt;&gt; BITS_PER_BYTE*d) &amp; MASK;</b>
+<b class="nc">&nbsp;                aux[count[c]++] = a[i];</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // copy back
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;                a[i] = aux[i];</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads in a sequence of fixed-length strings from standard input;
+&nbsp;     * LSD radix sorts them;
+&nbsp;     * and prints them to standard output in ascending order.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String[] a = StdIn.readAllStrings();</b>
+<b class="nc">&nbsp;        int n = a.length;</b>
+&nbsp;
+&nbsp;        // check that strings have fixed length
+<b class="nc">&nbsp;        int w = a[0].length();</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            assert a[i].length() == w : &quot;Strings must have fixed length&quot;;</b>
+&nbsp;
+&nbsp;        // sort the strings
+<b class="nc">&nbsp;        sort(a, w);</b>
+&nbsp;
+&nbsp;        // print results
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

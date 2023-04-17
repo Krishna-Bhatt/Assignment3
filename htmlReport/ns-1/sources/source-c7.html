@@ -1,0 +1,171 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > DrawListener</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: DrawListener (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">DrawListener</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac DrawListener.java
+&nbsp; *  Execution:    none
+&nbsp; *  Dependencies: none
+&nbsp; *
+&nbsp; *  Interface that accompanies Draw.java.
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  &lt;i&gt;DrawListener&lt;/i&gt;. This interface provides a basic capability for
+&nbsp; *  responding to keyboard in mouse events from {@link Draw} via callbacks.
+&nbsp; *  You can see some examples in
+&nbsp; *  &lt;a href=&quot;https://introcs.cs.princeton.edu/java/36inheritance&quot;&gt;Section 3.6&lt;/a&gt;.
+&nbsp; *
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://introcs.cs.princeton.edu/31datatype&quot;&gt;Section 3.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Computer Science: An Interdisciplinary Approach&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;
+&nbsp;public interface DrawListener {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Invoked when the mouse has been pressed.
+&nbsp;     *
+&nbsp;     * @param x the x-coordinate of the mouse
+&nbsp;     * @param y the y-coordinate of the mouse
+&nbsp;     */
+&nbsp;    void mousePressed(double x, double y);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Invoked when the mouse has been dragged.
+&nbsp;     *
+&nbsp;     * @param x the x-coordinate of the mouse
+&nbsp;     * @param y the y-coordinate of the mouse
+&nbsp;     */
+&nbsp;    void mouseDragged(double x, double y);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Invoked when the mouse has been released.
+&nbsp;     *
+&nbsp;     * @param x the x-coordinate of the mouse
+&nbsp;     * @param y the y-coordinate of the mouse
+&nbsp;     */
+&nbsp;    void mouseReleased(double x, double y);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Invoked when the mouse has been clicked (pressed and released).
+&nbsp;     *
+&nbsp;     * @param x the x-coordinate of the mouse
+&nbsp;     * @param y the y-coordinate of the mouse
+&nbsp;     */
+&nbsp;    void mouseClicked(double x, double y);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Invoked when a key has been typed.
+&nbsp;     *
+&nbsp;     * @param c the character typed
+&nbsp;     */
+&nbsp;    void keyTyped(char c);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Invoked when a key has been pressed.
+&nbsp;     *
+&nbsp;     * @param keycode the key combination pressed
+&nbsp;     */
+&nbsp;    void keyPressed(int keycode);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Invoked when a key has been released.
+&nbsp;     *
+&nbsp;     * @param keycode the key combination released
+&nbsp;     */
+&nbsp;    void keyReleased(int keycode);
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,388 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Huffman</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Huffman (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Huffman</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/64)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Huffman$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/74)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Huffman.java
+&nbsp; *  Execution:    java Huffman - &lt; input.txt   (compress)
+&nbsp; *  Execution:    java Huffman + &lt; input.txt   (expand)
+&nbsp; *  Dependencies: BinaryIn.java BinaryOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/55compression/abra.txt
+&nbsp; *                https://algs4.cs.princeton.edu/55compression/tinytinyTale.txt
+&nbsp; *                https://algs4.cs.princeton.edu/55compression/medTale.txt
+&nbsp; *                https://algs4.cs.princeton.edu/55compression/tale.txt
+&nbsp; *
+&nbsp; *  Compress or expand a binary input stream using the Huffman algorithm.
+&nbsp; *
+&nbsp; *  % java Huffman - &lt; abra.txt | java BinaryDump 60
+&nbsp; *  010100000100101000100010010000110100001101010100101010000100
+&nbsp; *  000000000000000000000000000110001111100101101000111110010100
+&nbsp; *  120 bits
+&nbsp; *
+&nbsp; *  % java Huffman - &lt; abra.txt | java Huffman +
+&nbsp; *  ABRACADABRA!
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Huffman} class provides static methods for compressing
+&nbsp; *  and expanding a binary input using Huffman codes over the 8-bit extended
+&nbsp; *  ASCII alphabet.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/55compression&quot;&gt;Section 5.5&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class Huffman {
+&nbsp;
+&nbsp;    // alphabet size of extended ASCII
+&nbsp;    private static final int R = 256;
+&nbsp;
+&nbsp;    // Do not instantiate.
+&nbsp;    private Huffman() { }
+&nbsp;
+&nbsp;    // Huffman trie node
+<b class="nc">&nbsp;    private static class Node implements Comparable&lt;Node&gt; {</b>
+&nbsp;        private final char ch;
+&nbsp;        private final int freq;
+&nbsp;        private final Node left, right;
+&nbsp;
+<b class="nc">&nbsp;        Node(char ch, int freq, Node left, Node right) {</b>
+<b class="nc">&nbsp;            this.ch    = ch;</b>
+<b class="nc">&nbsp;            this.freq  = freq;</b>
+<b class="nc">&nbsp;            this.left  = left;</b>
+<b class="nc">&nbsp;            this.right = right;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // is the node a leaf node?
+&nbsp;        private boolean isLeaf() {
+<b class="nc">&nbsp;            assert ((left == null) &amp;&amp; (right == null)) || ((left != null) &amp;&amp; (right != null));</b>
+<b class="nc">&nbsp;            return (left == null) &amp;&amp; (right == null);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // compare, based on frequency
+&nbsp;        public int compareTo(Node that) {
+<b class="nc">&nbsp;            return this.freq - that.freq;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads a sequence of 8-bit bytes from standard input; compresses them
+&nbsp;     * using Huffman codes with an 8-bit alphabet; and writes the results
+&nbsp;     * to standard output.
+&nbsp;     */
+&nbsp;    public static void compress() {
+&nbsp;        // read the input
+<b class="nc">&nbsp;        String s = BinaryStdIn.readString();</b>
+<b class="nc">&nbsp;        char[] input = s.toCharArray();</b>
+&nbsp;
+&nbsp;        // tabulate frequency counts
+<b class="nc">&nbsp;        int[] freq = new int[R];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; input.length; i++)</b>
+<b class="nc">&nbsp;            freq[input[i]]++;</b>
+&nbsp;
+&nbsp;        // build Huffman trie
+<b class="nc">&nbsp;        Node root = buildTrie(freq);</b>
+&nbsp;
+&nbsp;        // build code table
+<b class="nc">&nbsp;        String[] st = new String[R];</b>
+<b class="nc">&nbsp;        buildCode(st, root, &quot;&quot;);</b>
+&nbsp;
+&nbsp;        // print trie for decoder
+<b class="nc">&nbsp;        writeTrie(root);</b>
+&nbsp;
+&nbsp;        // print number of bytes in original uncompressed message
+<b class="nc">&nbsp;        BinaryStdOut.write(input.length);</b>
+&nbsp;
+&nbsp;        // use Huffman code to encode input
+<b class="nc">&nbsp;        for (int i = 0; i &lt; input.length; i++) {</b>
+<b class="nc">&nbsp;            String code = st[input[i]];</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; code.length(); j++) {</b>
+<b class="nc">&nbsp;                if (code.charAt(j) == &#39;0&#39;) {</b>
+<b class="nc">&nbsp;                    BinaryStdOut.write(false);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                else if (code.charAt(j) == &#39;1&#39;) {</b>
+<b class="nc">&nbsp;                    BinaryStdOut.write(true);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                else throw new IllegalStateException(&quot;Illegal state&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // close output stream
+<b class="nc">&nbsp;        BinaryStdOut.close();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // build the Huffman trie given frequencies
+&nbsp;    private static Node buildTrie(int[] freq) {
+&nbsp;
+&nbsp;        // initialze priority queue with singleton trees
+<b class="nc">&nbsp;        MinPQ&lt;Node&gt; pq = new MinPQ&lt;Node&gt;();</b>
+<b class="nc">&nbsp;        for (char c = 0; c &lt; R; c++)</b>
+<b class="nc">&nbsp;            if (freq[c] &gt; 0)</b>
+<b class="nc">&nbsp;                pq.insert(new Node(c, freq[c], null, null));</b>
+&nbsp;
+&nbsp;        // merge two smallest trees
+<b class="nc">&nbsp;        while (pq.size() &gt; 1) {</b>
+<b class="nc">&nbsp;            Node left  = pq.delMin();</b>
+<b class="nc">&nbsp;            Node right = pq.delMin();</b>
+<b class="nc">&nbsp;            Node parent = new Node(&#39;\0&#39;, left.freq + right.freq, left, right);</b>
+<b class="nc">&nbsp;            pq.insert(parent);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return pq.delMin();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // write bitstring-encoded trie to standard output
+&nbsp;    private static void writeTrie(Node x) {
+<b class="nc">&nbsp;        if (x.isLeaf()) {</b>
+<b class="nc">&nbsp;            BinaryStdOut.write(true);</b>
+<b class="nc">&nbsp;            BinaryStdOut.write(x.ch, 8);</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        BinaryStdOut.write(false);</b>
+<b class="nc">&nbsp;        writeTrie(x.left);</b>
+<b class="nc">&nbsp;        writeTrie(x.right);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // make a lookup table from symbols and their encodings
+&nbsp;    private static void buildCode(String[] st, Node x, String s) {
+<b class="nc">&nbsp;        if (!x.isLeaf()) {</b>
+<b class="nc">&nbsp;            buildCode(st, x.left,  s + &#39;0&#39;);</b>
+<b class="nc">&nbsp;            buildCode(st, x.right, s + &#39;1&#39;);</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            st[x.ch] = s;</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads a sequence of bits that represents a Huffman-compressed message from
+&nbsp;     * standard input; expands them; and writes the results to standard output.
+&nbsp;     */
+&nbsp;    public static void expand() {
+&nbsp;
+&nbsp;        // read in Huffman trie from input stream
+<b class="nc">&nbsp;        Node root = readTrie(); </b>
+&nbsp;
+&nbsp;        // number of bytes to write
+<b class="nc">&nbsp;        int length = BinaryStdIn.readInt();</b>
+&nbsp;
+&nbsp;        // decode using the Huffman trie
+<b class="nc">&nbsp;        for (int i = 0; i &lt; length; i++) {</b>
+<b class="nc">&nbsp;            Node x = root;</b>
+<b class="nc">&nbsp;            while (!x.isLeaf()) {</b>
+<b class="nc">&nbsp;                boolean bit = BinaryStdIn.readBoolean();</b>
+<b class="nc">&nbsp;                if (bit) x = x.right;</b>
+<b class="nc">&nbsp;                else     x = x.left;</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            BinaryStdOut.write(x.ch, 8);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        BinaryStdOut.close();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    private static Node readTrie() {
+<b class="nc">&nbsp;        boolean isLeaf = BinaryStdIn.readBoolean();</b>
+<b class="nc">&nbsp;        if (isLeaf) {</b>
+<b class="nc">&nbsp;            return new Node(BinaryStdIn.readChar(), -1, null, null);</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            return new Node(&#39;\0&#39;, -1, readTrie(), readTrie());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sample client that calls {@code compress()} if the command-line
+&nbsp;     * argument is &quot;-&quot; an {@code expand()} if it is &quot;+&quot;.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        if      (args[0].equals(&quot;-&quot;)) compress();</b>
+<b class="nc">&nbsp;        else if (args[0].equals(&quot;+&quot;)) expand();</b>
+<b class="nc">&nbsp;        else throw new IllegalArgumentException(&quot;Illegal command line argument&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

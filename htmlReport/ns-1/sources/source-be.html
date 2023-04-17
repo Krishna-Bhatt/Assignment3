@@ -1,0 +1,458 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > TopologicalX</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: TopologicalX (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TopologicalX</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/90)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/137)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac TopologicalX.java
+&nbsp; *  Execution:    java TopologicalX V E F
+&nbsp; *  Dependencies: Queue.java Digraph.java
+&nbsp; *
+&nbsp; *  Compute topological ordering of a DAG using queue-based algorithm.
+&nbsp; *  Runs in O(E + V) time.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code TopologicalX} class represents a data type for 
+&nbsp; *  determining a topological order of a &lt;em&gt;directed acyclic graph&lt;/em&gt; (DAG).
+&nbsp; *  A digraph has a topological order if and only if it is a DAG.
+&nbsp; *  The &lt;em&gt;hasOrder&lt;/em&gt; operation determines whether the digraph has
+&nbsp; *  a topological order, and if so, the &lt;em&gt;order&lt;/em&gt; operation
+&nbsp; *  returns one.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a nonrecursive, queue-based algorithm.
+&nbsp; *  The constructor takes &amp;Theta;(&lt;em&gt;V&lt;/em&gt; + &lt;em&gt;E&lt;/em&gt;) time in the worst
+&nbsp; *  case, where &lt;em&gt;V&lt;/em&gt; is the number of vertices and &lt;em&gt;E&lt;/em&gt;
+&nbsp; *  is the number of edges.
+&nbsp; *  Each instance method takes &amp;Theta;(1) time.
+&nbsp; *  It uses &amp;Theta;(&lt;em&gt;V&lt;/em&gt;) extra space (not including the digraph).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  See {@link DirectedCycle}, {@link DirectedCycleX}, and
+&nbsp; *  {@link EdgeWeightedDirectedCycle} to compute a
+&nbsp; *  directed cycle if the digraph is not a DAG.
+&nbsp; *  See {@link Topological} for a recursive version that uses depth-first search.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/42digraph&quot;&gt;Section 4.2&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class TopologicalX {</b>
+&nbsp;    private Queue&lt;Integer&gt; order;     // vertices in topological order
+&nbsp;    private int[] ranks;              // ranks[v] = order where vertex v appers in order
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines whether the digraph {@code G} has a topological order and, if so,
+&nbsp;     * finds such a topological order.
+&nbsp;     * @param G the digraph
+&nbsp;     */
+<b class="nc">&nbsp;    public TopologicalX(Digraph G) {</b>
+&nbsp;
+&nbsp;        // indegrees of remaining vertices
+<b class="nc">&nbsp;        int[] indegree = new int[G.V()];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            indegree[v] = G.indegree(v);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // initialize 
+<b class="nc">&nbsp;        ranks = new int[G.V()]; </b>
+<b class="nc">&nbsp;        order = new Queue&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        int count = 0;</b>
+&nbsp;
+&nbsp;        // initialize queue to contain all vertices with indegree = 0
+<b class="nc">&nbsp;        Queue&lt;Integer&gt; queue = new Queue&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            if (indegree[v] == 0) queue.enqueue(v);</b>
+&nbsp;
+<b class="nc">&nbsp;        while (!queue.isEmpty()) {</b>
+<b class="nc">&nbsp;            int v = queue.dequeue();</b>
+<b class="nc">&nbsp;            order.enqueue(v);</b>
+<b class="nc">&nbsp;            ranks[v] = count++;</b>
+<b class="nc">&nbsp;            for (int w : G.adj(v)) {</b>
+<b class="nc">&nbsp;                indegree[w]--;</b>
+<b class="nc">&nbsp;                if (indegree[w] == 0) queue.enqueue(w);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // there is a directed cycle in subgraph of vertices with indegree &gt;= 1.
+<b class="nc">&nbsp;        if (count != G.V()) {</b>
+<b class="nc">&nbsp;            order = null;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        assert check(G);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines whether the edge-weighted digraph {@code G} has a
+&nbsp;     * topological order and, if so, finds such a topological order.
+&nbsp;     * @param G the digraph
+&nbsp;     */
+<b class="nc">&nbsp;    public TopologicalX(EdgeWeightedDigraph G) {</b>
+&nbsp;
+&nbsp;        // indegrees of remaining vertices
+<b class="nc">&nbsp;        int[] indegree = new int[G.V()];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            indegree[v] = G.indegree(v);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // initialize 
+<b class="nc">&nbsp;        ranks = new int[G.V()]; </b>
+<b class="nc">&nbsp;        order = new Queue&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        int count = 0;</b>
+&nbsp;
+&nbsp;        // initialize queue to contain all vertices with indegree = 0
+<b class="nc">&nbsp;        Queue&lt;Integer&gt; queue = new Queue&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            if (indegree[v] == 0) queue.enqueue(v);</b>
+&nbsp;
+<b class="nc">&nbsp;        while (!queue.isEmpty()) {</b>
+<b class="nc">&nbsp;            int v = queue.dequeue();</b>
+<b class="nc">&nbsp;            order.enqueue(v);</b>
+<b class="nc">&nbsp;            ranks[v] = count++;</b>
+<b class="nc">&nbsp;            for (DirectedEdge e : G.adj(v)) {</b>
+<b class="nc">&nbsp;                int w = e.to();</b>
+<b class="nc">&nbsp;                indegree[w]--;</b>
+<b class="nc">&nbsp;                if (indegree[w] == 0) queue.enqueue(w);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // there is a directed cycle in subgraph of vertices with indegree &gt;= 1.
+<b class="nc">&nbsp;        if (count != G.V()) {</b>
+<b class="nc">&nbsp;            order = null;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        assert check(G);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a topological order if the digraph has a topologial order,
+&nbsp;     * and {@code null} otherwise.
+&nbsp;     * @return a topological order of the vertices (as an interable) if the
+&nbsp;     *    digraph has a topological order (or equivalently, if the digraph is a DAG),
+&nbsp;     *    and {@code null} otherwise
+&nbsp;     */
+&nbsp;    public Iterable&lt;Integer&gt; order() {
+<b class="nc">&nbsp;        return order;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Does the digraph have a topological order?
+&nbsp;     * @return {@code true} if the digraph has a topological order (or equivalently,
+&nbsp;     *    if the digraph is a DAG), and {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean hasOrder() {
+<b class="nc">&nbsp;        return order != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The the rank of vertex {@code v} in the topological order;
+&nbsp;     * -1 if the digraph is not a DAG
+&nbsp;     *
+&nbsp;     * @param v vertex
+&nbsp;     * @return the position of vertex {@code v} in a topological order
+&nbsp;     *    of the digraph; -1 if the digraph is not a DAG
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public int rank(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        if (hasOrder()) return ranks[v];</b>
+<b class="nc">&nbsp;        else            return -1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // certify that digraph is acyclic
+&nbsp;    private boolean check(Digraph G) {
+&nbsp;
+&nbsp;        // digraph is acyclic
+<b class="nc">&nbsp;        if (hasOrder()) {</b>
+&nbsp;            // check that ranks are a permutation of 0 to V-1
+<b class="nc">&nbsp;            boolean[] found = new boolean[G.V()];</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; G.V(); i++) {</b>
+<b class="nc">&nbsp;                found[rank(i)] = true;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            for (int i = 0; i &lt; G.V(); i++) {</b>
+<b class="nc">&nbsp;                if (!found[i]) {</b>
+<b class="nc">&nbsp;                    System.err.println(&quot;No vertex with rank &quot; + i);</b>
+<b class="nc">&nbsp;                    return false;</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+&nbsp;            // check that ranks provide a valid topological order
+<b class="nc">&nbsp;            for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;                for (int w : G.adj(v)) {</b>
+<b class="nc">&nbsp;                    if (rank(v) &gt; rank(w)) {</b>
+<b class="nc">&nbsp;                        System.err.printf(&quot;%d-%d: rank(%d) = %d, rank(%d) = %d\n&quot;,</b>
+<b class="nc">&nbsp;                                          v, w, v, rank(v), w, rank(w));</b>
+<b class="nc">&nbsp;                        return false;</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // check that order() is consistent with rank()
+<b class="nc">&nbsp;            int r = 0;</b>
+<b class="nc">&nbsp;            for (int v : order()) {</b>
+<b class="nc">&nbsp;                if (rank(v) != r) {</b>
+<b class="nc">&nbsp;                    System.err.println(&quot;order() and rank() inconsistent&quot;);</b>
+<b class="nc">&nbsp;                    return false;</b>
+&nbsp;                }
+<b class="nc">&nbsp;                r++;</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // certify that digraph is acyclic
+&nbsp;    private boolean check(EdgeWeightedDigraph G) {
+&nbsp;
+&nbsp;        // digraph is acyclic
+<b class="nc">&nbsp;        if (hasOrder()) {</b>
+&nbsp;            // check that ranks are a permutation of 0 to V-1
+<b class="nc">&nbsp;            boolean[] found = new boolean[G.V()];</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; G.V(); i++) {</b>
+<b class="nc">&nbsp;                found[rank(i)] = true;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            for (int i = 0; i &lt; G.V(); i++) {</b>
+<b class="nc">&nbsp;                if (!found[i]) {</b>
+<b class="nc">&nbsp;                    System.err.println(&quot;No vertex with rank &quot; + i);</b>
+<b class="nc">&nbsp;                    return false;</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+&nbsp;            // check that ranks provide a valid topological order
+<b class="nc">&nbsp;            for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;                for (DirectedEdge e : G.adj(v)) {</b>
+<b class="nc">&nbsp;                    int w = e.to();</b>
+<b class="nc">&nbsp;                    if (rank(v) &gt; rank(w)) {</b>
+<b class="nc">&nbsp;                        System.err.printf(&quot;%d-%d: rank(%d) = %d, rank(%d) = %d\n&quot;,</b>
+<b class="nc">&nbsp;                                          v, w, v, rank(v), w, rank(w));</b>
+<b class="nc">&nbsp;                        return false;</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // check that order() is consistent with rank()
+<b class="nc">&nbsp;            int r = 0;</b>
+<b class="nc">&nbsp;            for (int v : order()) {</b>
+<b class="nc">&nbsp;                if (rank(v) != r) {</b>
+<b class="nc">&nbsp;                    System.err.println(&quot;order() and rank() inconsistent&quot;);</b>
+<b class="nc">&nbsp;                    return false;</b>
+&nbsp;                }
+<b class="nc">&nbsp;                r++;</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // throw an IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;    private void validateVertex(int v) {
+<b class="nc">&nbsp;        int V = ranks.length;</b>
+<b class="nc">&nbsp;        if (v &lt; 0 || v &gt;= V)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;vertex &quot; + v + &quot; is not between 0 and &quot; + (V-1));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code TopologicalX} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // create random DAG with V vertices and E edges; then add F random edges
+<b class="nc">&nbsp;        int V = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;        int E = Integer.parseInt(args[1]);</b>
+<b class="nc">&nbsp;        int F = Integer.parseInt(args[2]);</b>
+&nbsp;
+<b class="nc">&nbsp;        Digraph G1 = DigraphGenerator.dag(V, E);</b>
+&nbsp;
+&nbsp;        // corresponding edge-weighted digraph
+<b class="nc">&nbsp;        EdgeWeightedDigraph G2 = new EdgeWeightedDigraph(V);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G1.V(); v++)</b>
+<b class="nc">&nbsp;            for (int w : G1.adj(v))</b>
+<b class="nc">&nbsp;                G2.addEdge(new DirectedEdge(v, w, 0.0));</b>
+&nbsp;
+&nbsp;        // add F extra edges
+<b class="nc">&nbsp;        for (int i = 0; i &lt; F; i++) {</b>
+<b class="nc">&nbsp;            int v = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;            int w = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;            G1.addEdge(v, w);</b>
+<b class="nc">&nbsp;            G2.addEdge(new DirectedEdge(v, w, 0.0));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(G1);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;        StdOut.println(G2);</b>
+&nbsp;
+&nbsp;        // find a directed cycle
+<b class="nc">&nbsp;        TopologicalX topological1 = new TopologicalX(G1);</b>
+<b class="nc">&nbsp;        if (!topological1.hasOrder()) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;Not a DAG&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // or give topologial sort
+&nbsp;        else {
+<b class="nc">&nbsp;            StdOut.print(&quot;Topological order: &quot;);</b>
+<b class="nc">&nbsp;            for (int v : topological1.order()) {</b>
+<b class="nc">&nbsp;                StdOut.print(v + &quot; &quot;);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            StdOut.println();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // find a directed cycle
+<b class="nc">&nbsp;        TopologicalX topological2 = new TopologicalX(G2);</b>
+<b class="nc">&nbsp;        if (!topological2.hasOrder()) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;Not a DAG&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // or give topologial sort
+&nbsp;        else {
+<b class="nc">&nbsp;            StdOut.print(&quot;Topological order: &quot;);</b>
+<b class="nc">&nbsp;            for (int v : topological2.order()) {</b>
+<b class="nc">&nbsp;                StdOut.print(v + &quot; &quot;);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            StdOut.println();</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

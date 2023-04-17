@@ -1,0 +1,261 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Knuth</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Knuth (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Knuth</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Knuth.java
+&nbsp; *  Execution:    java Knuth &lt; list.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/11model/cards.txt
+&nbsp; *                https://algs4.cs.princeton.edu/11model/cardsUnicode.txt
+&nbsp; *  
+&nbsp; *  Reads in a list of strings and prints them in random order.
+&nbsp; *  The Knuth (or Fisher-Yates) shuffling algorithm guarantees
+&nbsp; *  to rearrange the elements in uniformly random order, under
+&nbsp; *  the assumption that Math.random() generates independent and
+&nbsp; *  uniformly distributed numbers between 0 and 1.
+&nbsp; *
+&nbsp; *  % more cards.txt
+&nbsp; *  2C 3C 4C 5C 6C 7C 8C 9C 10C JC QC KC AC
+&nbsp; *  2D 3D 4D 5D 6D 7D 8D 9D 10D JD QD KD AD
+&nbsp; *  2H 3H 4H 5H 6H 7H 8H 9H 10H JH QH KH AH
+&nbsp; *  2S 3S 4S 5S 6S 7S 8S 9S 10S JS QS KS AS
+&nbsp; *
+&nbsp; *  % java Knuth &lt; cards.txt
+&nbsp; *  6H
+&nbsp; *  9C
+&nbsp; *  8H
+&nbsp; *  7C
+&nbsp; *  JS
+&nbsp; *  ...
+&nbsp; *  KH
+&nbsp; *
+&nbsp; *  % more cardsUnicode.txt
+&nbsp; *  2♣ 3♣ 4♣ 5♣ 6♣ 7♣ 8♣ 9♣ 10♣ J♣ Q♣ K♣ A♣ 
+&nbsp; *  2♦ 3♦ 4♦ 5♦ 6♦ 7♦ 8♦ 9♦ 10♦ J♦ Q♦ K♦ A♦ 
+&nbsp; *  2♥ 3♥ 4♥ 5♥ 6♥ 7♥ 8♥ 9♥ 10♥ J♥ Q♥ K♥ A♥ 
+&nbsp; *  2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠ 10♠ J♠ Q♠ K♠ A♠ 
+&nbsp; * 
+&nbsp; *  % java Knuth &lt; cardsUnicode.txt
+&nbsp; *  2♠
+&nbsp; *  K♥
+&nbsp; *  6♥
+&nbsp; *  5♣
+&nbsp; *  J♣
+&nbsp; *  ...
+&nbsp; *  A♦
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Knuth} class provides a client for reading in a 
+&nbsp; *  sequence of strings and &lt;em&gt;shuffling&lt;/em&gt; them using the Knuth (or Fisher-Yates)
+&nbsp; *  shuffling algorithm. This algorithm guarantees to rearrange the
+&nbsp; *  elements in uniformly random order, under
+&nbsp; *  the assumption that Math.random() generates independent and
+&nbsp; *  uniformly distributed numbers between 0 and 1.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/11model&quot;&gt;Section 1.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *  See {@link StdRandom} for versions that shuffle arrays and
+&nbsp; *  subarrays of objects, doubles, and ints.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class Knuth { 
+&nbsp;
+&nbsp;    // this class should not be instantiated
+&nbsp;    private Knuth() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rearranges an array of objects in uniformly random order
+&nbsp;     * (under the assumption that {@code Math.random()} generates independent
+&nbsp;     * and uniformly distributed numbers between 0 and 1).
+&nbsp;     * @param a the array to be shuffled
+&nbsp;     */
+&nbsp;    public static void shuffle(Object[] a) {
+<b class="nc">&nbsp;        int n = a.length;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+&nbsp;            // choose index uniformly in [0, i]
+<b class="nc">&nbsp;            int r = (int) (Math.random() * (i + 1));</b>
+<b class="nc">&nbsp;            Object swap = a[r];</b>
+<b class="nc">&nbsp;            a[r] = a[i];</b>
+<b class="nc">&nbsp;            a[i] = swap;</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rearranges an array of objects in uniformly random order
+&nbsp;     * (under the assumption that {@code Math.random()} generates independent
+&nbsp;     * and uniformly distributed numbers between 0 and 1).
+&nbsp;     * @param a the array to be shuffled
+&nbsp;     */
+&nbsp;    public static void shuffleAlternate(Object[] a) {
+<b class="nc">&nbsp;        int n = a.length;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+&nbsp;            // choose index uniformly in [i, n-1]
+<b class="nc">&nbsp;            int r = i + (int) (Math.random() * (n - i));</b>
+<b class="nc">&nbsp;            Object swap = a[r];</b>
+<b class="nc">&nbsp;            a[r] = a[i];</b>
+<b class="nc">&nbsp;            a[i] = swap;</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads in a sequence of strings from standard input, shuffles
+&nbsp;     * them, and prints out the results.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // read in the data
+<b class="nc">&nbsp;        String[] a = StdIn.readAllStrings();</b>
+&nbsp;
+&nbsp;        // shuffle the array
+<b class="nc">&nbsp;        Knuth.shuffle(a);</b>
+&nbsp;
+&nbsp;        // print results.
+<b class="nc">&nbsp;        for (int i = 0; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,490 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Interval1D</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Interval1D (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Interval1D</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/58)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Interval1D$LengthComparator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Interval1D$MaxEndpointComparator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Interval1D$MinEndpointComparator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/60)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/73)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Interval1D.java
+&nbsp; *  Execution:    java Interval1D
+&nbsp; *  Dependencies: StdOut.java
+&nbsp; *  
+&nbsp; *  1-dimensional interval data type.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Arrays;
+&nbsp;import java.util.Comparator;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Interval1D} class represents a one-dimensional interval.
+&nbsp; *  The interval is &lt;em&gt;closed&lt;/em&gt;—it contains both endpoints.
+&nbsp; *  Intervals are immutable: their values cannot be changed after they are created.
+&nbsp; *  The class {@code Interval1D} includes methods for checking whether
+&nbsp; *  an interval contains a point and determining whether two intervals intersect.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, 
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/12oop&quot;&gt;Section 1.2&lt;/a&gt; of 
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne. 
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class Interval1D {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares two intervals by min endpoint.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Comparator&lt;Interval1D&gt; MIN_ENDPOINT_ORDER  = new MinEndpointComparator();</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares two intervals by max endpoint.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Comparator&lt;Interval1D&gt; MAX_ENDPOINT_ORDER = new MaxEndpointComparator();</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares two intervals by length.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Comparator&lt;Interval1D&gt; LENGTH_ORDER = new LengthComparator();</b>
+&nbsp;
+&nbsp;    private final double min;
+&nbsp;    private final double max;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a closed interval [min, max].
+&nbsp;     *
+&nbsp;     * @param  min the smaller endpoint
+&nbsp;     * @param  max the larger endpoint
+&nbsp;     * @throws IllegalArgumentException if the min endpoint is greater than the max endpoint
+&nbsp;     * @throws IllegalArgumentException if either {@code min} or {@code max}
+&nbsp;     *         is {@code Double.NaN}, {@code Double.POSITIVE_INFINITY} or
+&nbsp;     *         {@code Double.NEGATIVE_INFINITY}
+&nbsp;
+&nbsp;     */
+<b class="nc">&nbsp;    public Interval1D(double min, double max) {</b>
+<b class="nc">&nbsp;        if (Double.isInfinite(min) || Double.isInfinite(max))</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Endpoints must be finite&quot;);</b>
+<b class="nc">&nbsp;        if (Double.isNaN(min) || Double.isNaN(max))</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Endpoints cannot be NaN&quot;);</b>
+&nbsp;
+&nbsp;        // convert -0.0 to +0.0
+<b class="nc">&nbsp;        if (min == 0.0) min = 0.0;</b>
+<b class="nc">&nbsp;        if (max == 0.0) max = 0.0;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (min &lt;= max) {</b>
+<b class="nc">&nbsp;            this.min = min;</b>
+<b class="nc">&nbsp;            this.max = max;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        else throw new IllegalArgumentException(&quot;Illegal interval&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the left endpoint of this interval.
+&nbsp;     *
+&nbsp;     * @return the left endpoint of this interval
+&nbsp;     * @deprecated Replaced by {@link #min()}.
+&nbsp;     */
+&nbsp;    @Deprecated
+&nbsp;    public double left() { 
+<b class="nc">&nbsp;        return min;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the right endpoint of this interval.
+&nbsp;     * @return the right endpoint of this interval
+&nbsp;     * @deprecated Replaced by {@link #max()}.
+&nbsp;     */
+&nbsp;    @Deprecated
+&nbsp;    public double right() { 
+<b class="nc">&nbsp;        return max;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the min endpoint of this interval.
+&nbsp;     *
+&nbsp;     * @return the min endpoint of this interval
+&nbsp;     */
+&nbsp;    public double min() { 
+<b class="nc">&nbsp;        return min;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the max endpoint of this interval.
+&nbsp;     *
+&nbsp;     * @return the max endpoint of this interval
+&nbsp;     */
+&nbsp;    public double max() { 
+<b class="nc">&nbsp;        return max;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this interval intersects the specified interval.
+&nbsp;     *
+&nbsp;     * @param  that the other interval
+&nbsp;     * @return {@code true} if this interval intersects the argument interval;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean intersects(Interval1D that) {
+<b class="nc">&nbsp;        if (this.max &lt; that.min) return false;</b>
+<b class="nc">&nbsp;        if (that.max &lt; this.min) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this interval contains the specified value.
+&nbsp;     *
+&nbsp;     * @param x the value
+&nbsp;     * @return {@code true} if this interval contains the value {@code x};
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean contains(double x) {
+<b class="nc">&nbsp;        return (min &lt;= x) &amp;&amp; (x &lt;= max);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the length of this interval.
+&nbsp;     *
+&nbsp;     * @return the length of this interval (max - min)
+&nbsp;     */
+&nbsp;    public double length() {
+<b class="nc">&nbsp;        return max - min;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of this interval.
+&nbsp;     *
+&nbsp;     * @return a string representation of this interval in the form [min, max]
+&nbsp;     */
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return &quot;[&quot; + min + &quot;, &quot; + max + &quot;]&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Compares this transaction to the specified object.
+&nbsp;     *
+&nbsp;     * @param  other the other interval
+&nbsp;     * @return {@code true} if this interval equals the other interval;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean equals(Object other) {
+<b class="nc">&nbsp;        if (other == this) return true;</b>
+<b class="nc">&nbsp;        if (other == null) return false;</b>
+<b class="nc">&nbsp;        if (other.getClass() != this.getClass()) return false;</b>
+<b class="nc">&nbsp;        Interval1D that = (Interval1D) other;</b>
+<b class="nc">&nbsp;        return this.min == that.min &amp;&amp; this.max == that.max;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an integer hash code for this interval.
+&nbsp;     *
+&nbsp;     * @return an integer hash code for this interval
+&nbsp;     */
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        int hash1 = ((Double) min).hashCode();</b>
+<b class="nc">&nbsp;        int hash2 = ((Double) max).hashCode();</b>
+<b class="nc">&nbsp;        return 31*hash1 + hash2;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // ascending order of min endpoint, breaking ties by max endpoint
+&nbsp;    private static class MinEndpointComparator implements Comparator&lt;Interval1D&gt; {
+&nbsp;        public int compare(Interval1D a, Interval1D b) {
+<b class="nc">&nbsp;            if      (a.min &lt; b.min) return -1;</b>
+<b class="nc">&nbsp;            else if (a.min &gt; b.min) return +1;</b>
+<b class="nc">&nbsp;            else if (a.max &lt; b.max) return -1;</b>
+<b class="nc">&nbsp;            else if (a.max &gt; b.max) return +1;</b>
+<b class="nc">&nbsp;            else                    return  0;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // ascending order of max endpoint, breaking ties by min endpoint
+&nbsp;    private static class MaxEndpointComparator implements Comparator&lt;Interval1D&gt; {
+&nbsp;        public int compare(Interval1D a, Interval1D b) {
+<b class="nc">&nbsp;            if      (a.max &lt; b.max) return -1;</b>
+<b class="nc">&nbsp;            else if (a.max &gt; b.max) return +1;</b>
+<b class="nc">&nbsp;            else if (a.min &lt; b.min) return -1;</b>
+<b class="nc">&nbsp;            else if (a.min &gt; b.min) return +1;</b>
+<b class="nc">&nbsp;            else                    return  0;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // ascending order of length
+&nbsp;    private static class LengthComparator implements Comparator&lt;Interval1D&gt; {
+&nbsp;        public int compare(Interval1D a, Interval1D b) {
+<b class="nc">&nbsp;            double alen = a.length();</b>
+<b class="nc">&nbsp;            double blen = b.length();</b>
+<b class="nc">&nbsp;            if      (alen &lt; blen) return -1;</b>
+<b class="nc">&nbsp;            else if (alen &gt; blen) return +1;</b>
+<b class="nc">&nbsp;            else                  return  0;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code Interval1D} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        Interval1D[] intervals = new Interval1D[4];</b>
+<b class="nc">&nbsp;        intervals[0] = new Interval1D(15.0, 33.0);</b>
+<b class="nc">&nbsp;        intervals[1] = new Interval1D(45.0, 60.0);</b>
+<b class="nc">&nbsp;        intervals[2] = new Interval1D(20.0, 70.0);</b>
+<b class="nc">&nbsp;        intervals[3] = new Interval1D(46.0, 55.0);</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Unsorted&quot;);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; intervals.length; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(intervals[i]);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;        
+<b class="nc">&nbsp;        StdOut.println(&quot;Sort by min endpoint&quot;);</b>
+<b class="nc">&nbsp;        Arrays.sort(intervals, Interval1D.MIN_ENDPOINT_ORDER);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; intervals.length; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(intervals[i]);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Sort by max endpoint&quot;);</b>
+<b class="nc">&nbsp;        Arrays.sort(intervals, Interval1D.MAX_ENDPOINT_ORDER);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; intervals.length; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(intervals[i]);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Sort by length&quot;);</b>
+<b class="nc">&nbsp;        Arrays.sort(intervals, Interval1D.LENGTH_ORDER);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; intervals.length; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(intervals[i]);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

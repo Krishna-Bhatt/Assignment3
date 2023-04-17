@@ -1,0 +1,235 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Arbitrage</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Arbitrage (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Arbitrage</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Arbitrage.java
+&nbsp; *  Execution:    java Arbitrage &lt; input.txt
+&nbsp; *  Dependencies: EdgeWeightedDigraph.java DirectedEdge.java
+&nbsp; *                BellmanFordSP.java
+&nbsp; *  Data file:    https://algs4.cs.princeton.edu/44sp/rates.txt
+&nbsp; *
+&nbsp; *  Arbitrage detection.
+&nbsp; *
+&nbsp; *  % more rates.txt
+&nbsp; *  5
+&nbsp; *  USD 1      0.741  0.657  1.061  1.005
+&nbsp; *  EUR 1.349  1      0.888  1.433  1.366
+&nbsp; *  GBP 1.521  1.126  1      1.614  1.538
+&nbsp; *  CHF 0.942  0.698  0.619  1      0.953
+&nbsp; *  CAD 0.995  0.732  0.650  1.049  1
+&nbsp; *
+&nbsp; *  % java Arbitrage &lt; rates.txt
+&nbsp; *  1000.00000 USD =  741.00000 EUR
+&nbsp; *   741.00000 EUR = 1012.20600 CAD
+&nbsp; *  1012.20600 CAD = 1007.14497 USD
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Arbitrage} class provides a client that finds an arbitrage
+&nbsp; *  opportunity in a currency exchange table by constructing a
+&nbsp; *  complete-digraph representation of the exchange table and then finding
+&nbsp; *  a negative cycle in the digraph.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses the Bellman-Ford algorithm to find a
+&nbsp; *  negative cycle in the complete digraph.
+&nbsp; *  The running time is proportional to &lt;em&gt;V&lt;/em&gt;&lt;sup&gt;3&lt;/sup&gt; in the
+&nbsp; *  worst case, where &lt;em&gt;V&lt;/em&gt; is the number of currencies.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This code is guaranteed to find an arbitrage opportunity in a 
+&nbsp; *  currency exchange table (or report that no such arbitrage 
+&nbsp; *  opportunity exists) under the assumption that all arithmetic
+&nbsp; *  performed is without floating-point rounding error or arithmetic
+&nbsp; *  overflow. Since the code computes the logarithms of the edge weights,
+&nbsp; *  floating-point rounding error will be present and it may fail on
+&nbsp; *  some pathological inputs.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/44sp&quot;&gt;Section 4.4&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class Arbitrage {
+&nbsp;
+&nbsp;    // this class cannot be instantiated
+&nbsp;    private Arbitrage() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  Reads the currency exchange table from standard input and
+&nbsp;     *  prints an arbitrage opportunity to standard output (if one exists).
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // V currencies
+<b class="nc">&nbsp;        int V = StdIn.readInt();</b>
+<b class="nc">&nbsp;        String[] name = new String[V];</b>
+&nbsp;
+&nbsp;        // create complete network
+<b class="nc">&nbsp;        EdgeWeightedDigraph G = new EdgeWeightedDigraph(V);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; V; v++) {</b>
+<b class="nc">&nbsp;            name[v] = StdIn.readString();</b>
+<b class="nc">&nbsp;            for (int w = 0; w &lt; V; w++) {</b>
+<b class="nc">&nbsp;                double rate = StdIn.readDouble();</b>
+<b class="nc">&nbsp;                DirectedEdge e = new DirectedEdge(v, w, -Math.log(rate));</b>
+<b class="nc">&nbsp;                G.addEdge(e);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // find negative cycle
+<b class="nc">&nbsp;        BellmanFordSP spt = new BellmanFordSP(G, 0);</b>
+<b class="nc">&nbsp;        if (spt.hasNegativeCycle()) {</b>
+<b class="nc">&nbsp;            double stake = 1000.0;</b>
+<b class="nc">&nbsp;            for (DirectedEdge e : spt.negativeCycle()) {</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;%10.5f %s &quot;, stake, name[e.from()]);</b>
+<b class="nc">&nbsp;                stake *= Math.exp(-e.weight());</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;= %10.5f %s\n&quot;, stake, name[e.to()]);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;        else {
+<b class="nc">&nbsp;            StdOut.println(&quot;No arbitrage opportunity&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

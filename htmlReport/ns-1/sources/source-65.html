@@ -1,0 +1,286 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > InplaceMSD</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: InplaceMSD (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InplaceMSD</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/48)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation: javac InplaceMSD.java
+&nbsp; *  Execution:   java InplaceMSD &lt; input.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java 
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/51radix/words3.txt
+&nbsp; *                https://algs4.cs.princeton.edu/51radix/shells.txt
+&nbsp; *
+&nbsp; *  Sort an array of strings or integers using in-place MSD radix sort.
+&nbsp; *
+&nbsp; *  % java InplaceMSD &lt; shells.txt 
+&nbsp; *  are
+&nbsp; *  by
+&nbsp; *  sea
+&nbsp; *  seashells
+&nbsp; *  seashells
+&nbsp; *  sells
+&nbsp; *  sells
+&nbsp; *  she
+&nbsp; *  she
+&nbsp; *  shells
+&nbsp; *  shore
+&nbsp; *  surely
+&nbsp; *  the
+&nbsp; *  the
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code InplaceMSD} class provides static methods for sorting an
+&nbsp; *  array of extended ASCII strings using in-place MSD radix sort.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/51radix&quot;&gt;Section 5.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Ivan Pesin
+&nbsp; */
+&nbsp;
+<b class="nc">&nbsp;public class InplaceMSD {</b>
+&nbsp;    private static final int R             = 256;   // extended ASCII alphabet size
+&nbsp;    private static final int CUTOFF        =  15;   // cutoff to insertion sort
+&nbsp;
+&nbsp;    // do not instantiate
+&nbsp;    private InplaceMSD() { } 
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Rearranges the array of extended ASCII strings in ascending order.
+&nbsp;     * This is an unstable sorting algorithm.
+&nbsp;     *
+&nbsp;     * @param a the array to be sorted
+&nbsp;     */
+&nbsp;    public static void sort(String[] a) {
+<b class="nc">&nbsp;        int n = a.length;</b>
+<b class="nc">&nbsp;        sort(a, 0, n-1, 0);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // return dth character of s, -1 if d = length of string
+&nbsp;    private static int charAt(String s, int d) {
+<b class="nc">&nbsp;        assert d &gt;= 0 &amp;&amp; d &lt;= s.length();</b>
+<b class="nc">&nbsp;        if (d == s.length()) return -1;</b>
+<b class="nc">&nbsp;        return s.charAt(d);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // sort from a[lo] to a[hi], starting at the dth character
+&nbsp;    private static void sort(String[] a, int lo, int hi, int d) {
+&nbsp;
+&nbsp;        // cutoff to insertion sort for small subarrays
+<b class="nc">&nbsp;        if (hi &lt;= lo + CUTOFF) {</b>
+<b class="nc">&nbsp;            insertion(a, lo, hi, d);</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // compute frequency counts
+<b class="nc">&nbsp;        int[] heads = new int[R+2];</b>
+<b class="nc">&nbsp;        int[] tails = new int[R+1];</b>
+<b class="nc">&nbsp;        for (int i = lo; i &lt;= hi; i++) {</b>
+<b class="nc">&nbsp;            int c = charAt(a[i], d);</b>
+<b class="nc">&nbsp;            heads[c+2]++;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // transform counts to indices
+<b class="nc">&nbsp;        heads[0] = lo;</b>
+<b class="nc">&nbsp;        for (int r = 0; r &lt; R+1; r++) {</b>
+<b class="nc">&nbsp;            heads[r+1] += heads[r];</b>
+<b class="nc">&nbsp;            tails[r] = heads[r+1];</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // sort by d-th character in-place
+<b class="nc">&nbsp;        for (int r = 0; r &lt; R+1; r++) {</b>
+<b class="nc">&nbsp;            while (heads[r] &lt; tails[r]) {</b>
+<b class="nc">&nbsp;                int c = charAt(a[heads[r]], d);</b>
+<b class="nc">&nbsp;                while (c + 1 != r) {</b>
+<b class="nc">&nbsp;                    exch(a, heads[r], heads[c+1]++);</b>
+<b class="nc">&nbsp;                    c = charAt(a[heads[r]], d);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                heads[r]++;</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;              
+&nbsp;        // recursively sort for each character (excludes sentinel -1)
+<b class="nc">&nbsp;        for (int r = 0; r &lt; R; r++)</b>
+<b class="nc">&nbsp;            sort(a, tails[r], tails[r+1] - 1, d+1);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    // insertion sort a[lo..hi], starting at dth character
+&nbsp;    private static void insertion(String[] a, int lo, int hi, int d) {
+<b class="nc">&nbsp;        for (int i = lo; i &lt;= hi; i++)</b>
+<b class="nc">&nbsp;            for (int j = i; j &gt; lo &amp;&amp; less(a[j], a[j-1], d); j--)</b>
+<b class="nc">&nbsp;                exch(a, j, j-1);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // exchange a[i] and a[j]
+&nbsp;    private static void exch(String[] a, int i, int j) {
+<b class="nc">&nbsp;        String temp = a[i];</b>
+<b class="nc">&nbsp;        a[i] = a[j];</b>
+<b class="nc">&nbsp;        a[j] = temp;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // is v less than w, starting at character d
+&nbsp;    private static boolean less(String v, String w, int d) {
+&nbsp;        // assert v.substring(0, d).equals(w.substring(0, d));
+<b class="nc">&nbsp;        for (int i = d; i &lt; Math.min(v.length(), w.length()); i++) {</b>
+<b class="nc">&nbsp;            if (v.charAt(i) &lt; w.charAt(i)) return true;</b>
+<b class="nc">&nbsp;            if (v.charAt(i) &gt; w.charAt(i)) return false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return v.length() &lt; w.length();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads in a sequence of extended ASCII strings from standard input;
+&nbsp;     * in-place MSD radix sorts them;
+&nbsp;     * and prints them to standard output in ascending order.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String[] a = StdIn.readAllStrings();</b>
+<b class="nc">&nbsp;        int n = a.length;</b>
+<b class="nc">&nbsp;        sort(a);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

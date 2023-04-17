@@ -1,0 +1,328 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SymbolDigraph</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: SymbolDigraph (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SymbolDigraph</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/47)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac SymbolDigraph.java
+&nbsp; *  Execution:    java SymbolDigraph
+&nbsp; *  Dependencies: ST.java Digraph.java In.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/42digraph/routes.txt
+&nbsp; *  
+&nbsp; *  %  java SymbolDigraph routes.txt &quot; &quot;
+&nbsp; *  JFK
+&nbsp; *     MCO
+&nbsp; *     ATL
+&nbsp; *     ORD
+&nbsp; *  ATL
+&nbsp; *     HOU
+&nbsp; *     MCO
+&nbsp; *  LAX
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code SymbolDigraph} class represents a digraph, where the
+&nbsp; *  vertex names are arbitrary strings.
+&nbsp; *  By providing mappings between string vertex names and integers,
+&nbsp; *  it serves as a wrapper around the
+&nbsp; *  {@link Digraph} data type, which assumes the vertex names are integers
+&nbsp; *  between 0 and &lt;em&gt;V&lt;/em&gt; - 1.
+&nbsp; *  It also supports initializing a symbol digraph from a file.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses an {@link ST} to map from strings to integers,
+&nbsp; *  an array to map from integers to strings, and a {@link Digraph} to store
+&nbsp; *  the underlying graph.
+&nbsp; *  The &lt;em&gt;indexOf&lt;/em&gt; and &lt;em&gt;contains&lt;/em&gt; operations take time 
+&nbsp; *  proportional to log &lt;em&gt;V&lt;/em&gt;, where &lt;em&gt;V&lt;/em&gt; is the number of vertices.
+&nbsp; *  The &lt;em&gt;nameOf&lt;/em&gt; operation takes constant time.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/42digraph&quot;&gt;Section 4.2&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class SymbolDigraph {
+&nbsp;    private ST&lt;String, Integer&gt; st;  // string -&gt; index
+&nbsp;    private String[] keys;           // index  -&gt; string
+&nbsp;    private Digraph graph;           // the underlying digraph
+&nbsp;
+&nbsp;    /**  
+&nbsp;     * Initializes a digraph from a file using the specified delimiter.
+&nbsp;     * Each line in the file contains
+&nbsp;     * the name of a vertex, followed by a list of the names
+&nbsp;     * of the vertices adjacent to that vertex, separated by the delimiter.
+&nbsp;     * @param filename the name of the file
+&nbsp;     * @param delimiter the delimiter between fields
+&nbsp;     */
+<b class="nc">&nbsp;    public SymbolDigraph(String filename, String delimiter) {</b>
+<b class="nc">&nbsp;        st = new ST&lt;String, Integer&gt;();</b>
+&nbsp;
+&nbsp;        // First pass builds the index by reading strings to associate
+&nbsp;        // distinct strings with an index
+<b class="nc">&nbsp;        In in = new In(filename);</b>
+<b class="nc">&nbsp;        while (in.hasNextLine()) {</b>
+<b class="nc">&nbsp;            String[] a = in.readLine().split(delimiter);</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; a.length; i++) {</b>
+<b class="nc">&nbsp;                if (!st.contains(a[i]))</b>
+<b class="nc">&nbsp;                    st.put(a[i], st.size());</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // inverted index to get string keys in an array
+<b class="nc">&nbsp;        keys = new String[st.size()];</b>
+<b class="nc">&nbsp;        for (String name : st.keys()) {</b>
+<b class="nc">&nbsp;            keys[st.get(name)] = name;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // second pass builds the digraph by connecting first vertex on each
+&nbsp;        // line to all others
+<b class="nc">&nbsp;        graph = new Digraph(st.size());</b>
+<b class="nc">&nbsp;        in = new In(filename);</b>
+<b class="nc">&nbsp;        while (in.hasNextLine()) {</b>
+<b class="nc">&nbsp;            String[] a = in.readLine().split(delimiter);</b>
+<b class="nc">&nbsp;            int v = st.get(a[0]);</b>
+<b class="nc">&nbsp;            for (int i = 1; i &lt; a.length; i++) {</b>
+<b class="nc">&nbsp;                int w = st.get(a[i]);</b>
+<b class="nc">&nbsp;                graph.addEdge(v, w);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Does the digraph contain the vertex named {@code s}?
+&nbsp;     * @param s the name of a vertex
+&nbsp;     * @return {@code true} if {@code s} is the name of a vertex, and {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean contains(String s) {
+<b class="nc">&nbsp;        return st.contains(s);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the integer associated with the vertex named {@code s}.
+&nbsp;     * @param s the name of a vertex
+&nbsp;     * @return the integer (between 0 and &lt;em&gt;V&lt;/em&gt; - 1) associated with the vertex named {@code s}
+&nbsp;     * @deprecated Replaced by {@link #indexOf(String)}.
+&nbsp;     */
+&nbsp;    @Deprecated
+&nbsp;    public int index(String s) {
+<b class="nc">&nbsp;        return st.get(s);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the integer associated with the vertex named {@code s}.
+&nbsp;     * @param s the name of a vertex
+&nbsp;     * @return the integer (between 0 and &lt;em&gt;V&lt;/em&gt; - 1) associated with the vertex named {@code s}
+&nbsp;     */
+&nbsp;    public int indexOf(String s) {
+<b class="nc">&nbsp;        return st.get(s);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the name of the vertex associated with the integer {@code v}.
+&nbsp;     * @param  v the integer corresponding to a vertex (between 0 and &lt;em&gt;V&lt;/em&gt; - 1) 
+&nbsp;     * @return the name of the vertex associated with the integer {@code v}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     * @deprecated Replaced by {@link #nameOf(int)}.
+&nbsp;     */
+&nbsp;    @Deprecated
+&nbsp;    public String name(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        return keys[v];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the name of the vertex associated with the integer {@code v}.
+&nbsp;     * @param  v the integer corresponding to a vertex (between 0 and &lt;em&gt;V&lt;/em&gt; - 1) 
+&nbsp;     * @return the name of the vertex associated with the integer {@code v}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public String nameOf(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        return keys[v];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the digraph assoicated with the symbol graph. It is the client&#39;s responsibility
+&nbsp;     * not to mutate the digraph.
+&nbsp;     *
+&nbsp;     * @return the digraph associated with the symbol digraph
+&nbsp;     * @deprecated Replaced by {@link #digraph()}.
+&nbsp;     */
+&nbsp;    @Deprecated
+&nbsp;    public Digraph G() {
+<b class="nc">&nbsp;        return graph;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the digraph assoicated with the symbol graph. It is the client&#39;s responsibility
+&nbsp;     * not to mutate the digraph.
+&nbsp;     *
+&nbsp;     * @return the digraph associated with the symbol digraph
+&nbsp;     */
+&nbsp;    public Digraph digraph() {
+<b class="nc">&nbsp;        return graph;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // throw an IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;    private void validateVertex(int v) {
+<b class="nc">&nbsp;        int V = graph.V();</b>
+<b class="nc">&nbsp;        if (v &lt; 0 || v &gt;= V)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;vertex &quot; + v + &quot; is not between 0 and &quot; + (V-1));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code SymbolDigraph} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String filename  = args[0];</b>
+<b class="nc">&nbsp;        String delimiter = args[1];</b>
+<b class="nc">&nbsp;        SymbolDigraph sg = new SymbolDigraph(filename, delimiter);</b>
+<b class="nc">&nbsp;        Digraph graph = sg.digraph();</b>
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            String t = StdIn.readLine();</b>
+<b class="nc">&nbsp;            for (int v : graph.adj(sg.index(t))) {</b>
+<b class="nc">&nbsp;                StdOut.println(&quot;   &quot; + sg.name(v));</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

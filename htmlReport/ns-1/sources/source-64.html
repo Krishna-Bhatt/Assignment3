@@ -1,0 +1,571 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > IndexMultiwayMinPQ</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: IndexMultiwayMinPQ (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IndexMultiwayMinPQ</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/86)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/101)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">IndexMultiwayMinPQ$MyComparator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">IndexMultiwayMinPQ$MyIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/92)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/112)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation: javac IndexMultiwayMinPQ.java
+&nbsp; *  Execution:
+&nbsp; *
+&nbsp; *  An inde  multiway heap.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Comparator;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The IndexMultiwayMinPQ class represents an indexed priority queue of generic keys.
+&nbsp; *  It supports the usual insert and delete-the-minimum operations,
+&nbsp; *  along with delete and change-the-key methods. 
+&nbsp; *  In order to let the client refer to keys on the priority queue,
+&nbsp; *  an integer between 0 and N-1 is associated with each key ; the client
+&nbsp; *  uses this integer to specify which key to delete or change.
+&nbsp; *  It also supports methods for peeking at the minimum key,
+&nbsp; *  testing if the priority queue is empty, and iterating through
+&nbsp; *  the keys.
+&nbsp; *  
+&nbsp; *  This implementation uses a multiway heap along with an array to associate
+&nbsp; *  keys with integers in the given range.
+&nbsp; *  For simplified notations, logarithm in base d will be referred as log-d
+&nbsp; *  The delete-the-minimum, delete, change-key and increase-key operations
+&nbsp; *  take time proportional to d*log-d(n)
+&nbsp; *  The insert and decrease-key take time proportional to log-d(n)
+&nbsp; *  The is-empty, min-index, min-key, size, contains and key-of operations take constant time.
+&nbsp; *  Construction takes time proportional to the specified capacity.
+&nbsp; *  
+&nbsp; *  The arrays used in this structure have the first d indices empty,
+&nbsp; *  it apparently helps with caching effects.
+&nbsp; *
+&nbsp; *  @author Tristan Claverie
+&nbsp; */
+&nbsp;public class IndexMultiwayMinPQ&lt;Key&gt; implements Iterable&lt;Integer&gt; {
+&nbsp;	private final int d;				//Dimension of the heap
+&nbsp;	private int n;						//Number of keys currently in the queue
+&nbsp;	private int nmax;					//Maximum number of items in the queue
+&nbsp;	private int[] pq;					//Multiway heap
+&nbsp;	private int[] qp;					//Inverse of pq : qp[pq[i]] = pq[qp[i]] = i
+&nbsp;	private Key[] keys;					//keys[i] = priority of i
+&nbsp;	private final Comparator&lt;Key&gt; comp; //Comparator over the keys
+&nbsp;	
+&nbsp;	
+&nbsp;    /**
+&nbsp;     * Initializes an empty indexed priority queue with indices between {@code 0} to {@code N-1}
+&nbsp;     * Worst case is O(n)
+&nbsp;     * @param N number of keys in the priority queue, index from {@code 0} to {@code N-1}
+&nbsp;     * @param D dimension of the heap
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code N &lt; 0}
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code D &lt; 2}
+&nbsp;     */
+<b class="nc">&nbsp;	public IndexMultiwayMinPQ(int N, int D) {</b>
+<b class="nc">&nbsp;		if (N &lt; 0) throw new IllegalArgumentException(&quot;Maximum number of elements cannot be negative&quot;);</b>
+<b class="nc">&nbsp;		if (D &lt; 2) throw new IllegalArgumentException(&quot;Dimension should be 2 or over&quot;);</b>
+<b class="nc">&nbsp;		this.d = D;</b>
+<b class="nc">&nbsp;		nmax = N;</b>
+<b class="nc">&nbsp;		pq = new int[nmax+D];</b>
+<b class="nc">&nbsp;		qp = new int[nmax+D];</b>
+<b class="nc">&nbsp;		keys = (Key[]) new Comparable[nmax+D];</b>
+<b class="nc">&nbsp;		for (int i = 0; i &lt; nmax+D; qp[i++] = -1);</b>
+<b class="nc">&nbsp;		comp = new MyComparator();</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;    /**
+&nbsp;     * Initializes an empty indexed priority queue with indices between {@code 0} to {@code N-1}
+&nbsp;     * Worst case is O(n)
+&nbsp;     * @param N number of keys in the priority queue, index from {@code 0} to {@code N-1}
+&nbsp;     * @param D dimension of the heap
+&nbsp;     * @param C a Comparator over the keys
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code N &lt; 0}
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code D &lt; 2}
+&nbsp;     */
+<b class="nc">&nbsp;	public IndexMultiwayMinPQ(int N, Comparator&lt;Key&gt; C, int D) {</b>
+<b class="nc">&nbsp;		if (N &lt; 0) throw new IllegalArgumentException(&quot;Maximum number of elements cannot be negative&quot;);</b>
+<b class="nc">&nbsp;		if (D &lt; 2) throw new IllegalArgumentException(&quot;Dimension should be 2 or over&quot;);</b>
+<b class="nc">&nbsp;		this.d = D;</b>
+<b class="nc">&nbsp;		nmax = N;</b>
+<b class="nc">&nbsp;		pq = new int[nmax+D];</b>
+<b class="nc">&nbsp;		qp = new int[nmax+D];</b>
+<b class="nc">&nbsp;		keys = (Key[]) new Comparable[nmax+D];</b>
+<b class="nc">&nbsp;		for (int i = 0; i &lt; nmax+D; qp[i++] = -1);</b>
+<b class="nc">&nbsp;		comp = C;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Whether the priority queue is empty
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @return true if the priority queue is empty, false if not
+&nbsp;	 */
+&nbsp;	public boolean isEmpty() {
+<b class="nc">&nbsp;		return n == 0;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Does the priority queue contains the index i ?
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @param i an index
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @return true if i is on the priority queue, false if not
+&nbsp;	 */
+&nbsp;	public boolean contains(int i) {
+<b class="nc">&nbsp;		if (i &lt; 0 ||i &gt;= nmax) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		return qp[i+d] != -1;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Number of elements currently on the priority queue
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @return the number of elements on the priority queue
+&nbsp;	 */
+&nbsp;	public int size() {
+<b class="nc">&nbsp;		return n;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Associates a key with an index
+&nbsp;	 * Worst case is O(log-d(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @param key a Key associated with i
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the index is already in the queue
+&nbsp;	 */
+&nbsp;	public void insert(int i, Key key) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= nmax) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (contains(i)) throw new IllegalArgumentException(&quot;Index already there&quot;);</b>
+<b class="nc">&nbsp;		keys[i+d] = key;</b>
+<b class="nc">&nbsp;		pq[n+d] = i;</b>
+<b class="nc">&nbsp;		qp[i+d] = n;</b>
+<b class="nc">&nbsp;		swim(n++);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Gets the index associated with the minimum key
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the index associated with the minimum key
+&nbsp;	 */
+&nbsp;	public int minIndex() {
+<b class="nc">&nbsp;		if (isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		return pq[d];</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Gets the minimum key currently in the queue
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the minimum key currently in the priority queue
+&nbsp;	 */
+&nbsp;	public Key minKey() {
+<b class="nc">&nbsp;		if (isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		return keys[pq[d]+d];</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Deletes the minimum key
+&nbsp;	 * Worst case is O(d*log-d(n))
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the index associated with the minimum key
+&nbsp;	 */
+&nbsp;	public int delMin() {
+<b class="nc">&nbsp;		if (isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		int min = pq[d];</b>
+<b class="nc">&nbsp;		exch(0, --n);</b>
+<b class="nc">&nbsp;		sink(0);</b>
+<b class="nc">&nbsp;		qp[min+d] = -1;</b>
+<b class="nc">&nbsp;		keys[pq[n+d]+d] = null;</b>
+<b class="nc">&nbsp;		pq[n+d] = -1;</b>
+<b class="nc">&nbsp;		return min;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Gets the key associated with index i
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @param i an index
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the index is not in the queue
+&nbsp;	 * @return the key associated with index i
+&nbsp;	 */
+&nbsp;	public Key keyOf(int i) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= nmax) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (! contains(i)) throw new NoSuchElementException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		return keys[i+d];</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Changes the key associated with index i to the given key
+&nbsp;	 * If the given key is greater, Worst case is O(d*log-d(n))
+&nbsp;	 * If the given key is lower,   Worst case is O(log-d(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @param key the key to associate with i
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the index has no key associated with
+&nbsp;	 */
+&nbsp;	public void changeKey(int i, Key key) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= nmax) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (! contains(i)) throw new NoSuchElementException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		Key tmp = keys[i+d];</b>
+<b class="nc">&nbsp;		keys[i+d] = key;</b>
+<b class="nc">&nbsp;		if (comp.compare(key, tmp) &lt;= 0) { swim(qp[i+d]);}</b>
+<b class="nc">&nbsp;		else 							 { sink(qp[i+d]);}</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Decreases the key associated with index i to the given key
+&nbsp;	 * Worst case is O(log-d(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @param key the key to associate with i
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.util.NoSuchElementException if the index has no key associated with
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the given key is greater than the current key
+&nbsp;	 */
+&nbsp;	public void decreaseKey(int i, Key key) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;=nmax) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (! contains(i)) throw new NoSuchElementException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		if (comp.compare(keys[i+d], key) &lt;= 0) throw new IllegalArgumentException(&quot;Calling with this argument would not decrease the Key&quot;);</b>
+<b class="nc">&nbsp;		keys[i+d] = key;</b>
+<b class="nc">&nbsp;		swim(qp[i+d]);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Increases the key associated with index i to the given key
+&nbsp;	 * Worst case is O(d*log-d(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @param key the key to associate with i
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.util.NoSuchElementException if the index has no key associated with
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the given key is lower than the current key
+&nbsp;	 */
+&nbsp;	public void increaseKey(int i, Key key) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;=nmax) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (! contains(i)) throw new NoSuchElementException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		if (comp.compare(keys[i+d], key) &gt;= 0) throw new IllegalArgumentException(&quot;Calling with this argument would not increase the Key&quot;);</b>
+<b class="nc">&nbsp;		keys[i+d] = key;</b>
+<b class="nc">&nbsp;		sink(qp[i+d]);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Deletes the key associated to the given index
+&nbsp;	 * Worst case is O(d*log-d(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.util.NoSuchElementException if the given index has no key associated with
+&nbsp;	 */
+&nbsp;	public void delete(int i) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= nmax) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (! contains(i)) throw new NoSuchElementException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		int idx = qp[i+d];</b>
+<b class="nc">&nbsp;		exch(idx, --n);</b>
+<b class="nc">&nbsp;		swim(idx);</b>
+<b class="nc">&nbsp;		sink(idx);</b>
+<b class="nc">&nbsp;		keys[i+d] = null;</b>
+<b class="nc">&nbsp;		qp[i+d] = -1;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * General helper functions
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//Compares two keys
+&nbsp;	private boolean greater(int i, int j) {
+<b class="nc">&nbsp;		return comp.compare(keys[pq[i+d]+d], keys[pq[j+d]+d]) &gt; 0;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Exchanges two keys
+&nbsp;	private void exch(int x, int y) {
+<b class="nc">&nbsp;		int i = x+d, j = y+d;</b>
+<b class="nc">&nbsp;		int swap = pq[i];</b>
+<b class="nc">&nbsp;		pq[i] = pq[j];</b>
+<b class="nc">&nbsp;		pq[j] = swap;</b>
+<b class="nc">&nbsp;		qp[pq[i]+d] = x;</b>
+<b class="nc">&nbsp;		qp[pq[j]+d] = y;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Functions for moving upward or downward
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//Moves upward
+&nbsp;	private void swim(int i) {
+<b class="nc">&nbsp;		if (i &gt; 0 &amp;&amp; greater((i-1)/d, i)) {</b>
+<b class="nc">&nbsp;			exch(i, (i-1)/d);</b>
+<b class="nc">&nbsp;			swim((i-1)/d);</b>
+&nbsp;		}
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	//Moves downward
+&nbsp;	private void sink(int i) {
+<b class="nc">&nbsp;		if (d*i+1 &gt;= n) return;</b>
+<b class="nc">&nbsp;		int min = minChild(i);</b>
+<b class="nc">&nbsp;		while (min &lt; n &amp;&amp; greater(i, min)) {</b>
+<b class="nc">&nbsp;			exch(i, min);</b>
+<b class="nc">&nbsp;			i = min;</b>
+<b class="nc">&nbsp;			min = minChild(i);</b>
+&nbsp;		}
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Deletes the minimum child
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//Return the minimum child of i
+&nbsp;	private int minChild(int i) {
+<b class="nc">&nbsp;		int loBound = d*i+1, hiBound = d*i+d;</b>
+<b class="nc">&nbsp;		int min = loBound;</b>
+<b class="nc">&nbsp;		for (int cur = loBound; cur &lt;= hiBound; cur++) {</b>
+<b class="nc">&nbsp;			if (cur &lt; n &amp;&amp; greater(min, cur)) min = cur;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return min;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Iterator
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Gets an Iterator over the indexes in the priority queue in ascending order
+&nbsp;	 * The Iterator does not implement the remove() method
+&nbsp;	 * iterator() : Worst case is O(n)
+&nbsp;	 * next() : 	Worst case is O(d*log-d(n))
+&nbsp;	 * hasNext() : 	Worst case is O(1)
+&nbsp;	 * @return an Iterator over the indexes in the priority queue in ascending order
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public Iterator&lt;Integer&gt; iterator() {
+<b class="nc">&nbsp;		return new MyIterator();</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Constructs an Iterator over the indices in linear time
+&nbsp;	private class MyIterator implements Iterator&lt;Integer&gt; {
+&nbsp;		IndexMultiwayMinPQ&lt;Key&gt; clone;
+&nbsp;		
+<b class="nc">&nbsp;		public MyIterator() {</b>
+<b class="nc">&nbsp;			clone = new IndexMultiwayMinPQ&lt;Key&gt;(nmax, comp, d);</b>
+<b class="nc">&nbsp;			for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;				clone.insert(pq[i+d], keys[pq[i+d]+d]);</b>
+&nbsp;			}
+<b class="nc">&nbsp;		}</b>
+&nbsp;
+&nbsp;		public boolean hasNext() {
+<b class="nc">&nbsp;			return !clone.isEmpty();</b>
+&nbsp;		}
+&nbsp;		
+&nbsp;		public Integer next() {
+<b class="nc">&nbsp;                        if (!hasNext()) throw new NoSuchElementException();</b>
+<b class="nc">&nbsp;			return clone.delMin();</b>
+&nbsp;		}
+&nbsp;		
+&nbsp;		public void remove() {
+<b class="nc">&nbsp;			throw new UnsupportedOperationException();</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Comparator
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//default Comparator
+<b class="nc">&nbsp;	private class MyComparator implements Comparator&lt;Key&gt; {</b>
+&nbsp;		@Override
+&nbsp;		public int compare(Key key1, Key key2) {
+<b class="nc">&nbsp;			return ((Comparable&lt;Key&gt;) key1).compareTo(key2);</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

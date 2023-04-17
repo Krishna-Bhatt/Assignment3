@@ -1,0 +1,984 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > AVLTreeST</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: AVLTreeST (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AVLTreeST</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/210)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/221)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AVLTreeST$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/51)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/210)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/227)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac AVLTreeST.java
+&nbsp; *  Execution:    java AVLTreeST &lt; input.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java  
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/33balanced/tinyST.txt  
+&nbsp; *    
+&nbsp; *  A symbol table implemented using an AVL tree.
+&nbsp; *
+&nbsp; *  % more tinyST.txt
+&nbsp; *  S E A R C H E X A M P L E
+&nbsp; *  
+&nbsp; *  % java AVLTreeST &lt; tinyST.txt
+&nbsp; *  A 8
+&nbsp; *  C 4
+&nbsp; *  E 12
+&nbsp; *  H 5
+&nbsp; *  L 11
+&nbsp; *  M 9
+&nbsp; *  P 10
+&nbsp; *  R 3
+&nbsp; *  S 0
+&nbsp; *  X 7
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code AVLTreeST} class represents an ordered symbol table of
+&nbsp; *  generic key-value pairs. It supports the usual &lt;em&gt;put&lt;/em&gt;, &lt;em&gt;get&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;contains&lt;/em&gt;, &lt;em&gt;delete&lt;/em&gt;, &lt;em&gt;size&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt;
+&nbsp; *  methods. It also provides ordered methods for finding the &lt;em&gt;minimum&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;maximum&lt;/em&gt;, &lt;em&gt;floor&lt;/em&gt;, and &lt;em&gt;ceiling&lt;/em&gt;. It also provides a
+&nbsp; *  &lt;em&gt;keys&lt;/em&gt; method for iterating over all of the keys. A symbol table
+&nbsp; *  implements the &lt;em&gt;associative array&lt;/em&gt; abstraction: when associating a
+&nbsp; *  value with a key that is already in the symbol table, the convention is to
+&nbsp; *  replace the old value with the new value. Unlike {@link java.util.Map}, this
+&nbsp; *  class uses the convention that values cannot be {@code null}
+&nbsp; *  —setting the value associated with a key to {@code null} is
+&nbsp; *  equivalent to deleting the key from the symbol table.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This symbol table implementation uses internally an
+&nbsp; *  &lt;a href=&quot;https://en.wikipedia.org/wiki/AVL_tree&quot;&gt; AVL tree &lt;/a&gt; (Georgy
+&nbsp; *  Adelson-Velsky and Evgenii Landis&#39; tree) which is a self-balancing BST.
+&nbsp; *  In an AVL tree, the heights of the two child subtrees of any
+&nbsp; *  node differ by at most one; if at any time they differ by more than one,
+&nbsp; *  rebalancing is done to restore this property.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation requires that the key type implements the
+&nbsp; *  {@code Comparable} interface and calls the {@code compareTo()} and
+&nbsp; *  method to compare two keys. It does not call either {@code equals()} or
+&nbsp; *  {@code hashCode()}. The &lt;em&gt;put&lt;/em&gt;, &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;delete&lt;/em&gt;, &lt;em&gt;minimum&lt;/em&gt;, &lt;em&gt;maximum&lt;/em&gt;, &lt;em&gt;ceiling&lt;/em&gt;, and
+&nbsp; *  &lt;em&gt;floor&lt;/em&gt; operations each take logarithmic time in the worst case. The
+&nbsp; *  &lt;em&gt;size&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt; operations take constant time.
+&nbsp; *  Construction also takes constant time.
+&nbsp; * 
+&nbsp; *  For other implementations of the same API, see {@link ST}, {@link BinarySearchST},
+&nbsp; *  {@link SequentialSearchST}, {@link BST}, {@link RedBlackBST},
+&nbsp; *  {@link SeparateChainingHashST}, and {@link LinearProbingHashST}.
+&nbsp; * 
+&nbsp; *  @author Marcelo Silva
+&nbsp; */
+&nbsp;
+<b class="nc">&nbsp;public class AVLTreeST&lt;Key extends Comparable&lt;Key&gt;, Value&gt; {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The root node.
+&nbsp;     */
+&nbsp;    private Node root;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This class represents an inner node of the AVL tree.
+&nbsp;     */
+&nbsp;    private class Node {
+&nbsp;        private final Key key;   // the key
+&nbsp;        private Value val;       // the associated value
+&nbsp;        private int height;      // height of the subtree
+&nbsp;        private int size;        // number of nodes in subtree
+&nbsp;        private Node left;       // left subtree
+&nbsp;        private Node right;      // right subtree
+&nbsp;
+<b class="nc">&nbsp;        public Node(Key key, Value val, int height, int size) {</b>
+<b class="nc">&nbsp;            this.key = key;</b>
+<b class="nc">&nbsp;            this.val = val;</b>
+<b class="nc">&nbsp;            this.size = size;</b>
+<b class="nc">&nbsp;            this.height = height;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty symbol table.
+&nbsp;     */
+<b class="nc">&nbsp;    public AVLTreeST() {</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the symbol table is empty.
+&nbsp;     * 
+&nbsp;     * @return {@code true} if the symbol table is empty.
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return root == null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number key-value pairs in the symbol table.
+&nbsp;     * 
+&nbsp;     * @return the number key-value pairs in the symbol table
+&nbsp;     */
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return size(root);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of nodes in the subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * 
+&nbsp;     * @return the number of nodes in the subtree
+&nbsp;     */
+&nbsp;    private int size(Node x) {
+<b class="nc">&nbsp;        if (x == null) return 0;</b>
+<b class="nc">&nbsp;        return x.size;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the height of the internal AVL tree. It is assumed that the
+&nbsp;     * height of an empty tree is -1 and the height of a tree with just one node
+&nbsp;     * is 0.
+&nbsp;     * 
+&nbsp;     * @return the height of the internal AVL tree
+&nbsp;     */
+&nbsp;    public int height() {
+<b class="nc">&nbsp;        return height(root);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the height of the subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * 
+&nbsp;     * @return the height of the subtree.
+&nbsp;     */
+&nbsp;    private int height(Node x) {
+<b class="nc">&nbsp;        if (x == null) return -1;</b>
+<b class="nc">&nbsp;        return x.height;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the value associated with the given key.
+&nbsp;     * 
+&nbsp;     * @param key the key
+&nbsp;     * @return the value associated with the given key if the key is in the
+&nbsp;     *         symbol table and {@code null} if the key is not in the
+&nbsp;     *         symbol table
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Value get(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to get() is null&quot;);</b>
+<b class="nc">&nbsp;        Node x = get(root, key);</b>
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        return x.val;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns value associated with the given key in the subtree or
+&nbsp;     * {@code null} if no such key.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @param key the key
+&nbsp;     * @return value associated with the given key in the subtree or
+&nbsp;     *         {@code null} if no such key
+&nbsp;     */
+&nbsp;    private Node get(Node x, Key key) {
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        int cmp = key.compareTo(x.key);</b>
+<b class="nc">&nbsp;        if (cmp &lt; 0) return get(x.left, key);</b>
+<b class="nc">&nbsp;        else if (cmp &gt; 0) return get(x.right, key);</b>
+<b class="nc">&nbsp;        else return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the symbol table contains the given key.
+&nbsp;     * 
+&nbsp;     * @param key the key
+&nbsp;     * @return {@code true} if the symbol table contains {@code key}
+&nbsp;     *         and {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public boolean contains(Key key) {
+<b class="nc">&nbsp;        return get(key) != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserts the specified key-value pair into the symbol table, overwriting
+&nbsp;     * the old value with the new value if the symbol table already contains the
+&nbsp;     * specified key. Deletes the specified key (and its associated value) from
+&nbsp;     * this symbol table if the specified value is {@code null}.
+&nbsp;     * 
+&nbsp;     * @param key the key
+&nbsp;     * @param val the value
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void put(Key key, Value val) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;first argument to put() is null&quot;);</b>
+<b class="nc">&nbsp;        if (val == null) {</b>
+<b class="nc">&nbsp;            delete(key);</b>
+<b class="nc">&nbsp;            return;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        root = put(root, key, val);</b>
+<b class="nc">&nbsp;        assert check();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserts the key-value pair in the subtree. It overrides the old value
+&nbsp;     * with the new value if the symbol table already contains the specified key
+&nbsp;     * and deletes the specified key (and its associated value) from this symbol
+&nbsp;     * table if the specified value is {@code null}.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @param key the key
+&nbsp;     * @param val the value
+&nbsp;     * @return the subtree
+&nbsp;     */
+&nbsp;    private Node put(Node x, Key key, Value val) {
+<b class="nc">&nbsp;        if (x == null) return new Node(key, val, 0, 1);</b>
+<b class="nc">&nbsp;        int cmp = key.compareTo(x.key);</b>
+<b class="nc">&nbsp;        if (cmp &lt; 0) {</b>
+<b class="nc">&nbsp;            x.left = put(x.left, key, val);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        else if (cmp &gt; 0) {</b>
+<b class="nc">&nbsp;            x.right = put(x.right, key, val);</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            x.val = val;</b>
+<b class="nc">&nbsp;            return x;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        x.size = 1 + size(x.left) + size(x.right);</b>
+<b class="nc">&nbsp;        x.height = 1 + Math.max(height(x.left), height(x.right));</b>
+<b class="nc">&nbsp;        return balance(x);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Restores the AVL tree property of the subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @return the subtree with restored AVL property
+&nbsp;     */
+&nbsp;    private Node balance(Node x) {
+<b class="nc">&nbsp;        if (balanceFactor(x) &lt; -1) {</b>
+<b class="nc">&nbsp;            if (balanceFactor(x.right) &gt; 0) {</b>
+<b class="nc">&nbsp;                x.right = rotateRight(x.right);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            x = rotateLeft(x);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        else if (balanceFactor(x) &gt; 1) {</b>
+<b class="nc">&nbsp;            if (balanceFactor(x.left) &lt; 0) {</b>
+<b class="nc">&nbsp;                x.left = rotateLeft(x.left);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            x = rotateRight(x);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the balance factor of the subtree. The balance factor is defined
+&nbsp;     * as the difference in height of the left subtree and right subtree, in
+&nbsp;     * this order. Therefore, a subtree with a balance factor of -1, 0 or 1 has
+&nbsp;     * the AVL property since the heights of the two child subtrees differ by at
+&nbsp;     * most one.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @return the balance factor of the subtree
+&nbsp;     */
+&nbsp;    private int balanceFactor(Node x) {
+<b class="nc">&nbsp;        return height(x.left) - height(x.right);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rotates the given subtree to the right.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @return the right rotated subtree
+&nbsp;     */
+&nbsp;    private Node rotateRight(Node x) {
+<b class="nc">&nbsp;        Node y = x.left;</b>
+<b class="nc">&nbsp;        x.left = y.right;</b>
+<b class="nc">&nbsp;        y.right = x;</b>
+<b class="nc">&nbsp;        y.size = x.size;</b>
+<b class="nc">&nbsp;        x.size = 1 + size(x.left) + size(x.right);</b>
+<b class="nc">&nbsp;        x.height = 1 + Math.max(height(x.left), height(x.right));</b>
+<b class="nc">&nbsp;        y.height = 1 + Math.max(height(y.left), height(y.right));</b>
+<b class="nc">&nbsp;        return y;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rotates the given subtree to the left.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @return the left rotated subtree
+&nbsp;     */
+&nbsp;    private Node rotateLeft(Node x) {
+<b class="nc">&nbsp;        Node y = x.right;</b>
+<b class="nc">&nbsp;        x.right = y.left;</b>
+<b class="nc">&nbsp;        y.left = x;</b>
+<b class="nc">&nbsp;        y.size = x.size;</b>
+<b class="nc">&nbsp;        x.size = 1 + size(x.left) + size(x.right);</b>
+<b class="nc">&nbsp;        x.height = 1 + Math.max(height(x.left), height(x.right));</b>
+<b class="nc">&nbsp;        y.height = 1 + Math.max(height(y.left), height(y.right));</b>
+<b class="nc">&nbsp;        return y;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the specified key and its associated value from the symbol table
+&nbsp;     * (if the key is in the symbol table).
+&nbsp;     * 
+&nbsp;     * @param key the key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void delete(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to delete() is null&quot;);</b>
+<b class="nc">&nbsp;        if (!contains(key)) return;</b>
+<b class="nc">&nbsp;        root = delete(root, key);</b>
+<b class="nc">&nbsp;        assert check();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the specified key and its associated value from the given
+&nbsp;     * subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @param key the key
+&nbsp;     * @return the updated subtree
+&nbsp;     */
+&nbsp;    private Node delete(Node x, Key key) {
+<b class="nc">&nbsp;        int cmp = key.compareTo(x.key);</b>
+<b class="nc">&nbsp;        if (cmp &lt; 0) {</b>
+<b class="nc">&nbsp;            x.left = delete(x.left, key);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        else if (cmp &gt; 0) {</b>
+<b class="nc">&nbsp;            x.right = delete(x.right, key);</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            if (x.left == null) {</b>
+<b class="nc">&nbsp;                return x.right;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            else if (x.right == null) {</b>
+<b class="nc">&nbsp;                return x.left;</b>
+&nbsp;            }
+&nbsp;            else {
+<b class="nc">&nbsp;                Node y = x;</b>
+<b class="nc">&nbsp;                x = min(y.right);</b>
+<b class="nc">&nbsp;                x.right = deleteMin(y.right);</b>
+<b class="nc">&nbsp;                x.left = y.left;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        x.size = 1 + size(x.left) + size(x.right);</b>
+<b class="nc">&nbsp;        x.height = 1 + Math.max(height(x.left), height(x.right));</b>
+<b class="nc">&nbsp;        return balance(x);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the smallest key and associated value from the symbol table.
+&nbsp;     * 
+&nbsp;     * @throws NoSuchElementException if the symbol table is empty
+&nbsp;     */
+&nbsp;    public void deleteMin() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called deleteMin() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        root = deleteMin(root);</b>
+<b class="nc">&nbsp;        assert check();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the smallest key and associated value from the given subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @return the updated subtree
+&nbsp;     */
+&nbsp;    private Node deleteMin(Node x) {
+<b class="nc">&nbsp;        if (x.left == null) return x.right;</b>
+<b class="nc">&nbsp;        x.left = deleteMin(x.left);</b>
+<b class="nc">&nbsp;        x.size = 1 + size(x.left) + size(x.right);</b>
+<b class="nc">&nbsp;        x.height = 1 + Math.max(height(x.left), height(x.right));</b>
+<b class="nc">&nbsp;        return balance(x);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the largest key and associated value from the symbol table.
+&nbsp;     * 
+&nbsp;     * @throws NoSuchElementException if the symbol table is empty
+&nbsp;     */
+&nbsp;    public void deleteMax() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called deleteMax() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        root = deleteMax(root);</b>
+<b class="nc">&nbsp;        assert check();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the largest key and associated value from the given subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @return the updated subtree
+&nbsp;     */
+&nbsp;    private Node deleteMax(Node x) {
+<b class="nc">&nbsp;        if (x.right == null) return x.left;</b>
+<b class="nc">&nbsp;        x.right = deleteMax(x.right);</b>
+<b class="nc">&nbsp;        x.size = 1 + size(x.left) + size(x.right);</b>
+<b class="nc">&nbsp;        x.height = 1 + Math.max(height(x.left), height(x.right));</b>
+<b class="nc">&nbsp;        return balance(x);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the smallest key in the symbol table.
+&nbsp;     * 
+&nbsp;     * @return the smallest key in the symbol table
+&nbsp;     * @throws NoSuchElementException if the symbol table is empty
+&nbsp;     */
+&nbsp;    public Key min() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called min() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        return min(root).key;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the node with the smallest key in the subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @return the node with the smallest key in the subtree
+&nbsp;     */
+&nbsp;    private Node min(Node x) {
+<b class="nc">&nbsp;        if (x.left == null) return x;</b>
+<b class="nc">&nbsp;        return min(x.left);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the largest key in the symbol table.
+&nbsp;     * 
+&nbsp;     * @return the largest key in the symbol table
+&nbsp;     * @throws NoSuchElementException if the symbol table is empty
+&nbsp;     */
+&nbsp;    public Key max() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called max() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        return max(root).key;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the node with the largest key in the subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @return the node with the largest key in the subtree
+&nbsp;     */
+&nbsp;    private Node max(Node x) {
+<b class="nc">&nbsp;        if (x.right == null) return x;</b>
+<b class="nc">&nbsp;        return max(x.right);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the largest key in the symbol table less than or equal to
+&nbsp;     * {@code key}.
+&nbsp;     * 
+&nbsp;     * @param key the key
+&nbsp;     * @return the largest key in the symbol table less than or equal to
+&nbsp;     *         {@code key}
+&nbsp;     * @throws NoSuchElementException if the symbol table is empty
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Key floor(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to floor() is null&quot;);</b>
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called floor() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        Node x = floor(root, key);</b>
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        else return x.key;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the node in the subtree with the largest key less than or equal
+&nbsp;     * to the given key.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @param key the key
+&nbsp;     * @return the node in the subtree with the largest key less than or equal
+&nbsp;     *         to the given key
+&nbsp;     */
+&nbsp;    private Node floor(Node x, Key key) {
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        int cmp = key.compareTo(x.key);</b>
+<b class="nc">&nbsp;        if (cmp == 0) return x;</b>
+<b class="nc">&nbsp;        if (cmp &lt; 0) return floor(x.left, key);</b>
+<b class="nc">&nbsp;        Node y = floor(x.right, key);</b>
+<b class="nc">&nbsp;        if (y != null) return y;</b>
+<b class="nc">&nbsp;        else return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the smallest key in the symbol table greater than or equal to
+&nbsp;     * {@code key}.
+&nbsp;     * 
+&nbsp;     * @param key the key
+&nbsp;     * @return the smallest key in the symbol table greater than or equal to
+&nbsp;     *         {@code key}
+&nbsp;     * @throws NoSuchElementException if the symbol table is empty
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Key ceiling(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to ceiling() is null&quot;);</b>
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called ceiling() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        Node x = ceiling(root, key);</b>
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        else return x.key;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the node in the subtree with the smallest key greater than or
+&nbsp;     * equal to the given key.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @param key the key
+&nbsp;     * @return the node in the subtree with the smallest key greater than or
+&nbsp;     *         equal to the given key
+&nbsp;     */
+&nbsp;    private Node ceiling(Node x, Key key) {
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        int cmp = key.compareTo(x.key);</b>
+<b class="nc">&nbsp;        if (cmp == 0) return x;</b>
+<b class="nc">&nbsp;        if (cmp &gt; 0) return ceiling(x.right, key);</b>
+<b class="nc">&nbsp;        Node y = ceiling(x.left, key);</b>
+<b class="nc">&nbsp;        if (y != null) return y;</b>
+<b class="nc">&nbsp;        else return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the kth smallest key in the symbol table.
+&nbsp;     * 
+&nbsp;     * @param k the order statistic
+&nbsp;     * @return the kth smallest key in the symbol table
+&nbsp;     * @throws IllegalArgumentException unless {@code k} is between 0 and
+&nbsp;     *             {@code size() -1 }
+&nbsp;     */
+&nbsp;    public Key select(int k) {
+<b class="nc">&nbsp;        if (k &lt; 0 || k &gt;= size()) throw new IllegalArgumentException(&quot;k is not in range 0-&quot; + (size() - 1));</b>
+<b class="nc">&nbsp;        Node x = select(root, k);</b>
+<b class="nc">&nbsp;        return x.key;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the node with key the kth smallest key in the subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @param k the kth smallest key in the subtree
+&nbsp;     * @return the node with key the kth smallest key in the subtree
+&nbsp;     */
+&nbsp;    private Node select(Node x, int k) {
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        int t = size(x.left);</b>
+<b class="nc">&nbsp;        if (t &gt; k) return select(x.left, k);</b>
+<b class="nc">&nbsp;        else if (t &lt; k) return select(x.right, k - t - 1);</b>
+<b class="nc">&nbsp;        else return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of keys in the symbol table strictly less than
+&nbsp;     * {@code key}.
+&nbsp;     * 
+&nbsp;     * @param key the key
+&nbsp;     * @return the number of keys in the symbol table strictly less than
+&nbsp;     *         {@code key}
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public int rank(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to rank() is null&quot;);</b>
+<b class="nc">&nbsp;        return rank(key, root);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of keys in the subtree less than key.
+&nbsp;     * 
+&nbsp;     * @param key the key
+&nbsp;     * @param x the subtree
+&nbsp;     * @return the number of keys in the subtree less than key
+&nbsp;     */
+&nbsp;    private int rank(Key key, Node x) {
+<b class="nc">&nbsp;        if (x == null) return 0;</b>
+<b class="nc">&nbsp;        int cmp = key.compareTo(x.key);</b>
+<b class="nc">&nbsp;        if (cmp &lt; 0) return rank(key, x.left);</b>
+<b class="nc">&nbsp;        else if (cmp &gt; 0) return 1 + size(x.left) + rank(key, x.right);</b>
+<b class="nc">&nbsp;        else return size(x.left);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all keys in the symbol table.
+&nbsp;     * 
+&nbsp;     * @return all keys in the symbol table
+&nbsp;     */
+&nbsp;    public Iterable&lt;Key&gt; keys() {
+<b class="nc">&nbsp;        return keysInOrder();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all keys in the symbol table following an in-order traversal.
+&nbsp;     * 
+&nbsp;     * @return all keys in the symbol table following an in-order traversal
+&nbsp;     */
+&nbsp;    public Iterable&lt;Key&gt; keysInOrder() {
+<b class="nc">&nbsp;        Queue&lt;Key&gt; queue = new Queue&lt;Key&gt;();</b>
+<b class="nc">&nbsp;        keysInOrder(root, queue);</b>
+<b class="nc">&nbsp;        return queue;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the keys in the subtree to queue following an in-order traversal.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @param queue the queue
+&nbsp;     */
+&nbsp;    private void keysInOrder(Node x, Queue&lt;Key&gt; queue) {
+<b class="nc">&nbsp;        if (x == null) return;</b>
+<b class="nc">&nbsp;        keysInOrder(x.left, queue);</b>
+<b class="nc">&nbsp;        queue.enqueue(x.key);</b>
+<b class="nc">&nbsp;        keysInOrder(x.right, queue);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all keys in the symbol table following a level-order traversal.
+&nbsp;     * 
+&nbsp;     * @return all keys in the symbol table following a level-order traversal.
+&nbsp;     */
+&nbsp;    public Iterable&lt;Key&gt; keysLevelOrder() {
+<b class="nc">&nbsp;        Queue&lt;Key&gt; queue = new Queue&lt;Key&gt;();</b>
+<b class="nc">&nbsp;        if (!isEmpty()) {</b>
+<b class="nc">&nbsp;            Queue&lt;Node&gt; queue2 = new Queue&lt;Node&gt;();</b>
+<b class="nc">&nbsp;            queue2.enqueue(root);</b>
+<b class="nc">&nbsp;            while (!queue2.isEmpty()) {</b>
+<b class="nc">&nbsp;                Node x = queue2.dequeue();</b>
+<b class="nc">&nbsp;                queue.enqueue(x.key);</b>
+<b class="nc">&nbsp;                if (x.left != null) {</b>
+<b class="nc">&nbsp;                    queue2.enqueue(x.left);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (x.right != null) {</b>
+<b class="nc">&nbsp;                    queue2.enqueue(x.right);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return queue;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all keys in the symbol table in the given range.
+&nbsp;     * 
+&nbsp;     * @param lo the lowest key
+&nbsp;     * @param hi the highest key
+&nbsp;     * @return all keys in the symbol table between {@code lo} (inclusive)
+&nbsp;     *         and {@code hi} (exclusive)
+&nbsp;     * @throws IllegalArgumentException if either {@code lo} or {@code hi}
+&nbsp;     *             is {@code null}
+&nbsp;     */
+&nbsp;    public Iterable&lt;Key&gt; keys(Key lo, Key hi) {
+<b class="nc">&nbsp;        if (lo == null) throw new IllegalArgumentException(&quot;first argument to keys() is null&quot;);</b>
+<b class="nc">&nbsp;        if (hi == null) throw new IllegalArgumentException(&quot;second argument to keys() is null&quot;);</b>
+<b class="nc">&nbsp;        Queue&lt;Key&gt; queue = new Queue&lt;Key&gt;();</b>
+<b class="nc">&nbsp;        keys(root, queue, lo, hi);</b>
+<b class="nc">&nbsp;        return queue;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the keys between {@code lo} and {@code hi} in the subtree
+&nbsp;     * to the {@code queue}.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @param queue the queue
+&nbsp;     * @param lo the lowest key
+&nbsp;     * @param hi the highest key
+&nbsp;     */
+&nbsp;    private void keys(Node x, Queue&lt;Key&gt; queue, Key lo, Key hi) {
+<b class="nc">&nbsp;        if (x == null) return;</b>
+<b class="nc">&nbsp;        int cmplo = lo.compareTo(x.key);</b>
+<b class="nc">&nbsp;        int cmphi = hi.compareTo(x.key);</b>
+<b class="nc">&nbsp;        if (cmplo &lt; 0) keys(x.left, queue, lo, hi);</b>
+<b class="nc">&nbsp;        if (cmplo &lt;= 0 &amp;&amp; cmphi &gt;= 0) queue.enqueue(x.key);</b>
+<b class="nc">&nbsp;        if (cmphi &gt; 0) keys(x.right, queue, lo, hi);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of keys in the symbol table in the given range.
+&nbsp;     * 
+&nbsp;     * @param lo minimum endpoint
+&nbsp;     * @param hi maximum endpoint
+&nbsp;     * @return the number of keys in the symbol table between {@code lo}
+&nbsp;     *         (inclusive) and {@code hi} (exclusive)
+&nbsp;     * @throws IllegalArgumentException if either {@code lo} or {@code hi}
+&nbsp;     *             is {@code null}
+&nbsp;     */
+&nbsp;    public int size(Key lo, Key hi) {
+<b class="nc">&nbsp;        if (lo == null) throw new IllegalArgumentException(&quot;first argument to size() is null&quot;);</b>
+<b class="nc">&nbsp;        if (hi == null) throw new IllegalArgumentException(&quot;second argument to size() is null&quot;);</b>
+<b class="nc">&nbsp;        if (lo.compareTo(hi) &gt; 0) return 0;</b>
+<b class="nc">&nbsp;        if (contains(hi)) return rank(hi) - rank(lo) + 1;</b>
+<b class="nc">&nbsp;        else return rank(hi) - rank(lo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the AVL tree invariants are fine.
+&nbsp;     * 
+&nbsp;     * @return {@code true} if the AVL tree invariants are fine
+&nbsp;     */
+&nbsp;    private boolean check() {
+<b class="nc">&nbsp;        if (!isBST()) StdOut.println(&quot;Symmetric order not consistent&quot;);</b>
+<b class="nc">&nbsp;        if (!isAVL()) StdOut.println(&quot;AVL property not consistent&quot;);</b>
+<b class="nc">&nbsp;        if (!isSizeConsistent()) StdOut.println(&quot;Subtree counts not consistent&quot;);</b>
+<b class="nc">&nbsp;        if (!isRankConsistent()) StdOut.println(&quot;Ranks not consistent&quot;);</b>
+<b class="nc">&nbsp;        return isBST() &amp;&amp; isAVL() &amp;&amp; isSizeConsistent() &amp;&amp; isRankConsistent();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if AVL property is consistent.
+&nbsp;     * 
+&nbsp;     * @return {@code true} if AVL property is consistent.
+&nbsp;     */
+&nbsp;    private boolean isAVL() {
+<b class="nc">&nbsp;        return isAVL(root);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if AVL property is consistent in the subtree.
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @return {@code true} if AVL property is consistent in the subtree
+&nbsp;     */
+&nbsp;    private boolean isAVL(Node x) {
+<b class="nc">&nbsp;        if (x == null) return true;</b>
+<b class="nc">&nbsp;        int bf = balanceFactor(x);</b>
+<b class="nc">&nbsp;        if (bf &gt; 1 || bf &lt; -1) return false;</b>
+<b class="nc">&nbsp;        return isAVL(x.left) &amp;&amp; isAVL(x.right);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the symmetric order is consistent.
+&nbsp;     * 
+&nbsp;     * @return {@code true} if the symmetric order is consistent
+&nbsp;     */
+&nbsp;    private boolean isBST() {
+<b class="nc">&nbsp;        return isBST(root, null, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the tree rooted at x is a BST with all keys strictly between
+&nbsp;     * min and max (if min or max is null, treat as empty constraint) Credit:
+&nbsp;     * Bob Dondero&#39;s elegant solution
+&nbsp;     * 
+&nbsp;     * @param x the subtree
+&nbsp;     * @param min the minimum key in subtree
+&nbsp;     * @param max the maximum key in subtree
+&nbsp;     * @return {@code true} if if the symmetric order is consistent
+&nbsp;     */
+&nbsp;    private boolean isBST(Node x, Key min, Key max) {
+<b class="nc">&nbsp;        if (x == null) return true;</b>
+<b class="nc">&nbsp;        if (min != null &amp;&amp; x.key.compareTo(min) &lt;= 0) return false;</b>
+<b class="nc">&nbsp;        if (max != null &amp;&amp; x.key.compareTo(max) &gt;= 0) return false;</b>
+<b class="nc">&nbsp;        return isBST(x.left, min, x.key) &amp;&amp; isBST(x.right, x.key, max);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if size is consistent.
+&nbsp;     * 
+&nbsp;     * @return {@code true} if size is consistent
+&nbsp;     */
+&nbsp;    private boolean isSizeConsistent() {
+<b class="nc">&nbsp;        return isSizeConsistent(root);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the size of the subtree is consistent.
+&nbsp;     * 
+&nbsp;     * @return {@code true} if the size of the subtree is consistent
+&nbsp;     */
+&nbsp;    private boolean isSizeConsistent(Node x) {
+<b class="nc">&nbsp;        if (x == null) return true;</b>
+<b class="nc">&nbsp;        if (x.size != size(x.left) + size(x.right) + 1) return false;</b>
+<b class="nc">&nbsp;        return isSizeConsistent(x.left) &amp;&amp; isSizeConsistent(x.right);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if rank is consistent.
+&nbsp;     * 
+&nbsp;     * @return {@code true} if rank is consistent
+&nbsp;     */
+&nbsp;    private boolean isRankConsistent() {
+<b class="nc">&nbsp;        for (int i = 0; i &lt; size(); i++)</b>
+<b class="nc">&nbsp;            if (i != rank(select(i))) return false;</b>
+<b class="nc">&nbsp;        for (Key key : keys())</b>
+<b class="nc">&nbsp;            if (key.compareTo(select(rank(key))) != 0) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code AVLTreeST} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        AVLTreeST&lt;String, Integer&gt; st = new AVLTreeST&lt;String, Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int i = 0; !StdIn.isEmpty(); i++) {</b>
+<b class="nc">&nbsp;            String key = StdIn.readString();</b>
+<b class="nc">&nbsp;            st.put(key, i);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        for (String s : st.keys())</b>
+<b class="nc">&nbsp;            StdOut.println(s + &quot; &quot; + st.get(s));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

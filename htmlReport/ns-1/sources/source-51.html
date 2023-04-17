@@ -1,0 +1,204 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GREP</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: GREP (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GREP</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac GREP.java
+&nbsp; *  Execution:    java GREP regexp &lt; input.txt
+&nbsp; *  Dependencies: NFA.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/54regexp/tinyL.txt
+&nbsp; *
+&nbsp; *  This program takes an RE as a command-line argument and prints
+&nbsp; *  the lines from standard input having some substring that
+&nbsp; *  is in the language described by the RE. 
+&nbsp; *
+&nbsp; *  % more tinyL.txt
+&nbsp; *  AC
+&nbsp; *  AD
+&nbsp; *  AAA
+&nbsp; *  ABD
+&nbsp; *  ADD
+&nbsp; *  BCD
+&nbsp; *  ABCCBD
+&nbsp; *  BABAAA
+&nbsp; *  BABBAAA
+&nbsp; *
+&nbsp; *  %  java GREP &quot;(A*B|AC)D&quot; &lt; tinyL.txt
+&nbsp; *  ABD
+&nbsp; *  ABCCBD
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code GREP} class provides a client for reading in a sequence of
+&nbsp; *  lines from standard input and printing to standard output those lines
+&nbsp; *  that contain a substring matching a specified regular expression.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/31elementary&quot;&gt;Section 3.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class GREP {
+&nbsp;
+&nbsp;    // do not instantiate
+&nbsp;    private GREP() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Interprets the command-line argument as a regular expression
+&nbsp;     * (supporting closure, binary or, parentheses, and wildcard)
+&nbsp;     * reads in lines from standard input; writes to standard output
+&nbsp;     * those lines that contain a substring matching the regular
+&nbsp;     * expression.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) { 
+<b class="nc">&nbsp;        String regexp = &quot;(.*&quot; + args[0] + &quot;.*)&quot;;</b>
+<b class="nc">&nbsp;        NFA nfa = new NFA(regexp);</b>
+<b class="nc">&nbsp;        while (StdIn.hasNextLine()) { </b>
+<b class="nc">&nbsp;            String line = StdIn.readLine();</b>
+<b class="nc">&nbsp;            if (nfa.recognizes(line)) {</b>
+<b class="nc">&nbsp;                StdOut.println(line);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;} 
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

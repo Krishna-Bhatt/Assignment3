@@ -1,0 +1,446 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Out</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Out (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Out</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/85)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Out.java
+&nbsp; *  Execution:    java Out
+&nbsp; *  Dependencies: none
+&nbsp; *
+&nbsp; *  Writes data of various types to: stdout, file, or socket.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;
+&nbsp;import java.io.FileOutputStream;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.OutputStream;
+&nbsp;import java.io.OutputStreamWriter;
+&nbsp;import java.io.PrintWriter;
+&nbsp;import java.net.Socket;
+&nbsp;import java.util.Locale;
+&nbsp;
+&nbsp;/**
+&nbsp; *  This class provides methods for writing strings and numbers to
+&nbsp; *  various output streams, including standard output, file, and sockets.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://introcs.cs.princeton.edu/31datatype&quot;&gt;Section 3.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Computer Science: An Interdisciplinary Approach&lt;/i&gt;
+&nbsp; *  by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class Out {
+&nbsp;
+&nbsp;    // force Unicode UTF-8 encoding; otherwise it&#39;s system dependent
+&nbsp;    private static final String CHARSET_NAME = &quot;UTF-8&quot;;
+&nbsp;
+&nbsp;    // assume language = English, country = US for consistency with In
+<b class="nc">&nbsp;    private static final Locale LOCALE = Locale.US;</b>
+&nbsp;
+&nbsp;    private PrintWriter out;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Initializes an output stream from a {@link OutputStream}.
+&nbsp;     *
+&nbsp;     * @param  os the {@code OutputStream}
+&nbsp;     */
+<b class="nc">&nbsp;    public Out(OutputStream os) {</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            OutputStreamWriter osw = new OutputStreamWriter(os, CHARSET_NAME);</b>
+<b class="nc">&nbsp;            out = new PrintWriter(osw, true);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Initializes an output stream from standard output.
+&nbsp;     */
+&nbsp;    public Out() {
+<b class="nc">&nbsp;        this(System.out);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Initializes an output stream from a socket.
+&nbsp;     *
+&nbsp;     * @param  socket the socket
+&nbsp;     */
+<b class="nc">&nbsp;    public Out(Socket socket) {</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            OutputStream os = socket.getOutputStream();</b>
+<b class="nc">&nbsp;            OutputStreamWriter osw = new OutputStreamWriter(os, CHARSET_NAME);</b>
+<b class="nc">&nbsp;            out = new PrintWriter(osw, true);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Initializes an output stream from a file.
+&nbsp;     *
+&nbsp;     * @param  filename the name of the file
+&nbsp;     */
+<b class="nc">&nbsp;    public Out(String filename) {</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            OutputStream os = new FileOutputStream(filename);</b>
+<b class="nc">&nbsp;            OutputStreamWriter osw = new OutputStreamWriter(os, CHARSET_NAME);</b>
+<b class="nc">&nbsp;            out = new PrintWriter(osw, true);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Closes the output stream.
+&nbsp;     */
+&nbsp;    public void close() {
+<b class="nc">&nbsp;        out.close();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Terminates the current line by printing the line-separator string.
+&nbsp;     */
+&nbsp;    public void println() {
+<b class="nc">&nbsp;        out.println();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints an object to this output stream and then terminates the line.
+&nbsp;     *
+&nbsp;     * @param x the object to print
+&nbsp;     */
+&nbsp;    public void println(Object x) {
+<b class="nc">&nbsp;        out.println(x);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a boolean to this output stream and then terminates the line.
+&nbsp;     *
+&nbsp;     * @param x the boolean to print
+&nbsp;     */
+&nbsp;    public void println(boolean x) {
+<b class="nc">&nbsp;        out.println(x);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a character to this output stream and then terminates the line.
+&nbsp;     *
+&nbsp;     * @param x the character to print
+&nbsp;     */
+&nbsp;    public void println(char x) {
+<b class="nc">&nbsp;        out.println(x);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a double to this output stream and then terminates the line.
+&nbsp;     *
+&nbsp;     * @param x the double to print
+&nbsp;     */
+&nbsp;    public void println(double x) {
+<b class="nc">&nbsp;        out.println(x);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a float to this output stream and then terminates the line.
+&nbsp;     *
+&nbsp;     * @param x the float to print
+&nbsp;     */
+&nbsp;    public void println(float x) {
+<b class="nc">&nbsp;        out.println(x);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints an integer to this output stream and then terminates the line.
+&nbsp;     *
+&nbsp;     * @param x the integer to print
+&nbsp;     */
+&nbsp;    public void println(int x) {
+<b class="nc">&nbsp;        out.println(x);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a long to this output stream and then terminates the line.
+&nbsp;     *
+&nbsp;     * @param x the long to print
+&nbsp;     */
+&nbsp;    public void println(long x) {
+<b class="nc">&nbsp;        out.println(x);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a byte to this output stream and then terminates the line.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * To write binary data, see {@link BinaryOut}.
+&nbsp;     *
+&nbsp;     * @param x the byte to print
+&nbsp;     */
+&nbsp;    public void println(byte x) {
+<b class="nc">&nbsp;        out.println(x);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Flushes this output stream.
+&nbsp;     */
+&nbsp;    public void print() {
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints an object to this output stream and flushes this output stream.
+&nbsp;     * 
+&nbsp;     * @param x the object to print
+&nbsp;     */
+&nbsp;    public void print(Object x) {
+<b class="nc">&nbsp;        out.print(x);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a boolean to this output stream and flushes this output stream.
+&nbsp;     * 
+&nbsp;     * @param x the boolean to print
+&nbsp;     */
+&nbsp;    public void print(boolean x) {
+<b class="nc">&nbsp;        out.print(x);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a character to this output stream and flushes this output stream.
+&nbsp;     * 
+&nbsp;     * @param x the character to print
+&nbsp;     */
+&nbsp;    public void print(char x) {
+<b class="nc">&nbsp;        out.print(x);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a double to this output stream and flushes this output stream.
+&nbsp;     * 
+&nbsp;     * @param x the double to print
+&nbsp;     */
+&nbsp;    public void print(double x) {
+<b class="nc">&nbsp;        out.print(x);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a float to this output stream and flushes this output stream.
+&nbsp;     * 
+&nbsp;     * @param x the float to print
+&nbsp;     */
+&nbsp;    public void print(float x) {
+<b class="nc">&nbsp;        out.print(x);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints an integer to this output stream and flushes this output stream.
+&nbsp;     * 
+&nbsp;     * @param x the integer to print
+&nbsp;     */
+&nbsp;    public void print(int x) {
+<b class="nc">&nbsp;        out.print(x);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a long integer to this output stream and flushes this output stream.
+&nbsp;     * 
+&nbsp;     * @param x the long integer to print
+&nbsp;     */
+&nbsp;    public void print(long x) {
+<b class="nc">&nbsp;        out.print(x);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a byte to this output stream and flushes this output stream.
+&nbsp;     * 
+&nbsp;     * @param x the byte to print
+&nbsp;     */
+&nbsp;    public void print(byte x) {
+<b class="nc">&nbsp;        out.print(x);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a formatted string to this output stream, using the specified format
+&nbsp;     * string and arguments, and then flushes this output stream.
+&nbsp;     *
+&nbsp;     * @param format the format string
+&nbsp;     * @param args   the arguments accompanying the format string
+&nbsp;     */
+&nbsp;    public void printf(String format, Object... args) {
+<b class="nc">&nbsp;        out.printf(LOCALE, format, args);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Prints a formatted string to this output stream, using the specified
+&nbsp;     * locale, format string, and arguments, and then flushes this output stream.
+&nbsp;     *
+&nbsp;     * @param locale the locale
+&nbsp;     * @param format the format string
+&nbsp;     * @param args   the arguments accompanying the format string
+&nbsp;     */
+&nbsp;    public void printf(Locale locale, String format, Object... args) {
+<b class="nc">&nbsp;        out.printf(locale, format, args);</b>
+<b class="nc">&nbsp;        out.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * A test client.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;        Out out;
+&nbsp;
+&nbsp;        // write to stdout
+<b class="nc">&nbsp;        out = new Out();</b>
+<b class="nc">&nbsp;        out.println(&quot;Test 1&quot;);</b>
+<b class="nc">&nbsp;        out.close();</b>
+&nbsp;
+&nbsp;        // write to a file
+<b class="nc">&nbsp;        out = new Out(&quot;test.txt&quot;);</b>
+<b class="nc">&nbsp;        out.println(&quot;Test 2&quot;);</b>
+<b class="nc">&nbsp;        out.close();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

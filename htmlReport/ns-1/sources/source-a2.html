@@ -1,0 +1,388 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ST</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: ST (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ST</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac ST.java
+&nbsp; *  Execution:    java ST &lt; input.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/35applications/tinyST.txt
+&nbsp; *  
+&nbsp; *  Sorted symbol table implementation using a java.util.TreeMap.
+&nbsp; *  Does not allow duplicates.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;import java.util.TreeMap;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code ST} class represents an ordered symbol table of generic
+&nbsp; *  key-value pairs.
+&nbsp; *  It supports the usual &lt;em&gt;put&lt;/em&gt;, &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;delete&lt;/em&gt;, &lt;em&gt;size&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt; methods.
+&nbsp; *  It also provides ordered methods for finding the &lt;em&gt;minimum&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;maximum&lt;/em&gt;, &lt;em&gt;floor&lt;/em&gt;, and &lt;em&gt;ceiling&lt;/em&gt;.
+&nbsp; *  It also provides a &lt;em&gt;keys&lt;/em&gt; method for iterating over all of the keys.
+&nbsp; *  A symbol table implements the &lt;em&gt;associative array&lt;/em&gt; abstraction:
+&nbsp; *  when associating a value with a key that is already in the symbol table,
+&nbsp; *  the convention is to replace the old value with the new value.
+&nbsp; *  Unlike {@link java.util.Map}, this class uses the convention that
+&nbsp; *  values cannot be {@code null}—setting the
+&nbsp; *  value associated with a key to {@code null} is equivalent to deleting the key
+&nbsp; *  from the symbol table.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  It requires that
+&nbsp; *  the key type implements the {@code Comparable} interface and calls the
+&nbsp; *  {@code compareTo()} and method to compare two keys. It does not call either
+&nbsp; *  {@code equals()} or {@code hashCode()}.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a &lt;em&gt;red-black BST&lt;/em&gt;.
+&nbsp; *  The &lt;em&gt;put&lt;/em&gt;, &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;, &lt;em&gt;remove&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;minimum&lt;/em&gt;, &lt;em&gt;maximum&lt;/em&gt;, &lt;em&gt;ceiling&lt;/em&gt;, and &lt;em&gt;floor&lt;/em&gt;
+&nbsp; *  operations each take &amp;Theta;(log &lt;em&gt;n&lt;/em&gt;) time in the worst case,
+&nbsp; *  where &lt;em&gt;n&lt;/em&gt; is the number of key-value pairs in the symbol table.
+&nbsp; *  The &lt;em&gt;size&lt;/em&gt; and &lt;em&gt;is-empty&lt;/em&gt; operations take &amp;Theta;(1) time.
+&nbsp; *  Construction takes &amp;Theta;(1) time.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/35applications&quot;&gt;Section 3.5&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; *
+&nbsp; *  @param &lt;Key&gt; the generic type of keys in this symbol table
+&nbsp; *  @param &lt;Value&gt; the generic type of values in this symbol table
+&nbsp; */
+&nbsp;public class ST&lt;Key extends Comparable&lt;Key&gt;, Value&gt; implements Iterable&lt;Key&gt; {
+&nbsp;
+&nbsp;    private TreeMap&lt;Key, Value&gt; st;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty symbol table.
+&nbsp;     */
+<b class="nc">&nbsp;    public ST() {</b>
+<b class="nc">&nbsp;        st = new TreeMap&lt;Key, Value&gt;();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the value associated with the given key in this symbol table.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the value associated with the given key if the key is in this symbol table;
+&nbsp;     *         {@code null} if the key is not in this symbol table
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Value get(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;calls get() with null key&quot;);</b>
+<b class="nc">&nbsp;        return st.get(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserts the specified key-value pair into the symbol table, overwriting the old 
+&nbsp;     * value with the new value if the symbol table already contains the specified key.
+&nbsp;     * Deletes the specified key (and its associated value) from this symbol table
+&nbsp;     * if the specified value is {@code null}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @param  val the value
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void put(Key key, Value val) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;calls put() with null key&quot;);</b>
+<b class="nc">&nbsp;        if (val == null) st.remove(key);</b>
+<b class="nc">&nbsp;        else             st.put(key, val);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the specified key and its associated value from this symbol table     
+&nbsp;     * (if the key is in this symbol table).
+&nbsp;     * This is equivalent to {@code remove()}, but we plan to deprecate {@code delete()}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void delete(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;calls delete() with null key&quot;);</b>
+<b class="nc">&nbsp;        st.remove(key);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the specified key and its associated value from this symbol table     
+&nbsp;     * (if the key is in this symbol table).
+&nbsp;     * This is equivalent to {@code delete()}, but we plan to deprecate {@code delete()}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void remove(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;calls remove() with null key&quot;);</b>
+<b class="nc">&nbsp;        st.remove(key);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this symbol table contain the given key.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return {@code true} if this symbol table contains {@code key} and
+&nbsp;     *         {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public boolean contains(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;calls contains() with null key&quot;);</b>
+<b class="nc">&nbsp;        return st.containsKey(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of key-value pairs in this symbol table.
+&nbsp;     *
+&nbsp;     * @return the number of key-value pairs in this symbol table
+&nbsp;     */
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return st.size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this symbol table is empty.
+&nbsp;     *
+&nbsp;     * @return {@code true} if this symbol table is empty and {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return size() == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all keys in this symbol table.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * To iterate over all of the keys in the symbol table named {@code st},
+&nbsp;     * use the foreach notation: {@code for (Key key : st.keys())}.
+&nbsp;     *
+&nbsp;     * @return all keys in this symbol table
+&nbsp;     */
+&nbsp;    public Iterable&lt;Key&gt; keys() {
+<b class="nc">&nbsp;        return st.keySet();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all of the keys in this symbol table.
+&nbsp;     * To iterate over all of the keys in a symbol table named {@code st}, use the
+&nbsp;     * foreach notation: {@code for (Key key : st)}.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * This method is provided for backward compatibility with the version from
+&nbsp;     * &lt;em&gt;Introduction to Programming in Java: An Interdisciplinary Approach.&lt;/em&gt;
+&nbsp;     *
+&nbsp;     * @return     an iterator to all of the keys in this symbol table
+&nbsp;     * @deprecated Replaced by {@link #keys()}.
+&nbsp;     */
+&nbsp;    @Deprecated
+&nbsp;    public Iterator&lt;Key&gt; iterator() {
+<b class="nc">&nbsp;        return st.keySet().iterator();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the smallest key in this symbol table.
+&nbsp;     *
+&nbsp;     * @return the smallest key in this symbol table
+&nbsp;     * @throws NoSuchElementException if this symbol table is empty
+&nbsp;     */
+&nbsp;    public Key min() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;calls min() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        return st.firstKey();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the largest key in this symbol table.
+&nbsp;     *
+&nbsp;     * @return the largest key in this symbol table
+&nbsp;     * @throws NoSuchElementException if this symbol table is empty
+&nbsp;     */
+&nbsp;    public Key max() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;calls max() with empty symbol table&quot;);</b>
+<b class="nc">&nbsp;        return st.lastKey();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the smallest key in this symbol table greater than or equal to {@code key}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the smallest key in this symbol table greater than or equal to {@code key}
+&nbsp;     * @throws NoSuchElementException if there is no such key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Key ceiling(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to ceiling() is null&quot;);</b>
+<b class="nc">&nbsp;        Key k = st.ceilingKey(key);</b>
+<b class="nc">&nbsp;        if (k == null) throw new NoSuchElementException(&quot;argument to ceiling() is too large&quot;);</b>
+<b class="nc">&nbsp;        return k;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the largest key in this symbol table less than or equal to {@code key}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the largest key in this symbol table less than or equal to {@code key}
+&nbsp;     * @throws NoSuchElementException if there is no such key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Key floor(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to floor() is null&quot;);</b>
+<b class="nc">&nbsp;        Key k = st.floorKey(key);</b>
+<b class="nc">&nbsp;        if (k == null) throw new NoSuchElementException(&quot;argument to floor() is too small&quot;);</b>
+<b class="nc">&nbsp;        return k;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code ST} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        ST&lt;String, Integer&gt; st = new ST&lt;String, Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int i = 0; !StdIn.isEmpty(); i++) {</b>
+<b class="nc">&nbsp;            String key = StdIn.readString();</b>
+<b class="nc">&nbsp;            st.put(key, i);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        for (String s : st.keys())</b>
+<b class="nc">&nbsp;            StdOut.println(s + &quot; &quot; + st.get(s));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

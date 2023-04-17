@@ -1,0 +1,482 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BTree</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: BTree (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BTree</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/52)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/91)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">BTree$Entry</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BTree$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/52)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/100)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac BTree.java
+&nbsp; *  Execution:    java BTree
+&nbsp; *  Dependencies: StdOut.java
+&nbsp; *
+&nbsp; *  B-tree.
+&nbsp; *
+&nbsp; *  Limitations
+&nbsp; *  -----------
+&nbsp; *   -  Assumes M is even and M &gt;= 4
+&nbsp; *   -  should b be an array of children or list (it would help with
+&nbsp; *      casting to make it a list)
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code BTree} class represents an ordered symbol table of generic
+&nbsp; *  key-value pairs.
+&nbsp; *  It supports the &lt;em&gt;put&lt;/em&gt;, &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;size&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt; methods.
+&nbsp; *  A symbol table implements the &lt;em&gt;associative array&lt;/em&gt; abstraction:
+&nbsp; *  when associating a value with a key that is already in the symbol table,
+&nbsp; *  the convention is to replace the old value with the new value.
+&nbsp; *  Unlike {@link java.util.Map}, this class uses the convention that
+&nbsp; *  values cannot be {@code null}—setting the
+&nbsp; *  value associated with a key to {@code null} is equivalent to deleting the key
+&nbsp; *  from the symbol table.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a B-tree. It requires that
+&nbsp; *  the key type implements the {@code Comparable} interface and calls the
+&nbsp; *  {@code compareTo()} and method to compare two keys. It does not call either
+&nbsp; *  {@code equals()} or {@code hashCode()}.
+&nbsp; *  The &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;put&lt;/em&gt;, and &lt;em&gt;contains&lt;/em&gt; operations
+&nbsp; *  each make log&lt;sub&gt;&lt;em&gt;m&lt;/em&gt;&lt;/sub&gt;(&lt;em&gt;n&lt;/em&gt;) probes in the worst case,
+&nbsp; *  where &lt;em&gt;n&lt;/em&gt; is the number of key-value pairs
+&nbsp; *  and &lt;em&gt;m&lt;/em&gt; is the branching factor.
+&nbsp; *  The &lt;em&gt;size&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt; operations take constant time.
+&nbsp; *  Construction takes constant time.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/62btree&quot;&gt;Section 6.2&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; */
+&nbsp;public class BTree&lt;Key extends Comparable&lt;Key&gt;, Value&gt;  {
+&nbsp;    // max children per B-tree node = M-1
+&nbsp;    // (must be even and greater than 2)
+&nbsp;    private static final int M = 4;
+&nbsp;
+&nbsp;    private Node root;       // root of the B-tree
+&nbsp;    private int height;      // height of the B-tree
+&nbsp;    private int n;           // number of key-value pairs in the B-tree
+&nbsp;
+&nbsp;    // helper B-tree node data type
+&nbsp;    private static final class Node {
+&nbsp;        private int m;                             // number of children
+<b class="nc">&nbsp;        private Entry[] children = new Entry[M];   // the array of children</b>
+&nbsp;
+&nbsp;        // create a node with k children
+<b class="nc">&nbsp;        private Node(int k) {</b>
+<b class="nc">&nbsp;            m = k;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // internal nodes: only use key and next
+&nbsp;    // external nodes: only use key and value
+&nbsp;    private static class Entry {
+&nbsp;        private Comparable key;
+&nbsp;        private Object val;
+&nbsp;        private Node next;     // helper field to iterate over array entries
+<b class="nc">&nbsp;        public Entry(Comparable key, Object val, Node next) {</b>
+<b class="nc">&nbsp;            this.key  = key;</b>
+<b class="nc">&nbsp;            this.val  = val;</b>
+<b class="nc">&nbsp;            this.next = next;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty B-tree.
+&nbsp;     */
+<b class="nc">&nbsp;    public BTree() {</b>
+<b class="nc">&nbsp;        root = new Node(0);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp; 
+&nbsp;    /**
+&nbsp;     * Returns true if this symbol table is empty.
+&nbsp;     * @return {@code true} if this symbol table is empty; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return size() == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of key-value pairs in this symbol table.
+&nbsp;     * @return the number of key-value pairs in this symbol table
+&nbsp;     */
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return n;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the height of this B-tree (for debugging).
+&nbsp;     *
+&nbsp;     * @return the height of this B-tree
+&nbsp;     */
+&nbsp;    public int height() {
+<b class="nc">&nbsp;        return height;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the value associated with the given key.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the value associated with the given key if the key is in the symbol table
+&nbsp;     *         and {@code null} if the key is not in the symbol table
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Value get(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument to get() is null&quot;);</b>
+<b class="nc">&nbsp;        return search(root, key, height);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Value search(Node x, Key key, int ht) {
+<b class="nc">&nbsp;        Entry[] children = x.children;</b>
+&nbsp;
+&nbsp;        // external node
+<b class="nc">&nbsp;        if (ht == 0) {</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; x.m; j++) {</b>
+<b class="nc">&nbsp;                if (eq(key, children[j].key)) return (Value) children[j].val;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // internal node
+&nbsp;        else {
+<b class="nc">&nbsp;            for (int j = 0; j &lt; x.m; j++) {</b>
+<b class="nc">&nbsp;                if (j+1 == x.m || less(key, children[j+1].key))</b>
+<b class="nc">&nbsp;                    return search(children[j].next, key, ht-1);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserts the key-value pair into the symbol table, overwriting the old value
+&nbsp;     * with the new value if the key is already in the symbol table.
+&nbsp;     * If the value is {@code null}, this effectively deletes the key from the symbol table.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @param  val the value
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void put(Key key, Value val) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;argument key to put() is null&quot;);</b>
+<b class="nc">&nbsp;        Node u = insert(root, key, val, height); </b>
+<b class="nc">&nbsp;        n++;</b>
+<b class="nc">&nbsp;        if (u == null) return;</b>
+&nbsp;
+&nbsp;        // need to split root
+<b class="nc">&nbsp;        Node t = new Node(2);</b>
+<b class="nc">&nbsp;        t.children[0] = new Entry(root.children[0].key, null, root);</b>
+<b class="nc">&nbsp;        t.children[1] = new Entry(u.children[0].key, null, u);</b>
+<b class="nc">&nbsp;        root = t;</b>
+<b class="nc">&nbsp;        height++;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private Node insert(Node h, Key key, Value val, int ht) {
+&nbsp;        int j;
+<b class="nc">&nbsp;        Entry t = new Entry(key, val, null);</b>
+&nbsp;
+&nbsp;        // external node
+<b class="nc">&nbsp;        if (ht == 0) {</b>
+<b class="nc">&nbsp;            for (j = 0; j &lt; h.m; j++) {</b>
+<b class="nc">&nbsp;                if (less(key, h.children[j].key)) break;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // internal node
+&nbsp;        else {
+<b class="nc">&nbsp;            for (j = 0; j &lt; h.m; j++) {</b>
+<b class="nc">&nbsp;                if ((j+1 == h.m) || less(key, h.children[j+1].key)) {</b>
+<b class="nc">&nbsp;                    Node u = insert(h.children[j++].next, key, val, ht-1);</b>
+<b class="nc">&nbsp;                    if (u == null) return null;</b>
+<b class="nc">&nbsp;                    t.key = u.children[0].key;</b>
+<b class="nc">&nbsp;                    t.val = null;</b>
+<b class="nc">&nbsp;                    t.next = u;</b>
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        for (int i = h.m; i &gt; j; i--)</b>
+<b class="nc">&nbsp;            h.children[i] = h.children[i-1];</b>
+<b class="nc">&nbsp;        h.children[j] = t;</b>
+<b class="nc">&nbsp;        h.m++;</b>
+<b class="nc">&nbsp;        if (h.m &lt; M) return null;</b>
+<b class="nc">&nbsp;        else         return split(h);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // split node in half
+&nbsp;    private Node split(Node h) {
+<b class="nc">&nbsp;        Node t = new Node(M/2);</b>
+<b class="nc">&nbsp;        h.m = M/2;</b>
+<b class="nc">&nbsp;        for (int j = 0; j &lt; M/2; j++)</b>
+<b class="nc">&nbsp;            t.children[j] = h.children[M/2+j]; </b>
+<b class="nc">&nbsp;        return t;    </b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of this B-tree (for debugging).
+&nbsp;     *
+&nbsp;     * @return a string representation of this B-tree.
+&nbsp;     */
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return toString(root, height, &quot;&quot;) + &quot;\n&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String toString(Node h, int ht, String indent) {
+<b class="nc">&nbsp;        StringBuilder s = new StringBuilder();</b>
+<b class="nc">&nbsp;        Entry[] children = h.children;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (ht == 0) {</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; h.m; j++) {</b>
+<b class="nc">&nbsp;                s.append(indent + children[j].key + &quot; &quot; + children[j].val + &quot;\n&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            for (int j = 0; j &lt; h.m; j++) {</b>
+<b class="nc">&nbsp;                if (j &gt; 0) s.append(indent + &quot;(&quot; + children[j].key + &quot;)\n&quot;);</b>
+<b class="nc">&nbsp;                s.append(toString(children[j].next, ht-1, indent + &quot;     &quot;));</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return s.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // comparison functions - make Comparable instead of Key to avoid casts
+&nbsp;    private boolean less(Comparable k1, Comparable k2) {
+<b class="nc">&nbsp;        return k1.compareTo(k2) &lt; 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private boolean eq(Comparable k1, Comparable k2) {
+<b class="nc">&nbsp;        return k1.compareTo(k2) == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code BTree} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        BTree&lt;String, String&gt; st = new BTree&lt;String, String&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        st.put(&quot;www.cs.princeton.edu&quot;, &quot;128.112.136.12&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.cs.princeton.edu&quot;, &quot;128.112.136.11&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.princeton.edu&quot;,    &quot;128.112.128.15&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.yale.edu&quot;,         &quot;130.132.143.21&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.simpsons.com&quot;,     &quot;209.052.165.60&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.apple.com&quot;,        &quot;17.112.152.32&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.amazon.com&quot;,       &quot;207.171.182.16&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.ebay.com&quot;,         &quot;66.135.192.87&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.cnn.com&quot;,          &quot;64.236.16.20&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.google.com&quot;,       &quot;216.239.41.99&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.nytimes.com&quot;,      &quot;199.239.136.200&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.microsoft.com&quot;,    &quot;207.126.99.140&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.dell.com&quot;,         &quot;143.166.224.230&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.slashdot.org&quot;,     &quot;66.35.250.151&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.espn.com&quot;,         &quot;199.181.135.201&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.weather.com&quot;,      &quot;63.111.66.11&quot;);</b>
+<b class="nc">&nbsp;        st.put(&quot;www.yahoo.com&quot;,        &quot;216.109.118.65&quot;);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;cs.princeton.edu:  &quot; + st.get(&quot;www.cs.princeton.edu&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;hardvardsucks.com: &quot; + st.get(&quot;www.harvardsucks.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;simpsons.com:      &quot; + st.get(&quot;www.simpsons.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;apple.com:         &quot; + st.get(&quot;www.apple.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;ebay.com:          &quot; + st.get(&quot;www.ebay.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;dell.com:          &quot; + st.get(&quot;www.dell.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;size:    &quot; + st.size());</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;height:  &quot; + st.height());</b>
+<b class="nc">&nbsp;        StdOut.println(st);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

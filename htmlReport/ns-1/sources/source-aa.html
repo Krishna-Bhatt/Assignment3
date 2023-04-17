@@ -1,0 +1,220 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > StaticSETofInts</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: StaticSETofInts (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StaticSETofInts</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac StaticSetOfInts.java
+&nbsp; *  Execution:    none
+&nbsp; *  Dependencies: StdOut.java
+&nbsp; *  
+&nbsp; *  Data type to store a set of integers.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Arrays;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code StaticSETofInts} class represents a set of integers.
+&nbsp; *  It supports searching for a given integer is in the set. It accomplishes
+&nbsp; *  this by keeping the set of integers in a sorted array and using
+&nbsp; *  binary search to find the given integer.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The &lt;em&gt;rank&lt;/em&gt; and &lt;em&gt;contains&lt;/em&gt; operations take
+&nbsp; *  logarithmic time in the worst case.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/12oop&quot;&gt;Section 1.2&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class StaticSETofInts {
+&nbsp;    private int[] a;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a set of integers specified by the integer array.
+&nbsp;     * @param keys the array of integers
+&nbsp;     * @throws IllegalArgumentException if the array contains duplicate integers
+&nbsp;     */
+<b class="nc">&nbsp;    public StaticSETofInts(int[] keys) {</b>
+&nbsp;
+&nbsp;        // defensive copy
+<b class="nc">&nbsp;        a = new int[keys.length];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; keys.length; i++)</b>
+<b class="nc">&nbsp;            a[i] = keys[i];</b>
+&nbsp;
+&nbsp;        // sort the integers
+<b class="nc">&nbsp;        Arrays.sort(a);</b>
+&nbsp;
+&nbsp;        // check for duplicates
+<b class="nc">&nbsp;        for (int i = 1; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            if (a[i] == a[i-1])</b>
+<b class="nc">&nbsp;                throw new IllegalArgumentException(&quot;Argument arrays contains duplicate keys.&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Is the key in this set of integers?
+&nbsp;     * @param key the search key
+&nbsp;     * @return true if the set of integers contains the key; false otherwise
+&nbsp;     */
+&nbsp;    public boolean contains(int key) {
+<b class="nc">&nbsp;        return rank(key) != -1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns either the index of the search key in the sorted array
+&nbsp;     * (if the key is in the set) or -1 (if the key is not in the set).
+&nbsp;     * @param key the search key
+&nbsp;     * @return the number of keys in this set less than the key (if the key is in the set)
+&nbsp;     * or -1 (if the key is not in the set).
+&nbsp;     */
+&nbsp;    public int rank(int key) {
+<b class="nc">&nbsp;        int lo = 0;</b>
+<b class="nc">&nbsp;        int hi = a.length - 1;</b>
+<b class="nc">&nbsp;        while (lo &lt;= hi) {</b>
+&nbsp;            // Key is in a[lo..hi] or not present.
+<b class="nc">&nbsp;            int mid = lo + (hi - lo) / 2;</b>
+<b class="nc">&nbsp;            if      (key &lt; a[mid]) hi = mid - 1;</b>
+<b class="nc">&nbsp;            else if (key &gt; a[mid]) lo = mid + 1;</b>
+<b class="nc">&nbsp;            else return mid;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return -1;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

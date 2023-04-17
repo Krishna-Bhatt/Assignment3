@@ -1,0 +1,285 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > DepthFirstPaths</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: DepthFirstPaths (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DepthFirstPaths</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac DepthFirstPaths.java
+&nbsp; *  Execution:    java DepthFirstPaths G s
+&nbsp; *  Dependencies: Graph.java Stack.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/41graph/tinyCG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/41graph/tinyG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/41graph/mediumG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/41graph/largeG.txt
+&nbsp; *
+&nbsp; *  Run depth-first search on an undirected graph.
+&nbsp; *
+&nbsp; *  %  java Graph tinyCG.txt
+&nbsp; *  6 8
+&nbsp; *  0: 2 1 5 
+&nbsp; *  1: 0 2 
+&nbsp; *  2: 0 1 3 4 
+&nbsp; *  3: 5 4 2 
+&nbsp; *  4: 3 2 
+&nbsp; *  5: 3 0 
+&nbsp; *
+&nbsp; *  % java DepthFirstPaths tinyCG.txt 0
+&nbsp; *  0 to 0:  0
+&nbsp; *  0 to 1:  0-2-1
+&nbsp; *  0 to 2:  0-2
+&nbsp; *  0 to 3:  0-2-3
+&nbsp; *  0 to 4:  0-2-3-4
+&nbsp; *  0 to 5:  0-2-3-5
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code DepthFirstPaths} class represents a data type for finding
+&nbsp; *  paths from a source vertex &lt;em&gt;s&lt;/em&gt; to every other vertex
+&nbsp; *  in an undirected graph.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses depth-first search.
+&nbsp; *  The constructor takes &amp;Theta;(&lt;em&gt;V&lt;/em&gt; + &lt;em&gt;E&lt;/em&gt;) time in the
+&nbsp; *  worst case, where &lt;em&gt;V&lt;/em&gt; is the number of vertices and
+&nbsp; *  &lt;em&gt;E&lt;/em&gt; is the number of edges.
+&nbsp; *  Each instance method takes &amp;Theta;(1) time.
+&nbsp; *  It uses &amp;Theta;(&lt;em&gt;V&lt;/em&gt;) extra space (not including the graph).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/41graph&quot;&gt;Section 4.1&lt;/a&gt;   
+&nbsp; *  of &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class DepthFirstPaths {
+&nbsp;    private boolean[] marked;    // marked[v] = is there an s-v path?
+&nbsp;    private int[] edgeTo;        // edgeTo[v] = last edge on s-v path
+&nbsp;    private final int s;         // source vertex
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Computes a path between {@code s} and every other vertex in graph {@code G}.
+&nbsp;     * @param G the graph
+&nbsp;     * @param s the source vertex
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= s &lt; V}
+&nbsp;     */
+<b class="nc">&nbsp;    public DepthFirstPaths(Graph G, int s) {</b>
+<b class="nc">&nbsp;        this.s = s;</b>
+<b class="nc">&nbsp;        edgeTo = new int[G.V()];</b>
+<b class="nc">&nbsp;        marked = new boolean[G.V()];</b>
+<b class="nc">&nbsp;        validateVertex(s);</b>
+<b class="nc">&nbsp;        dfs(G, s);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // depth first search from v
+&nbsp;    private void dfs(Graph G, int v) {
+<b class="nc">&nbsp;        marked[v] = true;</b>
+<b class="nc">&nbsp;        for (int w : G.adj(v)) {</b>
+<b class="nc">&nbsp;            if (!marked[w]) {</b>
+<b class="nc">&nbsp;                edgeTo[w] = v;</b>
+<b class="nc">&nbsp;                dfs(G, w);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Is there a path between the source vertex {@code s} and vertex {@code v}?
+&nbsp;     * @param v the vertex
+&nbsp;     * @return {@code true} if there is a path, {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public boolean hasPathTo(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        return marked[v];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a path between the source vertex {@code s} and vertex {@code v}, or
+&nbsp;     * {@code null} if no such path.
+&nbsp;     * @param  v the vertex
+&nbsp;     * @return the sequence of vertices on a path between the source vertex
+&nbsp;     *         {@code s} and vertex {@code v}, as an Iterable
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public Iterable&lt;Integer&gt; pathTo(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        if (!hasPathTo(v)) return null;</b>
+<b class="nc">&nbsp;        Stack&lt;Integer&gt; path = new Stack&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int x = v; x != s; x = edgeTo[x])</b>
+<b class="nc">&nbsp;            path.push(x);</b>
+<b class="nc">&nbsp;        path.push(s);</b>
+<b class="nc">&nbsp;        return path;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // throw an IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;    private void validateVertex(int v) {
+<b class="nc">&nbsp;        int V = marked.length;</b>
+<b class="nc">&nbsp;        if (v &lt; 0 || v &gt;= V)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;vertex &quot; + v + &quot; is not between 0 and &quot; + (V-1));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code DepthFirstPaths} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        In in = new In(args[0]);</b>
+<b class="nc">&nbsp;        Graph G = new Graph(in);</b>
+<b class="nc">&nbsp;        int s = Integer.parseInt(args[1]);</b>
+<b class="nc">&nbsp;        DepthFirstPaths dfs = new DepthFirstPaths(G, s);</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            if (dfs.hasPathTo(v)) {</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;%d to %d:  &quot;, s, v);</b>
+<b class="nc">&nbsp;                for (int x : dfs.pathTo(v)) {</b>
+<b class="nc">&nbsp;                    if (x == s) StdOut.print(x);</b>
+<b class="nc">&nbsp;                    else        StdOut.print(&quot;-&quot; + x);</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;                StdOut.println();</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            else {
+<b class="nc">&nbsp;                StdOut.printf(&quot;%d to %d:  not connected\n&quot;, s, v);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

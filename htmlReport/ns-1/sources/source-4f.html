@@ -1,0 +1,409 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FordFulkerson</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: FordFulkerson (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FordFulkerson</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/80)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/104)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac FordFulkerson.java
+&nbsp; *  Execution:    java FordFulkerson V E
+&nbsp; *  Dependencies: FlowNetwork.java FlowEdge.java Queue.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/65maxflow/tinyFN.txt
+&nbsp; *
+&nbsp; *  Ford-Fulkerson algorithm for computing a max flow and 
+&nbsp; *  a min cut using shortest augmenting path rule.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code FordFulkerson} class represents a data type for computing a
+&nbsp; *  &lt;em&gt;maximum st-flow&lt;/em&gt; and &lt;em&gt;minimum st-cut&lt;/em&gt; in a flow
+&nbsp; *  network.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses the &lt;em&gt;Ford-Fulkerson&lt;/em&gt; algorithm with
+&nbsp; *  the &lt;em&gt;shortest augmenting path&lt;/em&gt; heuristic.
+&nbsp; *  The constructor takes &lt;em&gt;O&lt;/em&gt;(&lt;em&gt;E V&lt;/em&gt; (&lt;em&gt;E&lt;/em&gt; + &lt;em&gt;V&lt;/em&gt;))
+&nbsp; *  time, where &lt;em&gt;V&lt;/em&gt; is the number of vertices and &lt;em&gt;E&lt;/em&gt; is
+&nbsp; *  the number of edges. In practice, the algorithm will run much faster.
+&nbsp; *  The {@code inCut()} and {@code value()} methods take &amp;Theta;(1) time.
+&nbsp; *  It uses &amp;Theta;(&lt;em&gt;V&lt;/em&gt;) extra space (not including the network).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This correctly computes the maxflow and mincut if all arithmetic
+&nbsp; *  performed is without floating-point rounding error or arithmetic
+&nbsp; *  overflow. This is guaranteed to be the case if all edge capacities
+&nbsp; *  and initial flow values are integers and the value of the maxflow
+&nbsp; *  does not exceeds 2&lt;sup&gt;52&lt;/sup&gt;.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/64maxflow&quot;&gt;Section 6.4&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class FordFulkerson {</b>
+&nbsp;    private static final double FLOATING_POINT_EPSILON = 1E-11;
+&nbsp;
+&nbsp;    private final int V;          // number of vertices
+&nbsp;    private boolean[] marked;     // marked[v] = true iff s-&gt;v path in residual graph
+&nbsp;    private FlowEdge[] edgeTo;    // edgeTo[v] = last edge on shortest residual s-&gt;v path
+&nbsp;    private double value;         // current value of max flow
+&nbsp;  
+&nbsp;    /**
+&nbsp;     * Compute a maximum flow and minimum cut in the network {@code G}
+&nbsp;     * from vertex {@code s} to vertex {@code t}.
+&nbsp;     *
+&nbsp;     * @param  G the flow network
+&nbsp;     * @param  s the source vertex
+&nbsp;     * @param  t the sink vertex
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= s &lt; V}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= t &lt; V}
+&nbsp;     * @throws IllegalArgumentException if {@code s == t}
+&nbsp;     * @throws IllegalArgumentException if initial flow is infeasible
+&nbsp;     */
+<b class="nc">&nbsp;    public FordFulkerson(FlowNetwork G, int s, int t) {</b>
+<b class="nc">&nbsp;        V = G.V();</b>
+<b class="nc">&nbsp;        validate(s);</b>
+<b class="nc">&nbsp;        validate(t);</b>
+<b class="nc">&nbsp;        if (s == t)               throw new IllegalArgumentException(&quot;Source equals sink&quot;);</b>
+<b class="nc">&nbsp;        if (!isFeasible(G, s, t)) throw new IllegalArgumentException(&quot;Initial flow is infeasible&quot;);</b>
+&nbsp;
+&nbsp;        // while there exists an augmenting path, use it
+<b class="nc">&nbsp;        value = excess(G, t);</b>
+<b class="nc">&nbsp;        while (hasAugmentingPath(G, s, t)) {</b>
+&nbsp;
+&nbsp;            // compute bottleneck capacity
+<b class="nc">&nbsp;            double bottle = Double.POSITIVE_INFINITY;</b>
+<b class="nc">&nbsp;            for (int v = t; v != s; v = edgeTo[v].other(v)) {</b>
+<b class="nc">&nbsp;                bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // augment flow
+<b class="nc">&nbsp;            for (int v = t; v != s; v = edgeTo[v].other(v)) {</b>
+<b class="nc">&nbsp;                edgeTo[v].addResidualFlowTo(v, bottle); </b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            value += bottle;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // check optimality conditions
+<b class="nc">&nbsp;        assert check(G, s, t);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the value of the maximum flow.
+&nbsp;     *
+&nbsp;     * @return the value of the maximum flow
+&nbsp;     */
+&nbsp;    public double value()  {
+<b class="nc">&nbsp;        return value;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the specified vertex is on the {@code s} side of the mincut.
+&nbsp;     *
+&nbsp;     * @param  v vertex
+&nbsp;     * @return {@code true} if vertex {@code v} is on the {@code s} side of the micut;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public boolean inCut(int v)  {
+<b class="nc">&nbsp;        validate(v);</b>
+<b class="nc">&nbsp;        return marked[v];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // throw an IllegalArgumentException if v is outside prescibed range
+&nbsp;    private void validate(int v)  {
+<b class="nc">&nbsp;        if (v &lt; 0 || v &gt;= V)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;vertex &quot; + v + &quot; is not between 0 and &quot; + (V-1));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    // is there an augmenting path? 
+&nbsp;    // if so, upon termination edgeTo[] will contain a parent-link representation of such a path
+&nbsp;    // this implementation finds a shortest augmenting path (fewest number of edges),
+&nbsp;    // which performs well both in theory and in practice
+&nbsp;    private boolean hasAugmentingPath(FlowNetwork G, int s, int t) {
+<b class="nc">&nbsp;        edgeTo = new FlowEdge[G.V()];</b>
+<b class="nc">&nbsp;        marked = new boolean[G.V()];</b>
+&nbsp;
+&nbsp;        // breadth-first search
+<b class="nc">&nbsp;        Queue&lt;Integer&gt; queue = new Queue&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        queue.enqueue(s);</b>
+<b class="nc">&nbsp;        marked[s] = true;</b>
+<b class="nc">&nbsp;        while (!queue.isEmpty() &amp;&amp; !marked[t]) {</b>
+<b class="nc">&nbsp;            int v = queue.dequeue();</b>
+&nbsp;
+<b class="nc">&nbsp;            for (FlowEdge e : G.adj(v)) {</b>
+<b class="nc">&nbsp;                int w = e.other(v);</b>
+&nbsp;
+&nbsp;                // if residual capacity from v to w
+<b class="nc">&nbsp;                if (e.residualCapacityTo(w) &gt; 0) {</b>
+<b class="nc">&nbsp;                    if (!marked[w]) {</b>
+<b class="nc">&nbsp;                        edgeTo[w] = e;</b>
+<b class="nc">&nbsp;                        marked[w] = true;</b>
+<b class="nc">&nbsp;                        queue.enqueue(w);</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // is there an augmenting path?
+<b class="nc">&nbsp;        return marked[t];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    // return excess flow at vertex v
+&nbsp;    private double excess(FlowNetwork G, int v) {
+<b class="nc">&nbsp;        double excess = 0.0;</b>
+<b class="nc">&nbsp;        for (FlowEdge e : G.adj(v)) {</b>
+<b class="nc">&nbsp;            if (v == e.from()) excess -= e.flow();</b>
+<b class="nc">&nbsp;            else               excess += e.flow();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return excess;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // return excess flow at vertex v
+&nbsp;    private boolean isFeasible(FlowNetwork G, int s, int t) {
+&nbsp;
+&nbsp;        // check that capacity constraints are satisfied
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            for (FlowEdge e : G.adj(v)) {</b>
+<b class="nc">&nbsp;                if (e.flow() &lt; -FLOATING_POINT_EPSILON || e.flow() &gt; e.capacity() + FLOATING_POINT_EPSILON) {</b>
+<b class="nc">&nbsp;                    System.err.println(&quot;Edge does not satisfy capacity constraints: &quot; + e);</b>
+<b class="nc">&nbsp;                    return false;</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // check that net flow into a vertex equals zero, except at source and sink
+<b class="nc">&nbsp;        if (Math.abs(value + excess(G, s)) &gt; FLOATING_POINT_EPSILON) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Excess at source = &quot; + excess(G, s));</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Max flow         = &quot; + value);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (Math.abs(value - excess(G, t)) &gt; FLOATING_POINT_EPSILON) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Excess at sink   = &quot; + excess(G, t));</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Max flow         = &quot; + value);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            if (v == s || v == t) continue;</b>
+<b class="nc">&nbsp;            else if (Math.abs(excess(G, v)) &gt; FLOATING_POINT_EPSILON) {</b>
+<b class="nc">&nbsp;                System.err.println(&quot;Net flow out of &quot; + v + &quot; doesn&#39;t equal zero&quot;);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    // check optimality conditions
+&nbsp;    private boolean check(FlowNetwork G, int s, int t) {
+&nbsp;
+&nbsp;        // check that flow is feasible
+<b class="nc">&nbsp;        if (!isFeasible(G, s, t)) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Flow is infeasible&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // check that s is on the source side of min cut and that t is not on source side
+<b class="nc">&nbsp;        if (!inCut(s)) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;source &quot; + s + &quot; is not on source side of min cut&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (inCut(t)) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;sink &quot; + t + &quot; is on source side of min cut&quot;);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // check that value of min cut = value of max flow
+<b class="nc">&nbsp;        double mincutValue = 0.0;</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            for (FlowEdge e : G.adj(v)) {</b>
+<b class="nc">&nbsp;                if ((v == e.from()) &amp;&amp; inCut(e.from()) &amp;&amp; !inCut(e.to()))</b>
+<b class="nc">&nbsp;                    mincutValue += e.capacity();</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (Math.abs(mincutValue - value) &gt; FLOATING_POINT_EPSILON) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Max flow value = &quot; + value + &quot;, min cut value = &quot; + mincutValue);</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code FordFulkerson} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // create flow network with V vertices and E edges
+<b class="nc">&nbsp;        int V = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;        int E = Integer.parseInt(args[1]);</b>
+<b class="nc">&nbsp;        int s = 0, t = V-1;</b>
+<b class="nc">&nbsp;        FlowNetwork G = new FlowNetwork(V, E);</b>
+<b class="nc">&nbsp;        StdOut.println(G);</b>
+&nbsp;
+&nbsp;        // compute maximum flow and minimum cut
+<b class="nc">&nbsp;        FordFulkerson maxflow = new FordFulkerson(G, s, t);</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;Max flow from &quot; + s + &quot; to &quot; + t);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            for (FlowEdge e : G.adj(v)) {</b>
+<b class="nc">&nbsp;                if ((v == e.from()) &amp;&amp; e.flow() &gt; 0)</b>
+<b class="nc">&nbsp;                    StdOut.println(&quot;   &quot; + e);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // print min-cut
+<b class="nc">&nbsp;        StdOut.print(&quot;Min cut: &quot;);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            if (maxflow.inCut(v)) StdOut.print(v + &quot; &quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Max flow value = &quot; +  maxflow.value());</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

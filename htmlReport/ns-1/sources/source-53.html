@@ -1,0 +1,550 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GaussJordanElimination</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: GaussJordanElimination (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GaussJordanElimination</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/96)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/159)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac GaussJordanElimination.java
+&nbsp; *  Execution:    java GaussJordanElimination n
+&nbsp; *  Dependencies: StdOut.java
+&nbsp; * 
+&nbsp; *  Finds a solutions to Ax = b using Gauss-Jordan elimination with partial
+&nbsp; *  pivoting. If no solution exists, find a solution to yA = 0, yb != 0,
+&nbsp; *  which serves as a certificate of infeasibility.
+&nbsp; *
+&nbsp; *  % java GaussJordanElimination
+&nbsp; *  -1.000000
+&nbsp; *  2.000000
+&nbsp; *  2.000000
+&nbsp; *
+&nbsp; *  3.000000
+&nbsp; *  -1.000000
+&nbsp; *  -2.000000
+&nbsp; * 
+&nbsp; *  System is infeasible
+&nbsp; *
+&nbsp; *  -6.250000
+&nbsp; *  -4.500000
+&nbsp; *  0.000000
+&nbsp; *  0.000000
+&nbsp; *  1.000000
+&nbsp; *
+&nbsp; *  System is infeasible
+&nbsp; *
+&nbsp; *  -1.375000
+&nbsp; *  1.625000
+&nbsp; *  0.000000
+&nbsp; *
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code GaussJordanElimination} data type provides methods
+&nbsp; *  to solve a linear system of equations &lt;em&gt;Ax&lt;/em&gt; = &lt;em&gt;b&lt;/em&gt;,
+&nbsp; *  where &lt;em&gt;A&lt;/em&gt; is an &lt;em&gt;n&lt;/em&gt;-by-&lt;em&gt;n&lt;/em&gt; matrix
+&nbsp; *  and &lt;em&gt;b&lt;/em&gt; is a length &lt;em&gt;n&lt;/em&gt; vector.
+&nbsp; *  If no solution exists, it finds a solution &lt;em&gt;y&lt;/em&gt; to
+&nbsp; *  &lt;em&gt;yA&lt;/em&gt; = 0, &lt;em&gt;yb&lt;/em&gt; &amp;ne; 0, which
+&nbsp; *  which serves as a certificate of infeasibility.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses Gauss-Jordan elimination with partial pivoting.
+&nbsp; *  See {@link GaussianElimination} for an implementation that uses
+&nbsp; *  Gaussian elimination (but does not provide the certificate of infeasibility).
+&nbsp; *  For an industrial-strength numerical linear algebra library,
+&nbsp; *  see &lt;a href = &quot;http://math.nist.gov/javanumerics/jama/&quot;&gt;JAMA&lt;/a&gt;. 
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This computes correct results if all arithmetic performed is
+&nbsp; *  without floating-point rounding error or arithmetic overflow.  
+&nbsp; *  In practice, there will be floating-point rounding error;
+&nbsp; *  partial pivoting helps prevent accumulated floating-point rounding
+&nbsp; *  errors from growing out of control (though it does not
+&nbsp; *  provide any guarantees).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/99scientific&quot;&gt;Section 9.9&lt;/a&gt;
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class GaussJordanElimination {</b>
+&nbsp;    private static final double EPSILON = 1e-8;
+&nbsp;
+&nbsp;    private final int n;      // n-by-n system
+&nbsp;    private double[][] a;     // n-by-(n+1) augmented matrix
+&nbsp;
+&nbsp;    // Gauss-Jordan elimination with partial pivoting
+&nbsp;    /**
+&nbsp;     * Solves the linear system of equations &lt;em&gt;Ax&lt;/em&gt; = &lt;em&gt;b&lt;/em&gt;,
+&nbsp;     * where &lt;em&gt;A&lt;/em&gt; is an &lt;em&gt;n&lt;/em&gt;-by-&lt;em&gt;n&lt;/em&gt; matrix and &lt;em&gt;b&lt;/em&gt;
+&nbsp;     * is a length &lt;em&gt;n&lt;/em&gt; vector.
+&nbsp;     *
+&nbsp;     * @param  A the &lt;em&gt;n&lt;/em&gt;-by-&lt;em&gt;n&lt;/em&gt; constraint matrix
+&nbsp;     * @param  b the length &lt;em&gt;n&lt;/em&gt; right-hand-side vector
+&nbsp;     */
+<b class="nc">&nbsp;    public GaussJordanElimination(double[][] A, double[] b) {</b>
+<b class="nc">&nbsp;        n = b.length;</b>
+&nbsp;
+&nbsp;        // build augmented matrix
+<b class="nc">&nbsp;        a = new double[n][n+n+1];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;                a[i][j] = A[i][j];</b>
+&nbsp;
+&nbsp;        // only needed if you want to find certificate of infeasibility (or compute inverse)
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            a[i][n+i] = 1.0;</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            a[i][n+n] = b[i];</b>
+&nbsp;
+<b class="nc">&nbsp;        solve();</b>
+&nbsp;
+<b class="nc">&nbsp;        assert certifySolution(A, b);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private void solve() {
+&nbsp;
+&nbsp;        // Gauss-Jordan elimination
+<b class="nc">&nbsp;        for (int p = 0; p &lt; n; p++) {</b>
+&nbsp;            // show();
+&nbsp;
+&nbsp;            // find pivot row using partial pivoting
+<b class="nc">&nbsp;            int max = p;</b>
+<b class="nc">&nbsp;            for (int i = p+1; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;                if (Math.abs(a[i][p]) &gt; Math.abs(a[max][p])) {</b>
+<b class="nc">&nbsp;                    max = i;</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+&nbsp;            // exchange row p with row max
+<b class="nc">&nbsp;            swap(p, max);</b>
+&nbsp;
+&nbsp;            // singular or nearly singular
+<b class="nc">&nbsp;            if (Math.abs(a[p][p]) &lt;= EPSILON) {</b>
+<b class="nc">&nbsp;                continue;</b>
+&nbsp;                // throw new ArithmeticException(&quot;Matrix is singular or nearly singular&quot;);
+&nbsp;            }
+&nbsp;
+&nbsp;            // pivot
+<b class="nc">&nbsp;            pivot(p, p);</b>
+&nbsp;        }
+&nbsp;        // show();
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // swap row1 and row2
+&nbsp;    private void swap(int row1, int row2) {
+<b class="nc">&nbsp;        double[] temp = a[row1];</b>
+<b class="nc">&nbsp;        a[row1] = a[row2];</b>
+<b class="nc">&nbsp;        a[row2] = temp;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    // pivot on entry (p, q) using Gauss-Jordan elimination
+&nbsp;    private void pivot(int p, int q) {
+&nbsp;
+&nbsp;        // everything but row p and column q
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            double alpha = a[i][q] / a[p][q];</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt;= n+n; j++) {</b>
+<b class="nc">&nbsp;                if (i != p &amp;&amp; j != q) a[i][j] -= alpha * a[p][j];</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // zero out column q
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            if (i != p) a[i][q] = 0.0;</b>
+&nbsp;
+&nbsp;        // scale row p (ok to go from q+1 to n, but do this for consistency with simplex pivot)
+<b class="nc">&nbsp;        for (int j = 0; j &lt;= n+n; j++)</b>
+<b class="nc">&nbsp;            if (j != q) a[p][j] /= a[p][q];</b>
+<b class="nc">&nbsp;        a[p][q] = 1.0;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a solution to the linear system of equations &lt;em&gt;Ax&lt;/em&gt; = &lt;em&gt;b&lt;/em&gt;.
+&nbsp;     *      
+&nbsp;     * @return a solution &lt;em&gt;x&lt;/em&gt; to the linear system of equations
+&nbsp;     *         &lt;em&gt;Ax&lt;/em&gt; = &lt;em&gt;b&lt;/em&gt;; {@code null} if no such solution
+&nbsp;     */
+&nbsp;    public double[] primal() {
+<b class="nc">&nbsp;        double[] x = new double[n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            if (Math.abs(a[i][i]) &gt; EPSILON)</b>
+<b class="nc">&nbsp;                x[i] = a[i][n+n] / a[i][i];</b>
+<b class="nc">&nbsp;            else if (Math.abs(a[i][n+n]) &gt; EPSILON)</b>
+<b class="nc">&nbsp;                return null;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a solution to the linear system of equations &lt;em&gt;yA&lt;/em&gt; = 0,
+&nbsp;     * &lt;em&gt;yb&lt;/em&gt; &amp;ne; 0.
+&nbsp;     *      
+&nbsp;     * @return a solution &lt;em&gt;y&lt;/em&gt; to the linear system of equations
+&nbsp;     *         &lt;em&gt;yA&lt;/em&gt; = 0, &lt;em&gt;yb&lt;/em&gt; &amp;ne; 0; {@code null} if no such solution
+&nbsp;     */
+&nbsp;    public double[] dual() {
+<b class="nc">&nbsp;        double[] y = new double[n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            if ((Math.abs(a[i][i]) &lt;= EPSILON) &amp;&amp; (Math.abs(a[i][n+n]) &gt; EPSILON)) {</b>
+<b class="nc">&nbsp;                for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;                    y[j] = a[i][n+j];</b>
+<b class="nc">&nbsp;                return y;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if there exists a solution to the linear system of
+&nbsp;     * equations &lt;em&gt;Ax&lt;/em&gt; = &lt;em&gt;b&lt;/em&gt;.
+&nbsp;     *      
+&nbsp;     * @return {@code true} if there exists a solution to the linear system
+&nbsp;     *         of equations &lt;em&gt;Ax&lt;/em&gt; = &lt;em&gt;b&lt;/em&gt;; {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isFeasible() {
+<b class="nc">&nbsp;        return primal() != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // print the tableaux
+&nbsp;    private void show() {
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++) {</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;%8.3f &quot;, a[i][j]);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            StdOut.printf(&quot;| &quot;);</b>
+<b class="nc">&nbsp;            for (int j = n; j &lt; n+n; j++) {</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;%8.3f &quot;, a[i][j]);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            StdOut.printf(&quot;| %8.3f\n&quot;, a[i][n+n]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    // check that Ax = b or yA = 0, yb != 0
+&nbsp;    private boolean certifySolution(double[][] A, double[] b) {
+&nbsp;
+&nbsp;        // check that Ax = b
+<b class="nc">&nbsp;        if (isFeasible()) {</b>
+<b class="nc">&nbsp;            double[] x = primal();</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;                double sum = 0.0;</b>
+<b class="nc">&nbsp;                for (int j = 0; j &lt; n; j++) {</b>
+<b class="nc">&nbsp;                    sum += A[i][j] * x[j];</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (Math.abs(sum - b[i]) &gt; EPSILON) {</b>
+<b class="nc">&nbsp;                    StdOut.println(&quot;not feasible&quot;);</b>
+<b class="nc">&nbsp;                    StdOut.printf(&quot;b[%d] = %8.3f, sum = %8.3f\n&quot;, i, b[i], sum);</b>
+<b class="nc">&nbsp;                    return false;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // or that yA = 0, yb != 0
+&nbsp;        else {
+<b class="nc">&nbsp;            double[] y = dual();</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++) {</b>
+<b class="nc">&nbsp;                double sum = 0.0;</b>
+<b class="nc">&nbsp;                for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;                    sum += A[i][j] * y[i];</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (Math.abs(sum) &gt; EPSILON) {</b>
+<b class="nc">&nbsp;                    StdOut.println(&quot;invalid certificate of infeasibility&quot;);</b>
+<b class="nc">&nbsp;                    StdOut.printf(&quot;sum = %8.3f\n&quot;, sum);</b>
+<b class="nc">&nbsp;                    return false;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            double sum = 0.0;</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;                sum += y[i] * b[i];</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (Math.abs(sum) &lt; EPSILON) {</b>
+<b class="nc">&nbsp;                StdOut.println(&quot;invalid certificate of infeasibility&quot;);</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;yb  = %8.3f\n&quot;, sum);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private static void test(String name, double[][] A, double[] b) {
+<b class="nc">&nbsp;        StdOut.println(&quot;----------------------------------------------------&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(name);</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;----------------------------------------------------&quot;);</b>
+<b class="nc">&nbsp;        GaussJordanElimination gaussian = new GaussJordanElimination(A, b);</b>
+<b class="nc">&nbsp;        if (gaussian.isFeasible()) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;Solution to Ax = b&quot;);</b>
+<b class="nc">&nbsp;            double[] x = gaussian.primal();</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; x.length; i++) {</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;%10.6f\n&quot;, x[i]);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;        else {
+<b class="nc">&nbsp;            StdOut.println(&quot;Certificate of infeasibility&quot;);</b>
+<b class="nc">&nbsp;            double[] y = gaussian.dual();</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; y.length; j++) {</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;%10.6f\n&quot;, y[j]);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    // 3-by-3 nonsingular system
+&nbsp;    private static void test1() {
+<b class="nc">&nbsp;        double[][] A = {</b>
+&nbsp;            { 0, 1,  1 },
+&nbsp;            { 2, 4, -2 },
+&nbsp;            { 0, 3, 15 }
+&nbsp;        };
+<b class="nc">&nbsp;        double[] b = { 4, 2, 36 };</b>
+<b class="nc">&nbsp;        test(&quot;test 1&quot;, A, b);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // 3-by-3 nonsingular system
+&nbsp;    private static void test2() {
+<b class="nc">&nbsp;        double[][] A = {</b>
+&nbsp;            {  1, -3,   1 },
+&nbsp;            {  2, -8,   8 },
+&nbsp;            { -6,  3, -15 }
+&nbsp;        };
+<b class="nc">&nbsp;        double[] b = { 4, -2, 9 };</b>
+<b class="nc">&nbsp;        test(&quot;test 2&quot;, A, b);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // 5-by-5 singular: no solutions
+&nbsp;    // y = [ -1, 0, 1, 1, 0 ]
+&nbsp;    private static void test3() {
+<b class="nc">&nbsp;        double[][] A = {</b>
+&nbsp;            {  2, -3, -1,  2,  3 },
+&nbsp;            {  4, -4, -1,  4, 11 },
+&nbsp;            {  2, -5, -2,  2, -1 },
+&nbsp;            {  0,  2,  1,  0,  4 },
+&nbsp;            { -4,  6,  0,  0,  7 },
+&nbsp;        };
+<b class="nc">&nbsp;        double[] b = { 4, 4, 9, -6, 5 };</b>
+<b class="nc">&nbsp;        test(&quot;test 3&quot;, A, b);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // 5-by-5 singluar: infinitely many solutions
+&nbsp;    private static void test4() {
+<b class="nc">&nbsp;        double[][] A = {</b>
+&nbsp;            {  2, -3, -1,  2,  3 },
+&nbsp;            {  4, -4, -1,  4, 11 },
+&nbsp;            {  2, -5, -2,  2, -1 },
+&nbsp;            {  0,  2,  1,  0,  4 },
+&nbsp;            { -4,  6,  0,  0,  7 },
+&nbsp;        };
+<b class="nc">&nbsp;        double[] b = { 4, 4, 9, -5, 5 };</b>
+<b class="nc">&nbsp;        test(&quot;test 4&quot;, A, b);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // 3-by-3 singular: no solutions
+&nbsp;    // y = [ 1, 0, 1/3 ]
+&nbsp;    private static void test5() {
+<b class="nc">&nbsp;        double[][] A = {</b>
+&nbsp;            {  2, -1,  1 },
+&nbsp;            {  3,  2, -4 },
+&nbsp;            { -6,  3, -3 },
+&nbsp;        };
+<b class="nc">&nbsp;        double[] b = { 1, 4, 2 };</b>
+<b class="nc">&nbsp;        test(&quot;test 5&quot;, A, b);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // 3-by-3 singular: infinitely many solutions
+&nbsp;    private static void test6() {
+<b class="nc">&nbsp;        double[][] A = {</b>
+&nbsp;            {  1, -1,  2 },
+&nbsp;            {  4,  4, -2 },
+&nbsp;            { -2,  2, -4 },
+&nbsp;        };
+<b class="nc">&nbsp;        double[] b = { -3, 1, 6 };</b>
+<b class="nc">&nbsp;        test(&quot;test 6 (infinitely many solutions)&quot;, A, b);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code GaussJordanElimination} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+<b class="nc">&nbsp;        test1();</b>
+<b class="nc">&nbsp;        test2();</b>
+<b class="nc">&nbsp;        test3();</b>
+<b class="nc">&nbsp;        test4();</b>
+<b class="nc">&nbsp;        test5();</b>
+<b class="nc">&nbsp;        test6();</b>
+&nbsp;
+&nbsp;        // n-by-n random system (likely full rank)
+<b class="nc">&nbsp;        int n = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;        double[][] A = new double[n][n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;                A[i][j] = StdRandom.uniform(1000);</b>
+<b class="nc">&nbsp;        double[] b = new double[n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            b[i] = StdRandom.uniform(1000);</b>
+<b class="nc">&nbsp;        test(&quot;random &quot; + n + &quot;-by-&quot; + n + &quot; (likely full rank)&quot;, A, b);</b>
+&nbsp;
+&nbsp;
+&nbsp;        // n-by-n random system (likely infeasible)
+<b class="nc">&nbsp;        A = new double[n][n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n-1; i++)</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++)</b>
+<b class="nc">&nbsp;                A[i][j] = StdRandom.uniform(1000);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n-1; i++) {</b>
+<b class="nc">&nbsp;            double alpha = StdRandom.uniform(11) - 5.0;</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; n; j++) {</b>
+<b class="nc">&nbsp;                A[n-1][j] += alpha * A[i][j];</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        b = new double[n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            b[i] = StdRandom.uniform(1000);</b>
+<b class="nc">&nbsp;        test(&quot;random &quot; + n + &quot;-by-&quot; + n + &quot; (likely infeasible)&quot;, A, b);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

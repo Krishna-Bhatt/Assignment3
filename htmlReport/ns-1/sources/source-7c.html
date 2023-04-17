@@ -1,0 +1,231 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LookupIndex</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: LookupIndex (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LookupIndex</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/27)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac LookupIndex.java
+&nbsp; *  Execution:    java LookupIndex movies.txt &quot;/&quot;
+&nbsp; *  Dependencies: ST.java Queue.java In.java StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/35applications/aminoI.csv
+&nbsp; *                https://algs4.cs.princeton.edu/35applications/movies.txt
+&nbsp; *
+&nbsp; *  % java LookupIndex aminoI.csv &quot;,&quot;
+&nbsp; *  Serine
+&nbsp; *    TCT
+&nbsp; *    TCA
+&nbsp; *    TCG
+&nbsp; *    AGT
+&nbsp; *    AGC
+&nbsp; *  TCG
+&nbsp; *    Serine
+&nbsp; *
+&nbsp; *  % java LookupIndex movies.txt &quot;/&quot;
+&nbsp; *  Bacon, Kevin
+&nbsp; *    Animal House (1978)
+&nbsp; *    Apollo 13 (1995)
+&nbsp; *    Beauty Shop (2005)
+&nbsp; *    Diner (1982)
+&nbsp; *    Few Good Men, A (1992)
+&nbsp; *    Flatliners (1990)
+&nbsp; *    Footloose (1984)
+&nbsp; *    Friday the 13th (1980)
+&nbsp; *    ...
+&nbsp; *  Tin Men (1987)
+&nbsp; *    DeBoy, David
+&nbsp; *    Blumenfeld, Alan
+&nbsp; *    ...
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code LookupIndex} class provides a data-driven client for reading in a
+&nbsp; *  key-value pairs from a file; then, printing the values corresponding to the
+&nbsp; *  keys found on standard input. Keys are strings; values are lists of strings.
+&nbsp; *  The separating delimiter is taken as a command-line argument. This client
+&nbsp; *  is sometimes known as an &lt;em&gt;inverted index&lt;/em&gt;.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/35applications&quot;&gt;Section 3.5&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *  
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class LookupIndex { 
+&nbsp;
+&nbsp;    // Do not instantiate.
+&nbsp;    private LookupIndex() { }
+&nbsp;
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String filename  = args[0];</b>
+<b class="nc">&nbsp;        String separator = args[1];</b>
+<b class="nc">&nbsp;        In in = new In(filename);</b>
+&nbsp;
+<b class="nc">&nbsp;        ST&lt;String, Queue&lt;String&gt;&gt; st = new ST&lt;String, Queue&lt;String&gt;&gt;();</b>
+<b class="nc">&nbsp;        ST&lt;String, Queue&lt;String&gt;&gt; ts = new ST&lt;String, Queue&lt;String&gt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        while (in.hasNextLine()) {</b>
+<b class="nc">&nbsp;            String line = in.readLine();</b>
+<b class="nc">&nbsp;            String[] fields = line.split(separator);</b>
+<b class="nc">&nbsp;            String key = fields[0];</b>
+<b class="nc">&nbsp;            for (int i = 1; i &lt; fields.length; i++) {</b>
+<b class="nc">&nbsp;                String val = fields[i];</b>
+<b class="nc">&nbsp;                if (!st.contains(key)) st.put(key, new Queue&lt;String&gt;());</b>
+<b class="nc">&nbsp;                if (!ts.contains(val)) ts.put(val, new Queue&lt;String&gt;());</b>
+<b class="nc">&nbsp;                st.get(key).enqueue(val);</b>
+<b class="nc">&nbsp;                ts.get(val).enqueue(key);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;Done indexing&quot;);</b>
+&nbsp;
+&nbsp;        // read queries from standard input, one per line
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            String query = StdIn.readLine();</b>
+<b class="nc">&nbsp;            if (st.contains(query)) </b>
+<b class="nc">&nbsp;                for (String vals : st.get(query))</b>
+<b class="nc">&nbsp;                    StdOut.println(&quot;  &quot; + vals);</b>
+<b class="nc">&nbsp;            if (ts.contains(query)) </b>
+<b class="nc">&nbsp;                for (String keys : ts.get(query))</b>
+<b class="nc">&nbsp;                    StdOut.println(&quot;  &quot; + keys);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,316 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Inversions</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Inversions (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Inversions</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/46)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/66)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Inversions.java
+&nbsp; *  Execution:    java Inversions &lt; input.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java
+&nbsp; *  
+&nbsp; *  Read array of n integers and count number of inversions in n log n time.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Inversions} class provides static methods to count the 
+&nbsp; *  number of &lt;em&gt;inversions&lt;/em&gt; in either an array of integers or comparables.
+&nbsp; *  An inversion in an array {@code a[]} is a pair of indicies {@code i} and
+&nbsp; *  {@code j} such that {@code i &lt; j} and {@code a[i] &gt; a[j]}.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a generalization of mergesort. The &lt;em&gt;count&lt;/em&gt;
+&nbsp; *  operation takes &amp;Theta;(&lt;em&gt;n&lt;/em&gt; log &lt;em&gt;n&lt;/em&gt;) time to count the
+&nbsp; *  number of inversions in any array of length &lt;em&gt;n&lt;/em&gt; (assuming
+&nbsp; *  comparisons take constant time).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/22mergesort&quot;&gt;Section 2.2&lt;/a&gt;
+&nbsp; *  of &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class Inversions {</b>
+&nbsp;
+&nbsp;    // do not instantiate
+&nbsp;    private Inversions() { }
+&nbsp;
+&nbsp;    // merge and count
+&nbsp;    private static long merge(int[] a, int[] aux, int lo, int mid, int hi) {
+<b class="nc">&nbsp;        long inversions = 0;</b>
+&nbsp;
+&nbsp;        // copy to aux[]
+<b class="nc">&nbsp;        for (int k = lo; k &lt;= hi; k++) {</b>
+<b class="nc">&nbsp;            aux[k] = a[k]; </b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // merge back to a[]
+<b class="nc">&nbsp;        int i = lo, j = mid+1;</b>
+<b class="nc">&nbsp;        for (int k = lo; k &lt;= hi; k++) {</b>
+<b class="nc">&nbsp;            if      (i &gt; mid)           a[k] = aux[j++];</b>
+<b class="nc">&nbsp;            else if (j &gt; hi)            a[k] = aux[i++];</b>
+<b class="nc">&nbsp;            else if (aux[j] &lt; aux[i]) { a[k] = aux[j++]; inversions += (mid - i + 1); }</b>
+<b class="nc">&nbsp;            else                        a[k] = aux[i++];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return inversions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // return the number of inversions in the subarray b[lo..hi]
+&nbsp;    // side effect b[lo..hi] is rearranged in ascending order
+&nbsp;    private static long count(int[] a, int[] b, int[] aux, int lo, int hi) {
+<b class="nc">&nbsp;        long inversions = 0;</b>
+<b class="nc">&nbsp;        if (hi &lt;= lo) return 0;</b>
+<b class="nc">&nbsp;        int mid = lo + (hi - lo) / 2;</b>
+<b class="nc">&nbsp;        inversions += count(a, b, aux, lo, mid);  </b>
+<b class="nc">&nbsp;        inversions += count(a, b, aux, mid+1, hi);</b>
+<b class="nc">&nbsp;        inversions += merge(b, aux, lo, mid, hi);</b>
+<b class="nc">&nbsp;        assert inversions == brute(a, lo, hi);</b>
+<b class="nc">&nbsp;        return inversions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of inversions in the integer array.
+&nbsp;     * The argument array is not modified.
+&nbsp;     * @param  a the array
+&nbsp;     * @return the number of inversions in the array. An inversion is a pair of 
+&nbsp;     *         indicies {@code i} and {@code j} such that {@code i &lt; j}
+&nbsp;     *         and {@code a[i] &gt; a[j]}.
+&nbsp;     */
+&nbsp;    public static long count(int[] a) {
+<b class="nc">&nbsp;        int[] b   = new int[a.length];</b>
+<b class="nc">&nbsp;        int[] aux = new int[a.length];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; a.length; i++)</b>
+<b class="nc">&nbsp;            b[i] = a[i];</b>
+<b class="nc">&nbsp;        long inversions = count(a, b, aux, 0, a.length - 1);</b>
+<b class="nc">&nbsp;        return inversions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    // merge and count (Comparable version)
+&nbsp;    private static &lt;Key extends Comparable&lt;Key&gt;&gt; long merge(Key[] a, Key[] aux, int lo, int mid, int hi) {
+<b class="nc">&nbsp;        long inversions = 0;</b>
+&nbsp;
+&nbsp;        // copy to aux[]
+<b class="nc">&nbsp;        for (int k = lo; k &lt;= hi; k++) {</b>
+<b class="nc">&nbsp;            aux[k] = a[k]; </b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // merge back to a[]
+<b class="nc">&nbsp;        int i = lo, j = mid+1;</b>
+<b class="nc">&nbsp;        for (int k = lo; k &lt;= hi; k++) {</b>
+<b class="nc">&nbsp;            if      (i &gt; mid)                a[k] = aux[j++];</b>
+<b class="nc">&nbsp;            else if (j &gt; hi)                 a[k] = aux[i++];</b>
+<b class="nc">&nbsp;            else if (less(aux[j], aux[i])) { a[k] = aux[j++]; inversions += (mid - i + 1); }</b>
+<b class="nc">&nbsp;            else                             a[k] = aux[i++];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return inversions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // return the number of inversions in the subarray b[lo..hi]
+&nbsp;    // side effect b[lo..hi] is rearranged in ascending order
+&nbsp;    private static &lt;Key extends Comparable&lt;Key&gt;&gt; long count(Key[] a, Key[] b, Key[] aux, int lo, int hi) {
+<b class="nc">&nbsp;        long inversions = 0;</b>
+<b class="nc">&nbsp;        if (hi &lt;= lo) return 0;</b>
+<b class="nc">&nbsp;        int mid = lo + (hi - lo) / 2;</b>
+<b class="nc">&nbsp;        inversions += count(a, b, aux, lo, mid);  </b>
+<b class="nc">&nbsp;        inversions += count(a, b, aux, mid+1, hi);</b>
+<b class="nc">&nbsp;        inversions += merge(b, aux, lo, mid, hi);</b>
+<b class="nc">&nbsp;        assert inversions == brute(a, lo, hi);</b>
+<b class="nc">&nbsp;        return inversions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of inversions in the comparable array.
+&nbsp;     * The argument array is not modified.
+&nbsp;     * @param  a the array
+&nbsp;     * @param &lt;Key&gt; the inferred type of the elements in the array
+&nbsp;     * @return the number of inversions in the array. An inversion is a pair of 
+&nbsp;     *         indicies {@code i} and {@code j} such that {@code i &lt; j}
+&nbsp;     *         and {@code a[i].compareTo(a[j]) &gt; 0}.
+&nbsp;     */
+&nbsp;    public static &lt;Key extends Comparable&lt;Key&gt;&gt; long count(Key[] a) {
+<b class="nc">&nbsp;        Key[] b   = a.clone();</b>
+<b class="nc">&nbsp;        Key[] aux = a.clone();</b>
+<b class="nc">&nbsp;        long inversions = count(a, b, aux, 0, a.length - 1);</b>
+<b class="nc">&nbsp;        return inversions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // is v &lt; w ?
+&nbsp;    private static &lt;Key extends Comparable&lt;Key&gt;&gt; boolean less(Key v, Key w) {
+<b class="nc">&nbsp;        return (v.compareTo(w) &lt; 0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // count number of inversions in a[lo..hi] via brute force (for debugging only)
+&nbsp;    private static &lt;Key extends Comparable&lt;Key&gt;&gt; long brute(Key[] a, int lo, int hi) {
+<b class="nc">&nbsp;        long inversions = 0;</b>
+<b class="nc">&nbsp;        for (int i = lo; i &lt;= hi; i++)</b>
+<b class="nc">&nbsp;            for (int j = i + 1; j &lt;= hi; j++)</b>
+<b class="nc">&nbsp;                if (less(a[j], a[i])) inversions++;</b>
+<b class="nc">&nbsp;        return inversions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // count number of inversions in a[lo..hi] via brute force (for debugging only)
+&nbsp;    private static long brute(int[] a, int lo, int hi) {
+<b class="nc">&nbsp;        long inversions = 0;</b>
+<b class="nc">&nbsp;        for (int i = lo; i &lt;= hi; i++)</b>
+<b class="nc">&nbsp;            for (int j = i + 1; j &lt;= hi; j++)</b>
+<b class="nc">&nbsp;                if (a[j] &lt; a[i]) inversions++;</b>
+<b class="nc">&nbsp;        return inversions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads a sequence of integers from standard input and
+&nbsp;     * prints the number of inversions to standard output.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int[] a = StdIn.readAllInts();</b>
+<b class="nc">&nbsp;        int n = a.length;</b>
+<b class="nc">&nbsp;        Integer[] b = new Integer[n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++)</b>
+<b class="nc">&nbsp;            b[i] = a[i];</b>
+<b class="nc">&nbsp;        StdOut.println(Inversions.count(a));</b>
+<b class="nc">&nbsp;        StdOut.println(Inversions.count(b));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

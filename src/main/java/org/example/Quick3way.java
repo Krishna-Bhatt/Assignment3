@@ -93,7 +93,7 @@ public class Quick3way {
    /***************************************************************************
     *  Check if array is sorted - useful for debugging.
     ***************************************************************************/
-    private static boolean isSorted(Comparable[] a) {
+    static boolean isSorted(Comparable[] a) {
         return isSorted(a, 0, a.length - 1);
     }
 

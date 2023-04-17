@@ -1,0 +1,327 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FenwickTree</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: FenwickTree (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FenwickTree</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/49)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac FenwickTree.java
+&nbsp; *  Execution:    java FenwickTree
+&nbsp; *
+&nbsp; *  A Fenwick tree.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Arrays;
+&nbsp;
+&nbsp;/**
+&nbsp; * Created by ricardodpsx@gmail.com on 4/01/15.
+&nbsp; * &lt;p&gt;
+&nbsp; * In {@code Fenwick Tree} structure We arrange the array in an smart way to perform efficient &lt;em&gt;range queries and updates&lt;/em&gt;.
+&nbsp; * The key point is this: In a fenwick array, each position &quot;responsible&quot; for storing cumulative data of N previous positions (N could be 1)
+&nbsp; * For example:
+&nbsp; * array[40] stores: array[40] + array[39] ... + array[32] (8 positions)
+&nbsp; * array[32] stores: array[32] + array[31] ... + array[1]  (32 positions)
+&nbsp; * &lt;p&gt;
+&nbsp; * &lt;strong&gt;But, how do you know how much positions a given index is &quot;responsible&quot; for?&lt;/strong&gt;
+&nbsp; * &lt;p&gt;
+&nbsp; * To know the number of items that a given array position &#39;ind&#39; is responsible for
+&nbsp; * We should extract from &#39;ind&#39; the portion up to the first significant one of the binary representation of &#39;ind&#39;
+&nbsp; * for example, given ind == 40 (101000 in binary), according to Fenwick algorithm
+&nbsp; * what We want is to extract 1000(8 in decimal).
+&nbsp; * &lt;p&gt;
+&nbsp; * This means that array[40] has cumulative information of 8 array items.
+&nbsp; * But We still need to know the cumulative data bellow array[40 - 8 = 32]
+&nbsp; * 32 is  100000 in binnary, and the portion up to the least significant one is 32 itself!
+&nbsp; * So array[32] has information of 32 items, and We are done!
+&nbsp; * &lt;p&gt;
+&nbsp; * So cummulative data of array[1...40] = array[40] + array[32]
+&nbsp; * Because 40 has information of items from 40 to 32, and 32 has information of items from 32 to  1
+&nbsp; * &lt;p&gt;
+&nbsp; * Memory usage:  O(n)
+&nbsp; *
+&nbsp; * @author Ricardo Pacheco 
+&nbsp; */
+<b class="nc">&nbsp;public class FenwickTree {</b>
+&nbsp;
+&nbsp;    int[] array; // 1-indexed array, In this array We save cumulative information to perform efficient range queries and updates
+&nbsp;
+<b class="nc">&nbsp;    public FenwickTree(int size) {</b>
+<b class="nc">&nbsp;        array = new int[size + 1];</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Range Sum query from 1 to ind
+&nbsp;     * ind is 1-indexed
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Time-Complexity:    O(log(n))
+&nbsp;     *
+&nbsp;     * @param  ind index
+&nbsp;     * @return sum
+&nbsp;     */
+&nbsp;    public int rsq(int ind) {
+<b class="nc">&nbsp;        assert ind &gt; 0;</b>
+<b class="nc">&nbsp;        int sum = 0;</b>
+<b class="nc">&nbsp;        while (ind &gt; 0) {</b>
+<b class="nc">&nbsp;            sum += array[ind];</b>
+&nbsp;            //Extracting the portion up to the first significant one of the binary representation of &#39;ind&#39; and decrementing ind by that number
+<b class="nc">&nbsp;            ind -= ind &amp; (-ind);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return sum;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Range Sum Query from a to b.
+&nbsp;     * Search for the sum from array index from a to b
+&nbsp;     * a and b are 1-indexed
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Time-Complexity:    O(log(n))
+&nbsp;     *
+&nbsp;     * @param  a left index
+&nbsp;     * @param  b right index
+&nbsp;     * @return sum
+&nbsp;     */
+&nbsp;    public int rsq(int a, int b) {
+<b class="nc">&nbsp;        assert b &gt;= a &amp;&amp; a &gt; 0 &amp;&amp; b &gt; 0;</b>
+&nbsp;
+<b class="nc">&nbsp;        return rsq(b) - rsq(a - 1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update the array at ind and all the affected regions above ind.
+&nbsp;     * ind is 1-indexed
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Time-Complexity:    O(log(n))
+&nbsp;     *
+&nbsp;     * @param  ind   index
+&nbsp;     * @param  value value
+&nbsp;     */
+&nbsp;    public void update(int ind, int value) {
+<b class="nc">&nbsp;        assert ind &gt; 0;</b>
+<b class="nc">&nbsp;        while (ind &lt; array.length) {</b>
+<b class="nc">&nbsp;            array[ind] += value;</b>
+&nbsp;            //Extracting the portion up to the first significant one of the binary representation of &#39;ind&#39; and incrementing ind by that number
+<b class="nc">&nbsp;            ind += ind &amp; (-ind);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return array.length - 1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Read the following commands:
+&nbsp;     * init n     Initializes the array of size n all zeroes
+&nbsp;     * set a b c    Initializes the array  with [a, b, c ...]
+&nbsp;     * rsq a b      Range Sum Query for the range [a,b]
+&nbsp;     * up  i v      Update the i position of the array with value v.
+&nbsp;     * exit
+&nbsp;     * &lt;p&gt;
+&nbsp;     * The array is 1-indexed
+&nbsp;     * Example:
+&nbsp;     * set 1 2 3 4 5 6
+&nbsp;     * rsq 1 3
+&nbsp;     * Sum from 1 to 3 = 6
+&nbsp;     * rmq 1 3
+&nbsp;     * Min from 1 to 3 = 1
+&nbsp;     * input up 1 3
+&nbsp;     * [3,2,3,4,5,6]
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        FenwickTree ft = null;</b>
+&nbsp;
+<b class="nc">&nbsp;        String cmd = &quot;cmp&quot;;</b>
+&nbsp;        while (true) {
+<b class="nc">&nbsp;            String[] line = StdIn.readLine().split(&quot; &quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (line[0].equals(&quot;exit&quot;)) break;</b>
+&nbsp;
+<b class="nc">&nbsp;            int arg1 = 0, arg2 = 0;</b>
+&nbsp;
+<b class="nc">&nbsp;            if (line.length &gt; 1) {</b>
+<b class="nc">&nbsp;                arg1 = Integer.parseInt(line[1]);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (line.length &gt; 2) {</b>
+<b class="nc">&nbsp;                arg2 = Integer.parseInt(line[2]);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if ((!line[0].equals(&quot;set&quot;) &amp;&amp; !line[0].equals(&quot;init&quot;)) &amp;&amp; ft == null) {</b>
+<b class="nc">&nbsp;                StdOut.println(&quot;FenwickTree not initialized&quot;);</b>
+<b class="nc">&nbsp;                continue;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (line[0].equals(&quot;init&quot;)) {</b>
+<b class="nc">&nbsp;                ft = new FenwickTree(arg1);</b>
+<b class="nc">&nbsp;                for (int i = 1; i &lt;= ft.size(); i++) {</b>
+<b class="nc">&nbsp;                    StdOut.print(ft.rsq(i, i) + &quot; &quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                StdOut.println();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            else if (line[0].equals(&quot;set&quot;)) {</b>
+<b class="nc">&nbsp;                ft = new FenwickTree(line.length - 1);</b>
+<b class="nc">&nbsp;                for (int i = 1; i &lt;= line.length - 1; i++) {</b>
+<b class="nc">&nbsp;                    ft.update(i, Integer.parseInt(line[i]));</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            else if (line[0].equals(&quot;up&quot;)) {</b>
+<b class="nc">&nbsp;                ft.update(arg1, arg2);</b>
+<b class="nc">&nbsp;                for (int i = 1; i &lt;= ft.size(); i++) {</b>
+<b class="nc">&nbsp;                    StdOut.print(ft.rsq(i, i) + &quot; &quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                StdOut.println();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            else if (line[0].equals(&quot;rsq&quot;)) {</b>
+<b class="nc">&nbsp;                StdOut.printf(&quot;Sum from %d to %d = %d%n&quot;, arg1, arg2, ft.rsq(arg1, arg2));</b>
+&nbsp;            }
+&nbsp;            else {
+<b class="nc">&nbsp;                StdOut.println(&quot;Invalid command&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,549 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > FibonacciMinPQ</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: FibonacciMinPQ (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FibonacciMinPQ</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/100)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FibonacciMinPQ$MyComparator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FibonacciMinPQ$MyIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">FibonacciMinPQ$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/58)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/118)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation: javac FibonacciMinPQ.java
+&nbsp; *  Execution:
+&nbsp; *
+&nbsp; *  A Fibonacci heap.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;import java.util.Comparator;
+&nbsp;
+&nbsp;/*
+&nbsp; *  The FibonacciMinPQ class represents a priority queue of generic keys.
+&nbsp; *  It supports the usual insert and delete-the-minimum operations, 
+&nbsp; *  along with the merging of two heaps together.
+&nbsp; *  It also supports methods for peeking at the minimum key,
+&nbsp; *  testing if the priority queue is empty, and iterating through
+&nbsp; *  the keys.
+&nbsp; *  It is possible to build the priority queue using a Comparator.
+&nbsp; *  If not, the natural order relation between the keys will be used.
+&nbsp; *  
+&nbsp; *  This implementation uses a Fibonacci heap.
+&nbsp; *  The delete-the-minimum operation takes amortized logarithmic time.
+&nbsp; *  The insert, min-key, is-empty, size, union and constructor take constant time.
+&nbsp; *
+&nbsp; *   WARNING: THIS VERSION HAS AT LEAST ONE BUG.
+&nbsp; *
+&nbsp; *  @author Tristan Claverie
+&nbsp; */
+&nbsp;public class FibonacciMinPQ&lt;Key&gt; implements Iterable&lt;Key&gt; {
+&nbsp;	private Node head;					//Head of the circular root list
+&nbsp;	private Node min;					//Minimum Node of the root list
+&nbsp;	private int size;					//Number of keys in the heap
+&nbsp;	private final Comparator&lt;Key&gt; comp;	//Comparator over the keys
+<b class="nc">&nbsp;	private HashMap&lt;Integer, Node&gt; table = new HashMap&lt;Integer, Node&gt;(); //Used for the consolidate operation</b>
+&nbsp;	
+&nbsp;	//Represents a Node of a tree
+<b class="nc">&nbsp;	private class Node {</b>
+&nbsp;		Key key;						//Key of this Node
+&nbsp;		int order;						//Order of the tree rooted by this Node
+&nbsp;		Node prev, next;				//Siblings of this Node
+&nbsp;		Node child;						//Child of this Node
+&nbsp;	}
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Initializes an empty priority queue
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @param C a Comparator over the Keys
+&nbsp;	 */
+<b class="nc">&nbsp;	public FibonacciMinPQ(Comparator&lt;Key&gt; C) {</b>
+<b class="nc">&nbsp;		comp = C;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;    /**
+&nbsp;     * Initializes an empty priority queue
+&nbsp;     * Worst case is O(1)
+&nbsp;     */
+<b class="nc">&nbsp;	public FibonacciMinPQ() {</b>
+<b class="nc">&nbsp;		comp = new MyComparator();</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Initializes a priority queue with given keys
+&nbsp;	 * Worst case is O(n)
+&nbsp;	 * @param a an array of keys
+&nbsp;	 */
+<b class="nc">&nbsp;	public FibonacciMinPQ(Key[] a) {</b>
+<b class="nc">&nbsp;		comp = new MyComparator();</b>
+<b class="nc">&nbsp;		for (Key k : a) insert(k);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Initializes a priority queue with given keys
+&nbsp;	 * Worst case is O(n)
+&nbsp;	 * @param C a comparator over the keys
+&nbsp;	 * @param a an array of keys
+&nbsp;	 */
+<b class="nc">&nbsp;	public FibonacciMinPQ(Comparator&lt;Key&gt; C, Key[] a) {</b>
+<b class="nc">&nbsp;		comp = C;</b>
+<b class="nc">&nbsp;		for (Key k : a) insert(k);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Whether the priority queue is empty
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @return true if the priority queue is empty, false if not
+&nbsp;	 */
+&nbsp;	public boolean isEmpty() {
+<b class="nc">&nbsp;		return size == 0;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Number of elements currently on the priority queue
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @return the number of elements on the priority queue
+&nbsp;	 */
+&nbsp;	public int size() {
+<b class="nc">&nbsp;		return size;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Insert a key in the queue
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @param key a Key
+&nbsp;	 */
+&nbsp;	public void insert(Key key) {
+<b class="nc">&nbsp;		Node x = new Node();</b>
+<b class="nc">&nbsp;		x.key = key;</b>
+<b class="nc">&nbsp;		size++;</b>
+<b class="nc">&nbsp;		head = insert(x, head);</b>
+<b class="nc">&nbsp;		if (min == null) min = head;</b>
+<b class="nc">&nbsp;		else 			 min = (greater(min.key, key)) ? head : min;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Gets the minimum key currently in the queue
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the minimum key currently in the priority queue
+&nbsp;	 */
+&nbsp;	public Key minKey() {
+<b class="nc">&nbsp;		if (isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		return min.key;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Deletes the minimum key
+&nbsp;	 * Worst case is O(log(n)) (amortized)
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the minimum key
+&nbsp;	 */
+&nbsp;	public Key delMin() {
+<b class="nc">&nbsp;		if (isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		head = cut(min, head);</b>
+<b class="nc">&nbsp;		Node x = min.child;</b>
+<b class="nc">&nbsp;		Key key = min.key;</b>
+<b class="nc">&nbsp;		min.key = null;</b>
+<b class="nc">&nbsp;		if (x != null) {</b>
+<b class="nc">&nbsp;			head = meld(head, x);</b>
+<b class="nc">&nbsp;			min.child = null;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		size--;</b>
+<b class="nc">&nbsp;		if (!isEmpty()) consolidate();</b>
+<b class="nc">&nbsp;		else 			min = null;</b>
+<b class="nc">&nbsp;		return key;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Merges two heaps together
+&nbsp;	 * This operation is destructive
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @param that a Fibonacci heap
+&nbsp;	 * @return the union of the two heaps
+&nbsp;	 */
+&nbsp;	public FibonacciMinPQ&lt;Key&gt; union(FibonacciMinPQ&lt;Key&gt; that) {
+<b class="nc">&nbsp;		this.head = meld(head, that.head);</b>
+<b class="nc">&nbsp;		this.min = (greater(this.min.key, that.min.key)) ? that.min : this.min;</b>
+<b class="nc">&nbsp;		this.size = this.size+that.size;</b>
+<b class="nc">&nbsp;		return this;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	/*************************************
+&nbsp;	 * General helper functions
+&nbsp;	 ************************************/
+&nbsp;	
+&nbsp;	//Compares two keys
+&nbsp;	private boolean greater(Key n, Key m) {
+<b class="nc">&nbsp;		if (n == null) return false;</b>
+<b class="nc">&nbsp;		if (m == null) return true;</b>
+<b class="nc">&nbsp;		return comp.compare(n,m) &gt; 0;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Assuming root1 holds a greater key than root2, root2 becomes the new root
+&nbsp;	private void link(Node root1, Node root2) {
+<b class="nc">&nbsp;		root2.child = insert(root1, root2.child);</b>
+<b class="nc">&nbsp;		root2.order++;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/*************************************
+&nbsp;	 * Function for consolidating all trees in the root list
+&nbsp;	 ************************************/
+&nbsp;	
+&nbsp;	//Coalesce the roots, thus reshapes the tree
+&nbsp;	private void consolidate() {
+<b class="nc">&nbsp;		table.clear();</b>
+<b class="nc">&nbsp;		Node x = head;</b>
+<b class="nc">&nbsp;		int maxOrder = 0;</b>
+<b class="nc">&nbsp;		min = head;</b>
+<b class="nc">&nbsp;		Node y = null; Node z = null;</b>
+&nbsp;		do {
+<b class="nc">&nbsp;			y = x;</b>
+<b class="nc">&nbsp;			x = x.next;</b>
+<b class="nc">&nbsp;			z = table.get(y.order);</b>
+<b class="nc">&nbsp;			while (z != null) {</b>
+<b class="nc">&nbsp;				table.remove(y.order);</b>
+<b class="nc">&nbsp;				if (greater(y.key, z.key)) {</b>
+<b class="nc">&nbsp;					link(y, z);</b>
+<b class="nc">&nbsp;					y = z;</b>
+&nbsp;				} else {
+<b class="nc">&nbsp;					link(z, y);</b>
+&nbsp;				}
+<b class="nc">&nbsp;				z = table.get(y.order);</b>
+&nbsp;			}
+<b class="nc">&nbsp;			table.put(y.order, y);</b>
+<b class="nc">&nbsp;			if (y.order &gt; maxOrder) maxOrder = y.order;</b>
+<b class="nc">&nbsp;		} while (x != head);</b>
+<b class="nc">&nbsp;		head = null;</b>
+<b class="nc">&nbsp;		for (Node n : table.values()) {</b>
+<b class="nc">&nbsp;			if (n != null) {</b>
+<b class="nc">&nbsp;				min = greater(min.key, n.key) ? n : min;</b>
+<b class="nc">&nbsp;				head = insert(n, head);</b>
+&nbsp;			}
+<b class="nc">&nbsp;		}</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/*************************************
+&nbsp;	 * General helper functions for manipulating circular lists
+&nbsp;	 ************************************/
+&nbsp;	
+&nbsp;	//Inserts a Node in a circular list containing head, returns a new head
+&nbsp;	private Node insert(Node x, Node head) {
+<b class="nc">&nbsp;		if (head == null) {</b>
+<b class="nc">&nbsp;			x.prev = x;</b>
+<b class="nc">&nbsp;			x.next = x;</b>
+&nbsp;		} else {
+<b class="nc">&nbsp;			head.prev.next = x;</b>
+<b class="nc">&nbsp;			x.next = head;</b>
+<b class="nc">&nbsp;			x.prev = head.prev;</b>
+<b class="nc">&nbsp;			head.prev = x;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return x;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Removes a tree from the list defined by the head pointer
+&nbsp;	private Node cut(Node x, Node head) {
+<b class="nc">&nbsp;		if (x.next == x) {</b>
+<b class="nc">&nbsp;			x.next = null;</b>
+<b class="nc">&nbsp;			x.prev = null;</b>
+<b class="nc">&nbsp;			return null;</b>
+&nbsp;		} else {
+<b class="nc">&nbsp;			x.next.prev = x.prev;</b>
+<b class="nc">&nbsp;			x.prev.next = x.next;</b>
+<b class="nc">&nbsp;			Node res = x.next;</b>
+<b class="nc">&nbsp;			x.next = null;</b>
+<b class="nc">&nbsp;			x.prev = null;</b>
+<b class="nc">&nbsp;			if (head == x)  return res;</b>
+<b class="nc">&nbsp;			else 			return head;</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Merges two root lists together
+&nbsp;	private Node meld(Node x, Node y) {
+<b class="nc">&nbsp;		if (x == null) return y;</b>
+<b class="nc">&nbsp;		if (y == null) return x;</b>
+<b class="nc">&nbsp;		x.prev.next = y.next;</b>
+<b class="nc">&nbsp;		y.next.prev = x.prev;</b>
+<b class="nc">&nbsp;		x.prev = y;</b>
+<b class="nc">&nbsp;		y.next = x;</b>
+<b class="nc">&nbsp;		return x;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	/*************************************
+&nbsp;	 * Iterator
+&nbsp;	 ************************************/
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Gets an Iterator over the Keys in the priority queue in ascending order
+&nbsp;	 * The Iterator does not implement the remove() method
+&nbsp;	 * iterator() : Worst case is O(n)
+&nbsp;	 * next() : 	Worst case is O(log(n)) (amortized)
+&nbsp;	 * hasNext() : 	Worst case is O(1)
+&nbsp;	 * @return an Iterator over the Keys in the priority queue in ascending order
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public Iterator&lt;Key&gt; iterator() {
+<b class="nc">&nbsp;		return new MyIterator();</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	private class MyIterator implements Iterator&lt;Key&gt; {
+&nbsp;		private FibonacciMinPQ&lt;Key&gt; copy;
+&nbsp;		
+&nbsp;		
+&nbsp;		//Constructor takes linear time
+<b class="nc">&nbsp;		public MyIterator() {</b>
+<b class="nc">&nbsp;			copy = new FibonacciMinPQ&lt;Key&gt;(comp);</b>
+<b class="nc">&nbsp;			insertAll(head);</b>
+<b class="nc">&nbsp;		}</b>
+&nbsp;		
+&nbsp;		private void insertAll(Node head) {
+<b class="nc">&nbsp;			if (head == null) return;</b>
+<b class="nc">&nbsp;			Node x = head;</b>
+&nbsp;			do {
+<b class="nc">&nbsp;				copy.insert(x.key);</b>
+<b class="nc">&nbsp;				insertAll(x.child);</b>
+<b class="nc">&nbsp;				x = x.next;</b>
+<b class="nc">&nbsp;			} while (x != head);</b>
+<b class="nc">&nbsp;		}</b>
+&nbsp;		
+&nbsp;		public void remove() {
+<b class="nc">&nbsp;			throw new UnsupportedOperationException();</b>
+&nbsp;		}
+&nbsp;		
+&nbsp;		public boolean hasNext() {
+<b class="nc">&nbsp;			return !copy.isEmpty();</b>
+&nbsp;		}
+&nbsp;		
+&nbsp;		//Takes amortized logarithmic time
+&nbsp;		public Key next() {
+<b class="nc">&nbsp;			if (!hasNext()) throw new NoSuchElementException();</b>
+<b class="nc">&nbsp;			return copy.delMin();</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;	
+&nbsp;	/*************************************
+&nbsp;	 * Comparator
+&nbsp;	 ************************************/
+&nbsp;	
+&nbsp;	//default Comparator
+<b class="nc">&nbsp;	private class MyComparator implements Comparator&lt;Key&gt; {</b>
+&nbsp;		@Override
+&nbsp;		public int compare(Key key1, Key key2) {
+<b class="nc">&nbsp;			return ((Comparable&lt;Key&gt;) key1).compareTo(key2);</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;	
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

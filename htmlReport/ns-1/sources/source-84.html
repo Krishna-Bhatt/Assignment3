@@ -1,0 +1,505 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > MultiwayMinPQ</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: MultiwayMinPQ (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MultiwayMinPQ</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/48)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/84)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MultiwayMinPQ$MyComparator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MultiwayMinPQ$MyIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/54)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/97)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation: javac MultiwayMinPQ.java   
+&nbsp; *  Execution:
+&nbsp; *  
+&nbsp; *  A multiway heap.
+&nbsp; *  
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.Comparator;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The MultiwayMinPQ class represents a priority queue of generic keys.
+&nbsp; *  It supports the usual insert and delete-the-minimum operations.
+&nbsp; *  It also supports methods for peeking at the minimum key,
+&nbsp; *  testing if the priority queue is empty, and iterating through
+&nbsp; *  the keys.
+&nbsp; *  It is possible to build the priority queue using a Comparator.
+&nbsp; *  If not, the natural order relation between the keys will be used.
+&nbsp; *  
+&nbsp; *  This implementation uses a multiway heap.
+&nbsp; *  For simplified notations, logarithm in base d will be referred as log-d
+&nbsp; *  The delete-the-minimum operation takes time proportional to d*log-d(n)
+&nbsp; *  The insert takes time proportional to log-d(n)
+&nbsp; *  The is-empty, min-key and size operations take constant time.
+&nbsp; *  Constructor takes time proportional to the specified capacity.
+&nbsp; *
+&nbsp; *  @author Tristan Claverie
+&nbsp; */
+&nbsp;public class MultiwayMinPQ&lt;Key&gt; implements Iterable&lt;Key&gt; {
+&nbsp;	private final int d; 				//Dimension of the heap
+&nbsp;	private int n;						//Number of keys currently in the heap
+&nbsp;	private int order;					//Number of levels of the tree
+&nbsp;	private Key[] keys;					//Array of keys
+&nbsp;	private final Comparator&lt;Key&gt; comp;	//Comparator over the keys
+&nbsp;	
+&nbsp;	
+&nbsp;    /**
+&nbsp;     * Initializes an empty priority queue
+&nbsp;     * Worst case is O(d)
+&nbsp;     *
+&nbsp;     * @param  d dimension of the heap
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code d &lt; 2}
+&nbsp;     */
+<b class="nc">&nbsp;	public MultiwayMinPQ(int d) {</b>
+<b class="nc">&nbsp;		if (d &lt; 2) throw new IllegalArgumentException(&quot;Dimension should be 2 or over&quot;);</b>
+<b class="nc">&nbsp;		this.d = d;</b>
+<b class="nc">&nbsp;		order = 1;</b>
+<b class="nc">&nbsp;		keys = (Key[]) new Comparable[d &lt;&lt; 1];</b>
+<b class="nc">&nbsp;		comp = new MyComparator();</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;    /**
+&nbsp;     * Initializes an empty priority queue
+&nbsp;     * Worst case is O(d)
+&nbsp;     *
+&nbsp;     * @param  d dimension of the heap
+&nbsp;     * @param  comparator a Comparator over the keys
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code d &lt; 2}
+&nbsp;     */
+<b class="nc">&nbsp;	public MultiwayMinPQ(Comparator&lt;Key&gt; comparator, int d) {</b>
+<b class="nc">&nbsp;		if (d &lt; 2) throw new IllegalArgumentException(&quot;Dimension should be 2 or over&quot;);</b>
+<b class="nc">&nbsp;		this.d = d;</b>
+<b class="nc">&nbsp;		order = 1;</b>
+<b class="nc">&nbsp;		keys = (Key[]) new Comparable[d &lt;&lt; 1];</b>
+<b class="nc">&nbsp;		comp = comparator;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;    /**
+&nbsp;     * Initializes a priority queue with given indexes
+&nbsp;     * Worst case is O(n*log-d(n))
+&nbsp;     *
+&nbsp;     * @param  d dimension of the heap
+&nbsp;     * @param  a an array of keys
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code d &lt; 2}
+&nbsp;     */
+<b class="nc">&nbsp;	public MultiwayMinPQ(Key[] a, int d) {</b>
+<b class="nc">&nbsp;		if (d &lt; 2) throw new IllegalArgumentException(&quot;Dimension should be 2 or over&quot;);</b>
+<b class="nc">&nbsp;		this.d = d;</b>
+<b class="nc">&nbsp;		order = 1;</b>
+<b class="nc">&nbsp;		keys = (Key[]) new Comparable[d &lt;&lt; 1];</b>
+<b class="nc">&nbsp;		comp = new MyComparator();</b>
+<b class="nc">&nbsp;		for (Key key : a) insert(key);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;    /**
+&nbsp;     * Initializes a priority queue with given indexes
+&nbsp;     * Worst case is O(a*log-d(n))
+&nbsp;     *
+&nbsp;     * @param  d dimension of the heap
+&nbsp;     * @param  comparator a Comparator over the keys
+&nbsp;     * @param  a an array of keys
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code d &lt; 2}
+&nbsp;     */
+<b class="nc">&nbsp;	public MultiwayMinPQ(Comparator&lt;Key&gt; comparator, Key[] a, int d) {</b>
+<b class="nc">&nbsp;		if (d &lt; 2) throw new IllegalArgumentException(&quot;Dimension should be 2 or over&quot;);</b>
+<b class="nc">&nbsp;		this.d = d;</b>
+<b class="nc">&nbsp;		order = 1;</b>
+<b class="nc">&nbsp;		keys = (Key[]) new Comparable[d &lt;&lt; 1];</b>
+<b class="nc">&nbsp;		comp = comparator;</b>
+<b class="nc">&nbsp;		for (Key key : a) insert(key);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;        /**
+&nbsp;	 * Whether the priority queue is empty
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @return true if the priority queue is empty, false if not
+&nbsp;	 */
+&nbsp;	public boolean isEmpty() {
+<b class="nc">&nbsp;		return n == 0;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Number of elements currently on the priority queue
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @return the number of elements on the priority queue
+&nbsp;	 */
+&nbsp;	public int size() {
+<b class="nc">&nbsp;		return n;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Puts a Key on the priority queue
+&nbsp;	 * Worst case is O(log-d(n))
+&nbsp;	 * @param key a Key
+&nbsp;	 */
+&nbsp;	public void insert(Key key) {
+<b class="nc">&nbsp;		keys[n+d] = key;</b>
+<b class="nc">&nbsp;		swim(n++);</b>
+<b class="nc">&nbsp;		if (n == keys.length-d) {</b>
+<b class="nc">&nbsp;			resize(getN(order+1)+d);</b>
+<b class="nc">&nbsp;			order++;</b>
+&nbsp;		}
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Gets the minimum key currently in the queue
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the minimum key currently in the priority queue
+&nbsp;	 */
+&nbsp;	public Key minKey() {
+<b class="nc">&nbsp;		if (isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		return keys[d];</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Deletes the minimum key
+&nbsp;	 * Worst case is O(d*log-d(n))
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the minimum key
+&nbsp;	 */
+&nbsp;	public Key delMin() {
+<b class="nc">&nbsp;		if (isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		exch(0, --n);</b>
+<b class="nc">&nbsp;		sink(0);</b>
+<b class="nc">&nbsp;		Key min = keys[n+d];</b>
+<b class="nc">&nbsp;		keys[n+d] = null;</b>
+<b class="nc">&nbsp;		int number = getN(order-2);</b>
+<b class="nc">&nbsp;		if(order &gt; 1 &amp;&amp; n == number)  {</b>
+<b class="nc">&nbsp;			resize(number+(int)Math.pow(d, order-1)+d);</b>
+<b class="nc">&nbsp;			order--;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return min;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * General helper functions
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//Compares two keys
+&nbsp;	private boolean greater(int x, int y) {
+<b class="nc">&nbsp;		int i = x+d, j = y+d;</b>
+<b class="nc">&nbsp;		if (keys[i] == null) return false;</b>
+<b class="nc">&nbsp;		if (keys[j] == null) return true;</b>
+<b class="nc">&nbsp;		return comp.compare(keys[i], keys[j]) &gt; 0;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Exchanges the position of two keys
+&nbsp;	private void exch(int x, int y) {
+<b class="nc">&nbsp;		int i = x+d, j = y+d;</b>
+<b class="nc">&nbsp;		Key swap = keys[i];</b>
+<b class="nc">&nbsp;		keys[i] = keys[j];</b>
+<b class="nc">&nbsp;		keys[j] = swap;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	//Gets the maximum number of keys in the heap, given the number of levels of the tree
+&nbsp;	private int getN(int order) {
+<b class="nc">&nbsp;		return (1-((int)Math.pow(d, order+1)))/(1-d);</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Functions for moving upward or downward
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//Moves upward
+&nbsp;	private void swim(int i) {
+<b class="nc">&nbsp;		if (i &gt; 0 &amp;&amp; greater((i-1)/d, i)) {</b>
+<b class="nc">&nbsp;			exch(i, (i-1)/d);</b>
+<b class="nc">&nbsp;			swim((i-1)/d);</b>
+&nbsp;		}
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	//Moves downward
+&nbsp;	private void sink(int i) {
+<b class="nc">&nbsp;		int child = d*i+1;</b>
+<b class="nc">&nbsp;		if (child &gt;= n) return;</b>
+<b class="nc">&nbsp;		int min = minChild(i);</b>
+<b class="nc">&nbsp;		while (min &lt; n &amp;&amp; greater(i, min)) {</b>
+<b class="nc">&nbsp;			exch(i, min);</b>
+<b class="nc">&nbsp;			i = min;</b>
+<b class="nc">&nbsp;			min = minChild(i);</b>
+&nbsp;		}
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Deletes the minimum child
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//Return the minimum child of i
+&nbsp;	private int minChild(int i) {
+<b class="nc">&nbsp;		int loBound = d*i+1, hiBound = d*i+d;</b>
+<b class="nc">&nbsp;		int min = loBound;</b>
+<b class="nc">&nbsp;		for (int cur = loBound; cur &lt;= hiBound; cur++) {</b>
+<b class="nc">&nbsp;			if (cur &lt; n &amp;&amp; greater(min, cur)) min = cur;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return min;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Resize the priority queue
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//Resizes the array containing the keys
+&nbsp;	//If the heap is full, it adds one floor
+&nbsp;	//If the heap has two floors empty, it removes one
+&nbsp;	private void resize(int N) {
+<b class="nc">&nbsp;		Key[] array = (Key[]) new Comparable[N];</b>
+<b class="nc">&nbsp;		for (int i = 0; i &lt; Math.min(keys.length, array.length); i++) {</b>
+<b class="nc">&nbsp;			array[i] = keys[i];</b>
+<b class="nc">&nbsp;			keys[i] = null;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		keys = array;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Iterator
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Gets an Iterator over the keys in the priority queue in ascending order
+&nbsp;	 * The Iterator does not implement the remove() method
+&nbsp;	 * iterator() : Worst case is O(n)
+&nbsp;	 * next() : 	Worst case is O(d*log-d(n))
+&nbsp;	 * hasNext() : 	Worst case is O(1)
+&nbsp;	 * @return an Iterator over the keys in the priority queue in ascending order
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public Iterator&lt;Key&gt; iterator() {
+<b class="nc">&nbsp;		return new MyIterator();</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Constructs an Iterator over the keys in linear time
+&nbsp;	private class MyIterator implements Iterator&lt;Key&gt; {
+&nbsp;		MultiwayMinPQ&lt;Key&gt; data;
+&nbsp;		
+<b class="nc">&nbsp;		public MyIterator() {</b>
+<b class="nc">&nbsp;			data = new MultiwayMinPQ&lt;Key&gt;(comp, d);</b>
+<b class="nc">&nbsp;			data.keys = (Key[]) new Comparable[keys.length];</b>
+<b class="nc">&nbsp;			data.n = n;</b>
+<b class="nc">&nbsp;			for (int i = 0; i &lt; keys.length; i++) {</b>
+<b class="nc">&nbsp;				data.keys[i] = keys[i];</b>
+&nbsp;			}
+<b class="nc">&nbsp;		}</b>
+&nbsp;
+&nbsp;		public boolean hasNext() {
+<b class="nc">&nbsp;			return !data.isEmpty();</b>
+&nbsp;		}
+&nbsp;		
+&nbsp;		public Key next() {
+<b class="nc">&nbsp;                        if (!hasNext()) throw new NoSuchElementException();</b>
+<b class="nc">&nbsp;			return data.delMin();</b>
+&nbsp;		}
+&nbsp;		
+&nbsp;		public void remove() {
+<b class="nc">&nbsp;			throw new UnsupportedOperationException();</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Comparator
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//default Comparator
+<b class="nc">&nbsp;	private class MyComparator implements Comparator&lt;Key&gt; {</b>
+&nbsp;		@Override
+&nbsp;		public int compare(Key key1, Key key2) {
+<b class="nc">&nbsp;			return ((Comparable&lt;Key&gt;) key1).compareTo(key2);</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;	
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

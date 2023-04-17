@@ -1,0 +1,354 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ResizingArrayStack</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: ResizingArrayStack (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ResizingArrayStack</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/33)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ResizingArrayStack$ReverseArrayIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac ResizingArrayStack.java
+&nbsp; *  Execution:    java ResizingArrayStack &lt; input.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/13stacks/tobe.txt
+&nbsp; *  
+&nbsp; *  Stack implementation with a resizing array.
+&nbsp; *
+&nbsp; *  % more tobe.txt 
+&nbsp; *  to be or not to - be - - that - - - is
+&nbsp; *
+&nbsp; *  % java ResizingArrayStack &lt; tobe.txt
+&nbsp; *  to be not that or be (2 left on stack)
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code ResizingArrayStack} class represents a last-in-first-out (LIFO) stack
+&nbsp; *  of generic items.
+&nbsp; *  It supports the usual &lt;em&gt;push&lt;/em&gt; and &lt;em&gt;pop&lt;/em&gt; operations, along with methods
+&nbsp; *  for peeking at the top item, testing if the stack is empty, and iterating through
+&nbsp; *  the items in LIFO order.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a resizing array, which double the underlying array
+&nbsp; *  when it is full and halves the underlying array when it is one-quarter full.
+&nbsp; *  The &lt;em&gt;push&lt;/em&gt; and &lt;em&gt;pop&lt;/em&gt; operations take constant amortized time.
+&nbsp; *  The &lt;em&gt;size&lt;/em&gt;, &lt;em&gt;peek&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt; operations takes
+&nbsp; *  constant time in the worst case. 
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/13stacks&quot;&gt;Section 1.3&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class ResizingArrayStack&lt;Item&gt; implements Iterable&lt;Item&gt; {</b>
+&nbsp;
+&nbsp;    // initial capacity of underlying resizing array
+&nbsp;    private static final int INIT_CAPACITY = 8;
+&nbsp;
+&nbsp;    private Item[] a;         // array of items
+&nbsp;    private int n;            // number of elements on stack
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty stack.
+&nbsp;     */
+<b class="nc">&nbsp;    public ResizingArrayStack() {</b>
+<b class="nc">&nbsp;        a = (Item[]) new Object[INIT_CAPACITY];</b>
+<b class="nc">&nbsp;        n = 0;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Is this stack empty?
+&nbsp;     * @return true if this stack is empty; false otherwise
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return n == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of items in the stack.
+&nbsp;     * @return the number of items in the stack
+&nbsp;     */
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return n;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // resize the underlying array holding the elements
+&nbsp;    private void resize(int capacity) {
+<b class="nc">&nbsp;        assert capacity &gt;= n;</b>
+&nbsp;
+&nbsp;        // textbook implementation
+<b class="nc">&nbsp;        Item[] copy = (Item[]) new Object[capacity];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            copy[i] = a[i];</b>
+&nbsp;        }
+<b class="nc">&nbsp;        a = copy;</b>
+&nbsp;
+&nbsp;       // alternative implementation
+&nbsp;       // a = java.util.Arrays.copyOf(a, capacity);
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the item to this stack.
+&nbsp;     * @param item the item to add
+&nbsp;     */
+&nbsp;    public void push(Item item) {
+<b class="nc">&nbsp;        if (n == a.length) resize(2*a.length);    // double size of array if necessary</b>
+<b class="nc">&nbsp;        a[n++] = item;                            // add item</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes and returns the item most recently added to this stack.
+&nbsp;     * @return the item most recently added
+&nbsp;     * @throws java.util.NoSuchElementException if this stack is empty
+&nbsp;     */
+&nbsp;    public Item pop() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Stack underflow&quot;);</b>
+<b class="nc">&nbsp;        Item item = a[n-1];</b>
+<b class="nc">&nbsp;        a[n-1] = null;                              // to avoid loitering</b>
+<b class="nc">&nbsp;        n--;</b>
+&nbsp;        // shrink size of array if necessary
+<b class="nc">&nbsp;        if (n &gt; 0 &amp;&amp; n == a.length/4) resize(a.length/2);</b>
+<b class="nc">&nbsp;        return item;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns (but does not remove) the item most recently added to this stack.
+&nbsp;     * @return the item most recently added to this stack
+&nbsp;     * @throws java.util.NoSuchElementException if this stack is empty
+&nbsp;     */
+&nbsp;    public Item peek() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Stack underflow&quot;);</b>
+<b class="nc">&nbsp;        return a[n-1];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an iterator to this stack that iterates through the items in LIFO order.
+&nbsp;     * @return an iterator to this stack that iterates through the items in LIFO order.
+&nbsp;     */
+&nbsp;    public Iterator&lt;Item&gt; iterator() {
+<b class="nc">&nbsp;        return new ReverseArrayIterator();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // an iterator, doesn&#39;t implement remove() since it&#39;s optional
+&nbsp;    private class ReverseArrayIterator implements Iterator&lt;Item&gt; {
+&nbsp;        private int i;
+&nbsp;
+<b class="nc">&nbsp;        public ReverseArrayIterator() {</b>
+<b class="nc">&nbsp;            i = n-1;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        public boolean hasNext() {
+<b class="nc">&nbsp;            return i &gt;= 0;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        public void remove() {
+<b class="nc">&nbsp;            throw new UnsupportedOperationException();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        public Item next() {
+<b class="nc">&nbsp;            if (!hasNext()) throw new NoSuchElementException();</b>
+<b class="nc">&nbsp;            return a[i--];</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code Stack} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        ResizingArrayStack&lt;String&gt; stack = new ResizingArrayStack&lt;String&gt;();</b>
+<b class="nc">&nbsp;        while (!StdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            String item = StdIn.readString();</b>
+<b class="nc">&nbsp;            if (!item.equals(&quot;-&quot;)) stack.push(item);</b>
+<b class="nc">&nbsp;            else if (!stack.isEmpty()) StdOut.print(stack.pop() + &quot; &quot;);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;(&quot; + stack.size() + &quot; left on stack)&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

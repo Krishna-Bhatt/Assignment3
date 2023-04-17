@@ -1,0 +1,368 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Particle</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Particle (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Particle</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/68)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Particle.java
+&nbsp; *  Execution:    none
+&nbsp; *  Dependencies: StdDraw.java
+&nbsp; *      
+&nbsp; *  A particle moving in the unit box with a given position, velocity,
+&nbsp; *  radius, and mass.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.awt.Color;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Particle} class represents a particle moving in the unit box,
+&nbsp; *  with a given position, velocity, radius, and mass. Methods are provided
+&nbsp; *  for moving the particle and for predicting and resolvling elastic
+&nbsp; *  collisions with vertical walls, horizontal walls, and other particles.
+&nbsp; *  This data type is mutable because the position and velocity change.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, 
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/61event&quot;&gt;Section 6.1&lt;/a&gt; of 
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne. 
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class Particle {
+&nbsp;    private static final double INFINITY = Double.POSITIVE_INFINITY;
+&nbsp;
+&nbsp;    private double rx, ry;        // position
+&nbsp;    private double vx, vy;        // velocity
+&nbsp;    private int count;            // number of collisions so far
+&nbsp;    private final double radius;  // radius
+&nbsp;    private final double mass;    // mass
+&nbsp;    private final Color color;    // color
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a particle with the specified position, velocity, radius, mass, and color.
+&nbsp;     *
+&nbsp;     * @param  rx &lt;em&gt;x&lt;/em&gt;-coordinate of position
+&nbsp;     * @param  ry &lt;em&gt;y&lt;/em&gt;-coordinate of position
+&nbsp;     * @param  vx &lt;em&gt;x&lt;/em&gt;-coordinate of velocity
+&nbsp;     * @param  vy &lt;em&gt;y&lt;/em&gt;-coordinate of velocity
+&nbsp;     * @param  radius the radius
+&nbsp;     * @param  mass the mass
+&nbsp;     * @param  color the color
+&nbsp;     */
+<b class="nc">&nbsp;    public Particle(double rx, double ry, double vx, double vy, double radius, double mass, Color color) {</b>
+<b class="nc">&nbsp;        this.vx = vx;</b>
+<b class="nc">&nbsp;        this.vy = vy;</b>
+<b class="nc">&nbsp;        this.rx = rx;</b>
+<b class="nc">&nbsp;        this.ry = ry;</b>
+<b class="nc">&nbsp;        this.radius = radius;</b>
+<b class="nc">&nbsp;        this.mass   = mass;</b>
+<b class="nc">&nbsp;        this.color  = color;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;         
+&nbsp;    /**
+&nbsp;     * Initializes a particle with a random position and velocity.
+&nbsp;     * The position is uniform in the unit box; the velocity in
+&nbsp;     * either direciton is chosen uniformly at random.
+&nbsp;     */
+<b class="nc">&nbsp;    public Particle() {</b>
+<b class="nc">&nbsp;        rx     = StdRandom.uniform(0.0, 1.0);</b>
+<b class="nc">&nbsp;        ry     = StdRandom.uniform(0.0, 1.0);</b>
+<b class="nc">&nbsp;        vx     = StdRandom.uniform(-0.005, 0.005);</b>
+<b class="nc">&nbsp;        vy     = StdRandom.uniform(-0.005, 0.005);</b>
+<b class="nc">&nbsp;        radius = 0.02;</b>
+<b class="nc">&nbsp;        mass   = 0.5;</b>
+<b class="nc">&nbsp;        color  = Color.BLACK;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Moves this particle in a straight line (based on its velocity)
+&nbsp;     * for the specified amount of time.
+&nbsp;     *
+&nbsp;     * @param  dt the amount of time
+&nbsp;     */
+&nbsp;    public void move(double dt) {
+<b class="nc">&nbsp;        rx += vx * dt;</b>
+<b class="nc">&nbsp;        ry += vy * dt;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Draws this particle to standard draw.
+&nbsp;     */
+&nbsp;    public void draw() {
+<b class="nc">&nbsp;        StdDraw.setPenColor(color);</b>
+<b class="nc">&nbsp;        StdDraw.filledCircle(rx, ry, radius);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of collisions involving this particle with
+&nbsp;     * vertical walls, horizontal walls, or other particles.
+&nbsp;     * This is equal to the number of calls to {@link #bounceOff},
+&nbsp;     * {@link #bounceOffVerticalWall}, and
+&nbsp;     * {@link #bounceOffHorizontalWall}.
+&nbsp;     *
+&nbsp;     * @return the number of collisions involving this particle with
+&nbsp;     *         vertical walls, horizontal walls, or other particles
+&nbsp;     */
+&nbsp;    public int count() {
+<b class="nc">&nbsp;        return count;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the amount of time for this particle to collide with the specified
+&nbsp;     * particle, assuming no interening collisions.
+&nbsp;     *
+&nbsp;     * @param  that the other particle
+&nbsp;     * @return the amount of time for this particle to collide with the specified
+&nbsp;     *         particle, assuming no interening collisions; 
+&nbsp;     *         {@code Double.POSITIVE_INFINITY} if the particles will not collide
+&nbsp;     */
+&nbsp;    public double timeToHit(Particle that) {
+<b class="nc">&nbsp;        if (this == that) return INFINITY;</b>
+<b class="nc">&nbsp;        double dx  = that.rx - this.rx;</b>
+<b class="nc">&nbsp;        double dy  = that.ry - this.ry;</b>
+<b class="nc">&nbsp;        double dvx = that.vx - this.vx;</b>
+<b class="nc">&nbsp;        double dvy = that.vy - this.vy;</b>
+<b class="nc">&nbsp;        double dvdr = dx*dvx + dy*dvy;</b>
+<b class="nc">&nbsp;        if (dvdr &gt; 0) return INFINITY;</b>
+<b class="nc">&nbsp;        double dvdv = dvx*dvx + dvy*dvy;</b>
+<b class="nc">&nbsp;        if (dvdv == 0) return INFINITY;</b>
+<b class="nc">&nbsp;        double drdr = dx*dx + dy*dy;</b>
+<b class="nc">&nbsp;        double sigma = this.radius + that.radius;</b>
+<b class="nc">&nbsp;        double d = (dvdr*dvdr) - dvdv * (drdr - sigma*sigma);</b>
+&nbsp;        // if (drdr &lt; sigma*sigma) StdOut.println(&quot;overlapping particles&quot;);
+<b class="nc">&nbsp;        if (d &lt; 0) return INFINITY;</b>
+<b class="nc">&nbsp;        return -(dvdr + Math.sqrt(d)) / dvdv;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the amount of time for this particle to collide with a vertical
+&nbsp;     * wall, assuming no interening collisions.
+&nbsp;     *
+&nbsp;     * @return the amount of time for this particle to collide with a vertical wall,
+&nbsp;     *         assuming no interening collisions; 
+&nbsp;     *         {@code Double.POSITIVE_INFINITY} if the particle will not collide
+&nbsp;     *         with a vertical wall
+&nbsp;     */
+&nbsp;    public double timeToHitVerticalWall() {
+<b class="nc">&nbsp;        if      (vx &gt; 0) return (1.0 - rx - radius) / vx;</b>
+<b class="nc">&nbsp;        else if (vx &lt; 0) return (radius - rx) / vx;  </b>
+<b class="nc">&nbsp;        else             return INFINITY;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the amount of time for this particle to collide with a horizontal
+&nbsp;     * wall, assuming no interening collisions.
+&nbsp;     *
+&nbsp;     * @return the amount of time for this particle to collide with a horizontal wall,
+&nbsp;     *         assuming no interening collisions; 
+&nbsp;     *         {@code Double.POSITIVE_INFINITY} if the particle will not collide
+&nbsp;     *         with a horizontal wall
+&nbsp;     */
+&nbsp;    public double timeToHitHorizontalWall() {
+<b class="nc">&nbsp;        if      (vy &gt; 0) return (1.0 - ry - radius) / vy;</b>
+<b class="nc">&nbsp;        else if (vy &lt; 0) return (radius - ry) / vy;</b>
+<b class="nc">&nbsp;        else             return INFINITY;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the velocities of this particle and the specified particle according
+&nbsp;     * to the laws of elastic collision. Assumes that the particles are colliding
+&nbsp;     * at this instant.
+&nbsp;     *
+&nbsp;     * @param  that the other particle
+&nbsp;     */
+&nbsp;    public void bounceOff(Particle that) {
+<b class="nc">&nbsp;        double dx  = that.rx - this.rx;</b>
+<b class="nc">&nbsp;        double dy  = that.ry - this.ry;</b>
+<b class="nc">&nbsp;        double dvx = that.vx - this.vx;</b>
+<b class="nc">&nbsp;        double dvy = that.vy - this.vy;</b>
+<b class="nc">&nbsp;        double dvdr = dx*dvx + dy*dvy;             // dv dot dr</b>
+<b class="nc">&nbsp;        double dist = this.radius + that.radius;   // distance between particle centers at collison</b>
+&nbsp;
+&nbsp;        // magnitude of normal force
+<b class="nc">&nbsp;        double magnitude = 2 * this.mass * that.mass * dvdr / ((this.mass + that.mass) * dist);</b>
+&nbsp;
+&nbsp;        // normal force, and in x and y directions
+<b class="nc">&nbsp;        double fx = magnitude * dx / dist;</b>
+<b class="nc">&nbsp;        double fy = magnitude * dy / dist;</b>
+&nbsp;
+&nbsp;        // update velocities according to normal force
+<b class="nc">&nbsp;        this.vx += fx / this.mass;</b>
+<b class="nc">&nbsp;        this.vy += fy / this.mass;</b>
+<b class="nc">&nbsp;        that.vx -= fx / that.mass;</b>
+<b class="nc">&nbsp;        that.vy -= fy / that.mass;</b>
+&nbsp;
+&nbsp;        // update collision counts
+<b class="nc">&nbsp;        this.count++;</b>
+<b class="nc">&nbsp;        that.count++;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the velocity of this particle upon collision with a vertical
+&nbsp;     * wall (by reflecting the velocity in the &lt;em&gt;x&lt;/em&gt;-direction).
+&nbsp;     * Assumes that the particle is colliding with a vertical wall at this instant.
+&nbsp;     */
+&nbsp;    public void bounceOffVerticalWall() {
+<b class="nc">&nbsp;        vx = -vx;</b>
+<b class="nc">&nbsp;        count++;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the velocity of this particle upon collision with a horizontal
+&nbsp;     * wall (by reflecting the velocity in the &lt;em&gt;y&lt;/em&gt;-direction).
+&nbsp;     * Assumes that the particle is colliding with a horizontal wall at this instant.
+&nbsp;     */
+&nbsp;    public void bounceOffHorizontalWall() {
+<b class="nc">&nbsp;        vy = -vy;</b>
+<b class="nc">&nbsp;        count++;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the kinetic energy of this particle.
+&nbsp;     * The kinetic energy is given by the formula 1/2 &lt;em&gt;m&lt;/em&gt; &lt;em&gt;v&lt;/em&gt;&lt;sup&gt;2&lt;/sup&gt;,
+&nbsp;     * where &lt;em&gt;m&lt;/em&gt; is the mass of this particle and &lt;em&gt;v&lt;/em&gt; is its velocity.
+&nbsp;     *
+&nbsp;     * @return the kinetic energy of this particle
+&nbsp;     */
+&nbsp;    public double kineticEnergy() {
+<b class="nc">&nbsp;        return 0.5 * mass * (vx*vx + vy*vy);</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

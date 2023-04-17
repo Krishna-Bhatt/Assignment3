@@ -1,0 +1,721 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > IndexBinomialMinPQ</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: IndexBinomialMinPQ (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IndexBinomialMinPQ</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/126)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/174)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">IndexBinomialMinPQ$MyComparator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">IndexBinomialMinPQ$MyIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">IndexBinomialMinPQ$Node</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/132)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/194)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation: javac IndexBinomialMinPQ.java
+&nbsp; *  Execution:
+&nbsp; *  
+&nbsp; *  An index binomial heap.
+&nbsp; *  
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Comparator;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The IndexBinomialMinPQ class represents an indexed priority queue of generic keys.
+&nbsp; *  It supports the usual insert and delete-the-minimum operations,
+&nbsp; *  along with delete and change-the-key methods. 
+&nbsp; *  In order to let the client refer to keys on the priority queue,
+&nbsp; *  an integer between 0 and N-1 is associated with each key ; the client
+&nbsp; *  uses this integer to specify which key to delete or change.
+&nbsp; *  It also supports methods for peeking at the minimum key,
+&nbsp; *  testing if the priority queue is empty, and iterating through
+&nbsp; *  the keys.
+&nbsp; *  
+&nbsp; *  This implementation uses a binomial heap along with an array to associate
+&nbsp; *  keys with integers in the given range.
+&nbsp; *  The insert, delete-the-minimum, delete, change-key, decrease-key,
+&nbsp; *  increase-key and size operations take logarithmic time.
+&nbsp; *  The is-empty, min-index, min-key, and key-of operations take constant time.
+&nbsp; *  Construction takes time proportional to the specified capacity.
+&nbsp; *
+&nbsp; *  @author Tristan Claverie
+&nbsp; */
+&nbsp;public class IndexBinomialMinPQ&lt;Key&gt; implements Iterable&lt;Integer&gt; {
+&nbsp;	private Node&lt;Key&gt; head;    			//Head of the list of roots
+&nbsp;	private Node&lt;Key&gt;[] nodes; 			//Array of indexed Nodes of the heap
+&nbsp;	private int n;			   		//Maximum size of the tree
+&nbsp;	private final Comparator&lt;Key&gt; comparator;	//Comparator over the keys
+&nbsp;	
+&nbsp;	//Represents a node of a Binomial Tree
+<b class="nc">&nbsp;	private class Node&lt;Key&gt; {</b>
+&nbsp;		Key key;				//Key contained by the Node
+&nbsp;		int order;				//The order of the Binomial Tree rooted by this Node
+&nbsp;		int index;				//Index associated with the Key
+&nbsp;		Node&lt;Key&gt; parent;			//parent of this Node
+&nbsp;		Node&lt;Key&gt; child, sibling;		//child and sibling of this Node
+&nbsp;	}
+&nbsp;	
+&nbsp;    /**
+&nbsp;     * Initializes an empty indexed priority queue with indices between {@code 0} to {@code N-1}
+&nbsp;     * Worst case is O(n)
+&nbsp;     * @param N number of keys in the priority queue, index from {@code 0} to {@code N-1}
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code N &lt; 0}
+&nbsp;     */
+<b class="nc">&nbsp;	public IndexBinomialMinPQ(int N) {</b>
+<b class="nc">&nbsp;		if (N &lt; 0) throw new IllegalArgumentException(&quot;Cannot create a priority queue of negative size&quot;);</b>
+<b class="nc">&nbsp;		comparator = new MyComparator();</b>
+<b class="nc">&nbsp;		nodes = (Node&lt;Key&gt;[]) new Node[N];</b>
+<b class="nc">&nbsp;		this.n = N;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;    /**
+&nbsp;     * Initializes an empty indexed priority queue with indices between {@code 0} to {@code N-1}
+&nbsp;     * Worst case is O(n)
+&nbsp;     * @param N number of keys in the priority queue, index from {@code 0} to {@code N-1}
+&nbsp;     * @param comparator a Comparator over the keys
+&nbsp;     * @throws java.lang.IllegalArgumentException if {@code N &lt; 0}
+&nbsp;     */
+<b class="nc">&nbsp;	public IndexBinomialMinPQ(int N, Comparator&lt;Key&gt; comparator) {</b>
+<b class="nc">&nbsp;		if (N &lt; 0) throw new IllegalArgumentException(&quot;Cannot create a priority queue of negative size&quot;);</b>
+<b class="nc">&nbsp;		this.comparator = comparator;</b>
+<b class="nc">&nbsp;		nodes = (Node&lt;Key&gt;[]) new Node[N];</b>
+<b class="nc">&nbsp;		this.n = N;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Whether the priority queue is empty
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @return true if the priority queue is empty, false if not
+&nbsp;	 */
+&nbsp;	public boolean isEmpty() {
+<b class="nc">&nbsp;		return head == null;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Does the priority queue contains the index i ?
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @param i an index
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @return true if i is on the priority queue, false if not
+&nbsp;	 */
+&nbsp;	public boolean contains(int i) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= n) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		else return nodes[i] != null;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Number of elements currently on the priority queue
+&nbsp;	 * Worst case is O(log(n))
+&nbsp;	 * @return the number of elements on the priority queue
+&nbsp;	 */
+&nbsp;	public int size() {
+<b class="nc">&nbsp;		int result = 0, tmp;</b>
+<b class="nc">&nbsp;		for (Node&lt;Key&gt; node = head; node != null; node = node.sibling) {</b>
+<b class="nc">&nbsp;			if (node.order &gt; 30) { throw new ArithmeticException(&quot;The number of elements cannot be evaluated, but the priority queue is still valid.&quot;); }</b>
+<b class="nc">&nbsp;			tmp =  1 &lt;&lt; node.order;</b>
+<b class="nc">&nbsp;			result |= tmp;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return result;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Associates a key with an index
+&nbsp;	 * Worst case is O(log(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @param key a Key associated with i
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the index is already in the queue
+&nbsp;	 */
+&nbsp;	public void insert(int i, Key key) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= n) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (contains(i)) throw new IllegalArgumentException(&quot;Specified index is already in the queue&quot;);</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; x = new Node&lt;Key&gt;();</b>
+<b class="nc">&nbsp;		x.key = key;</b>
+<b class="nc">&nbsp;		x.index = i;</b>
+<b class="nc">&nbsp;		x.order = 0;</b>
+<b class="nc">&nbsp;		nodes[i] = x;</b>
+<b class="nc">&nbsp;		IndexBinomialMinPQ&lt;Key&gt; H = new IndexBinomialMinPQ&lt;Key&gt;();</b>
+<b class="nc">&nbsp;		H.head = x;</b>
+<b class="nc">&nbsp;		head = union(H).head;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Gets the index associated with the minimum key
+&nbsp;	 * Worst case is O(log(n))
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the index associated with the minimum key
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public int minIndex() {
+<b class="nc">&nbsp;		if (isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; min = head;</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; current = head;</b>
+<b class="nc">&nbsp;		while (current.sibling != null) {</b>
+<b class="nc">&nbsp;			min = (greater(min.key, current.sibling.key)) ? current.sibling : min;</b>
+<b class="nc">&nbsp;			current = current.sibling;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return min.index;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Gets the minimum key currently in the queue
+&nbsp;	 * Worst case is O(log(n))
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the minimum key currently in the priority queue
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public Key minKey() {
+<b class="nc">&nbsp;		if (isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; min = head;</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; current = head;</b>
+<b class="nc">&nbsp;		while (current.sibling != null) {</b>
+<b class="nc">&nbsp;			min = (greater(min.key, current.sibling.key)) ? current.sibling : min;</b>
+<b class="nc">&nbsp;			current = current.sibling;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return min.key;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Deletes the minimum key
+&nbsp;	 * Worst case is O(log(n))
+&nbsp;	 * @throws java.util.NoSuchElementException if the priority queue is empty
+&nbsp;	 * @return the index associated with the minimum key
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public int delMin() {
+<b class="nc">&nbsp;		if(isEmpty()) throw new NoSuchElementException(&quot;Priority queue is empty&quot;);</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; min = eraseMin();</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; x = (min.child == null) ? min : min.child;</b>
+<b class="nc">&nbsp;		if (min.child != null) {</b>
+<b class="nc">&nbsp;			min.child = null;</b>
+<b class="nc">&nbsp;			Node&lt;Key&gt; prevx = null, nextx = x.sibling;</b>
+<b class="nc">&nbsp;			while (nextx != null) {</b>
+<b class="nc">&nbsp;				x.parent = null; // for garbage collection</b>
+<b class="nc">&nbsp;				x.sibling = prevx;</b>
+<b class="nc">&nbsp;				prevx = x;</b>
+<b class="nc">&nbsp;				x = nextx;nextx = nextx.sibling;</b>
+&nbsp;			}
+<b class="nc">&nbsp;			x.parent = null;</b>
+<b class="nc">&nbsp;			x.sibling = prevx;</b>
+<b class="nc">&nbsp;			IndexBinomialMinPQ&lt;Key&gt; H = new IndexBinomialMinPQ&lt;Key&gt;();</b>
+<b class="nc">&nbsp;			H.head = x;</b>
+<b class="nc">&nbsp;			head = union(H).head;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return min.index;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Gets the key associated with index i
+&nbsp;	 * Worst case is O(1)
+&nbsp;	 * @param i an index
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the index is not in the queue
+&nbsp;	 * @return the key associated with index i
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public Key keyOf(int i) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= n) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (!contains(i)) throw new IllegalArgumentException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		return nodes[i].key;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Changes the key associated with index i to the given key
+&nbsp;	 * Worst case is O(log(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @param key the key to associate with i
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the index has no key associated with
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public void changeKey(int i, Key key) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= n) 		throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (!contains(i))			throw new IllegalArgumentException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		if (greater(nodes[i].key, key))  decreaseKey(i, key);</b>
+<b class="nc">&nbsp;		else 							 increaseKey(i, key);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Decreases the key associated with index i to the given key
+&nbsp;	 * Worst case is O(log(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @param key the key to associate with i
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.util.NoSuchElementException if the index has no key associated with
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the given key is greater than the current key
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public void decreaseKey(int i, Key key) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= n) 		throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (!contains(i))			throw new NoSuchElementException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		if (greater(key, nodes[i].key))  throw new IllegalArgumentException(&quot;Calling with this argument would not decrease the key&quot;);</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; x = nodes[i];</b>
+<b class="nc">&nbsp;		x.key = key;</b>
+<b class="nc">&nbsp;		swim(i);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Increases the key associated with index i to the given key
+&nbsp;	 * Worst case is O(log(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @param key the key to associate with i
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.util.NoSuchElementException if the index has no key associated with
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the given key is lower than the current key
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public void increaseKey(int i, Key key) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= n) 		throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (!contains(i))			throw new NoSuchElementException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		if (greater(nodes[i].key, key))  throw new IllegalArgumentException(&quot;Calling with this argument would not increase the key&quot;);</b>
+<b class="nc">&nbsp;		delete(i);</b>
+<b class="nc">&nbsp;		insert(i, key);</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Deletes the key associated the given index
+&nbsp;	 * Worst case is O(log(n))
+&nbsp;	 * @param i an index
+&nbsp;	 * @throws java.lang.IllegalArgumentException if the specified index is invalid
+&nbsp;	 * @throws java.util.NoSuchElementException if the given index has no key associated with
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public void delete(int i) {
+<b class="nc">&nbsp;		if (i &lt; 0 || i &gt;= n) 		throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;		if (!contains(i))			throw new NoSuchElementException(&quot;Specified index is not in the queue&quot;);</b>
+<b class="nc">&nbsp;		toTheRoot(i);</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; x = erase(i);</b>
+<b class="nc">&nbsp;		if (x.child != null) {</b>
+<b class="nc">&nbsp;			Node&lt;Key&gt; y = x;</b>
+<b class="nc">&nbsp;			x = x.child;</b>
+<b class="nc">&nbsp;			y.child = null;</b>
+<b class="nc">&nbsp;			Node&lt;Key&gt; prevx = null, nextx = x.sibling;</b>
+<b class="nc">&nbsp;			while (nextx != null) {</b>
+<b class="nc">&nbsp;				x.parent = null;</b>
+<b class="nc">&nbsp;				x.sibling = prevx;</b>
+<b class="nc">&nbsp;				prevx = x;</b>
+<b class="nc">&nbsp;				x = nextx; nextx = nextx.sibling;</b>
+&nbsp;			}
+<b class="nc">&nbsp;			x.parent = null;</b>
+<b class="nc">&nbsp;			x.sibling = prevx;</b>
+<b class="nc">&nbsp;			IndexBinomialMinPQ&lt;Key&gt; H = new IndexBinomialMinPQ&lt;Key&gt;();</b>
+<b class="nc">&nbsp;			H.head = x;</b>
+<b class="nc">&nbsp;			head = union(H).head;</b>
+&nbsp;		}
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/*************************************************
+&nbsp;	 * General helper functions
+&nbsp;	 ************************************************/
+&nbsp;	
+&nbsp;	//Compares two keys
+&nbsp;	private boolean greater(Key n, Key m) {
+<b class="nc">&nbsp;		if (n == null) return false;</b>
+<b class="nc">&nbsp;		if (m == null) return true;</b>
+<b class="nc">&nbsp;		return comparator.compare(n, m) &gt; 0;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Exchanges the positions of two nodes
+&nbsp;	private void exchange(Node&lt;Key&gt; x, Node&lt;Key&gt; y) {
+<b class="nc">&nbsp;		Key tempKey = x.key; x.key = y.key; y.key = tempKey;</b>
+<b class="nc">&nbsp;		int tempInt = x.index; x.index = y.index; y.index = tempInt;</b>
+<b class="nc">&nbsp;		nodes[x.index] = x;</b>
+<b class="nc">&nbsp;		nodes[y.index] = y;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	//Assuming root1 holds a greater key than root2, root2 becomes the new root
+&nbsp;	private void link(Node&lt;Key&gt; root1, Node&lt;Key&gt; root2) {
+<b class="nc">&nbsp;		root1.sibling = root2.child;</b>
+<b class="nc">&nbsp;		root1.parent = root2;</b>
+<b class="nc">&nbsp;		root2.child = root1;</b>
+<b class="nc">&nbsp;		root2.order++;</b>
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/*************************************************
+&nbsp;	 * Functions for moving upward
+&nbsp;	 ************************************************/
+&nbsp;	
+&nbsp;	//Moves a Node upward
+&nbsp;	private void swim(int i) {
+<b class="nc">&nbsp;		Node&lt;Key&gt; x = nodes[i];</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; parent = x.parent;</b>
+<b class="nc">&nbsp;		if (parent != null &amp;&amp; greater(parent.key, x.key)) {</b>
+<b class="nc">&nbsp;			exchange(x, parent);</b>
+<b class="nc">&nbsp;			swim(i);</b>
+&nbsp;		}
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	//The key associated with i becomes the root of its Binomial Tree,
+&nbsp;	//regardless of the order relation defined for the keys
+&nbsp;	private void toTheRoot(int i) {
+<b class="nc">&nbsp;		Node&lt;Key&gt; x = nodes[i];</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; parent = x.parent;</b>
+<b class="nc">&nbsp;		if (parent != null) {</b>
+<b class="nc">&nbsp;			exchange(x, parent);</b>
+<b class="nc">&nbsp;			toTheRoot(i);</b>
+&nbsp;		}
+<b class="nc">&nbsp;	}</b>
+&nbsp;	
+&nbsp;	/**************************************************
+&nbsp;	 * Functions for deleting a key
+&nbsp;	 *************************************************/
+&nbsp;	
+&nbsp;	//Assuming the key associated with i is in the root list,
+&nbsp;	//deletes and return the node of index i
+&nbsp;	private Node&lt;Key&gt; erase(int i) {
+<b class="nc">&nbsp;		Node&lt;Key&gt; reference = nodes[i];</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; x = head;</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; previous = null;</b>
+<b class="nc">&nbsp;		while (x != reference) {</b>
+<b class="nc">&nbsp;			previous = x;</b>
+<b class="nc">&nbsp;			x = x.sibling;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		previous.sibling = x.sibling;</b>
+<b class="nc">&nbsp;		if (x == head) head = head.sibling;</b>
+<b class="nc">&nbsp;		nodes[i] = null;</b>
+<b class="nc">&nbsp;		return x;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Deletes and return the node containing the minimum key
+&nbsp;	private Node&lt;Key&gt; eraseMin() {
+<b class="nc">&nbsp;		Node&lt;Key&gt; min = head;</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; previous = null;</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; current = head;</b>
+<b class="nc">&nbsp;		while (current.sibling != null) {</b>
+<b class="nc">&nbsp;			if (greater(min.key, current.sibling.key)) {</b>
+<b class="nc">&nbsp;				previous = current;</b>
+<b class="nc">&nbsp;				min = current.sibling;</b>
+&nbsp;			}
+<b class="nc">&nbsp;			current = current.sibling;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		previous.sibling = min.sibling;</b>
+<b class="nc">&nbsp;		if (min == head) head = min.sibling;</b>
+<b class="nc">&nbsp;		nodes[min.index] = null;</b>
+<b class="nc">&nbsp;		return min;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	/**************************************************
+&nbsp;	 * Functions for inserting a key in the heap
+&nbsp;	 *************************************************/
+&nbsp;	
+&nbsp;	//Merges two root lists into one, there can be up to 2 Binomial Trees of same order
+&nbsp;	private Node&lt;Key&gt; merge(Node&lt;Key&gt; h, Node&lt;Key&gt; x, Node&lt;Key&gt; y) {
+<b class="nc">&nbsp;		if (x == null &amp;&amp; y == null) return h;</b>
+<b class="nc">&nbsp;		else if (x == null) 		h.sibling = merge(y, null, y.sibling);</b>
+<b class="nc">&nbsp;		else if (y == null) 		h.sibling = merge(x, x.sibling, null);</b>
+<b class="nc">&nbsp;		else if (x.order &lt; y.order) h.sibling = merge(x, x.sibling, y);</b>
+<b class="nc">&nbsp;		else 						h.sibling = merge(y, x, y.sibling);</b>
+<b class="nc">&nbsp;		return h;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	//Merges two Binomial Heaps together and returns the resulting Binomial Heap
+&nbsp;	//It destroys the two Heaps in parameter, which should not be used any after.
+&nbsp;	//To guarantee logarithmic time, this function assumes the arrays are up-to-date
+&nbsp;	private IndexBinomialMinPQ&lt;Key&gt; union(IndexBinomialMinPQ&lt;Key&gt; heap) {
+<b class="nc">&nbsp;		this.head = merge(new Node&lt;Key&gt;(), this.head, heap.head).sibling;</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; x = this.head;</b>
+<b class="nc">&nbsp;		Node&lt;Key&gt; prevx = null, nextx = x.sibling;</b>
+<b class="nc">&nbsp;		while (nextx != null) {</b>
+<b class="nc">&nbsp;			if (x.order &lt; nextx.order ||</b>
+&nbsp;			   (nextx.sibling != null &amp;&amp; nextx.sibling.order == x.order)) {
+<b class="nc">&nbsp;				prevx = x; x = nextx;</b>
+<b class="nc">&nbsp;			} else if (greater(nextx.key, x.key)) {</b>
+<b class="nc">&nbsp;				x.sibling = nextx.sibling;</b>
+<b class="nc">&nbsp;				link(nextx, x);</b>
+&nbsp;			} else {
+<b class="nc">&nbsp;				if (prevx == null) { this.head = nextx; }</b>
+<b class="nc">&nbsp;				else { prevx.sibling = nextx; }</b>
+<b class="nc">&nbsp;				link(x, nextx);</b>
+<b class="nc">&nbsp;				x = nextx;</b>
+&nbsp;			}
+<b class="nc">&nbsp;			nextx = x.sibling;</b>
+&nbsp;		}
+<b class="nc">&nbsp;		return this;</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	/******************************************************************
+&nbsp;	 * Constructor
+&nbsp;	 *****************************************************************/
+&nbsp;	
+&nbsp;	//Creates an empty heap
+&nbsp;	//The comparator is instanciated because it needs to,
+&nbsp;	//but won&#39;t be used by any heap created by this constructor
+<b class="nc">&nbsp;	private IndexBinomialMinPQ() { comparator = null; }</b>
+&nbsp;	
+&nbsp;	/******************************************************************
+&nbsp;	 * Iterator
+&nbsp;	 *****************************************************************/
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Gets an Iterator over the indexes in the priority queue in ascending order
+&nbsp;	 * The Iterator does not implement the remove() method
+&nbsp;	 * iterator() : Worst case is O(n)
+&nbsp;	 * next() : 	Worst case is O(log(n))
+&nbsp;	 * hasNext() : 	Worst case is O(1)
+&nbsp;	 * @return an Iterator over the indexes in the priority queue in ascending order
+&nbsp;	 */
+&nbsp;	
+&nbsp;	public Iterator&lt;Integer&gt; iterator() {
+<b class="nc">&nbsp;		return new MyIterator();</b>
+&nbsp;	}
+&nbsp;	
+&nbsp;	private class MyIterator implements Iterator&lt;Integer&gt; {
+&nbsp;		IndexBinomialMinPQ&lt;Key&gt; data;
+&nbsp;		
+&nbsp;		//Constructor clones recursively the elements in the queue
+&nbsp;		//It takes linear time
+<b class="nc">&nbsp;		public MyIterator() {</b>
+<b class="nc">&nbsp;			data = new IndexBinomialMinPQ&lt;Key&gt;(n, comparator);</b>
+<b class="nc">&nbsp;			data.head = clone(head, null);</b>
+<b class="nc">&nbsp;		}</b>
+&nbsp;		
+&nbsp;		private Node&lt;Key&gt; clone(Node&lt;Key&gt; x, Node&lt;Key&gt; parent) {
+<b class="nc">&nbsp;			if (x == null) return null;</b>
+<b class="nc">&nbsp;			Node&lt;Key&gt; node = new Node&lt;Key&gt;();</b>
+<b class="nc">&nbsp;			node.index = x.index;</b>
+<b class="nc">&nbsp;			node.key = x.key;</b>
+<b class="nc">&nbsp;			data.nodes[node.index] = node;</b>
+<b class="nc">&nbsp;			node.parent = parent;</b>
+<b class="nc">&nbsp;			node.sibling = clone(x.sibling, parent);</b>
+<b class="nc">&nbsp;			node.child = clone(x.child, node);</b>
+<b class="nc">&nbsp;			return node;</b>
+&nbsp;		}
+&nbsp;		
+&nbsp;		public boolean hasNext() {
+<b class="nc">&nbsp;			return !data.isEmpty();</b>
+&nbsp;		}
+&nbsp;		
+&nbsp;		public Integer next() {
+<b class="nc">&nbsp;                        if (!hasNext()) throw new NoSuchElementException();</b>
+<b class="nc">&nbsp;			return data.delMin();</b>
+&nbsp;		}
+&nbsp;		
+&nbsp;		public void remove() {
+<b class="nc">&nbsp;			throw new UnsupportedOperationException();</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;	
+&nbsp;	/***************************
+&nbsp;	 * Comparator
+&nbsp;	 **************************/
+&nbsp;	
+&nbsp;	//default Comparator
+<b class="nc">&nbsp;	private class MyComparator implements Comparator&lt;Key&gt; {</b>
+&nbsp;		@Override
+&nbsp;		public int compare(Key key1, Key key2) {
+<b class="nc">&nbsp;			return ((Comparable&lt;Key&gt;) key1).compareTo(key2);</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;	
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

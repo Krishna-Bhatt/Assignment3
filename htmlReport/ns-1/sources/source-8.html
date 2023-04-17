@@ -1,0 +1,395 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Alphabet</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Alphabet (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Alphabet</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/70)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Alphabet.java
+&nbsp; *  Execution:    java Alphabet
+&nbsp; *  Dependencies: StdOut.java
+&nbsp; *  
+&nbsp; *  A data type for alphabets, for use with string-processing code
+&nbsp; *  that must convert between an alphabet of size R and the integers
+&nbsp; *  0 through R-1.
+&nbsp; *
+&nbsp; *  Warning: supports only the basic multilingual plane (BMP), i.e,
+&nbsp; *           Unicode characters between U+0000 and U+FFFF.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;public class Alphabet {
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The binary alphabet { 0, 1 }.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet BINARY = new Alphabet(&quot;01&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The octal alphabet { 0, 1, 2, 3, 4, 5, 6, 7 }.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet OCTAL = new Alphabet(&quot;01234567&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The decimal alphabet { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet DECIMAL = new Alphabet(&quot;0123456789&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The hexadecimal alphabet { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F }.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet HEXADECIMAL = new Alphabet(&quot;0123456789ABCDEF&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The DNA alphabet { A, C, T, G }.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet DNA = new Alphabet(&quot;ACGT&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The lowercase alphabet { a, b, c, ..., z }.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet LOWERCASE = new Alphabet(&quot;abcdefghijklmnopqrstuvwxyz&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The uppercase alphabet { A, B, C, ..., Z }.
+&nbsp;     */
+&nbsp;
+<b class="nc">&nbsp;    public static final Alphabet UPPERCASE = new Alphabet(&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The protein alphabet { A, C, D, E, F, G, H, I, K, L, M, N, P, Q, R, S, T, V, W, Y }.
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet PROTEIN = new Alphabet(&quot;ACDEFGHIKLMNPQRSTVWY&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The base-64 alphabet (64 characters).
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet BASE64 = new Alphabet(&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The ASCII alphabet (0-127).
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet ASCII = new Alphabet(128);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The extended ASCII alphabet (0-255).
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet EXTENDED_ASCII = new Alphabet(256);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  The Unicode 16 alphabet (0-65,535).
+&nbsp;     */
+<b class="nc">&nbsp;    public static final Alphabet UNICODE16      = new Alphabet(65536);</b>
+&nbsp;
+&nbsp;
+&nbsp;    private char[] alphabet;     // the characters in the alphabet
+&nbsp;    private int[] inverse;       // indices
+&nbsp;    private final int R;         // the radix of the alphabet
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a new alphabet from the given set of characters.
+&nbsp;     *
+&nbsp;     * @param alpha the set of characters
+&nbsp;     */
+<b class="nc">&nbsp;    public Alphabet(String alpha) {</b>
+&nbsp;
+&nbsp;        // check that alphabet contains no duplicate chars
+<b class="nc">&nbsp;        boolean[] unicode = new boolean[Character.MAX_VALUE];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; alpha.length(); i++) {</b>
+<b class="nc">&nbsp;            char c = alpha.charAt(i);</b>
+<b class="nc">&nbsp;            if (unicode[c])</b>
+<b class="nc">&nbsp;                throw new IllegalArgumentException(&quot;Illegal alphabet: repeated character = &#39;&quot; + c + &quot;&#39;&quot;);</b>
+<b class="nc">&nbsp;            unicode[c] = true;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        alphabet = alpha.toCharArray();</b>
+<b class="nc">&nbsp;        R = alpha.length();</b>
+<b class="nc">&nbsp;        inverse = new int[Character.MAX_VALUE];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; inverse.length; i++)</b>
+<b class="nc">&nbsp;            inverse[i] = -1;</b>
+&nbsp;
+&nbsp;        // can&#39;t use char since R can be as big as 65,536
+<b class="nc">&nbsp;        for (int c = 0; c &lt; R; c++)</b>
+<b class="nc">&nbsp;            inverse[alphabet[c]] = c;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a new alphabet using characters 0 through R-1.
+&nbsp;     *
+&nbsp;     * @param radix the number of characters in the alphabet (the radix R)
+&nbsp;     */
+<b class="nc">&nbsp;    private Alphabet(int radix) {</b>
+<b class="nc">&nbsp;        this.R = radix;</b>
+<b class="nc">&nbsp;        alphabet = new char[R];</b>
+<b class="nc">&nbsp;        inverse = new int[R];</b>
+&nbsp;
+&nbsp;        // can&#39;t use char since R can be as big as 65,536
+<b class="nc">&nbsp;        for (int i = 0; i &lt; R; i++)</b>
+<b class="nc">&nbsp;            alphabet[i] = (char) i;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; R; i++)</b>
+<b class="nc">&nbsp;            inverse[i] = i;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a new alphabet using characters 0 through 255.
+&nbsp;     */
+&nbsp;    public Alphabet() {
+<b class="nc">&nbsp;        this(256);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the argument is a character in this alphabet.
+&nbsp;     *
+&nbsp;     * @param  c the character
+&nbsp;     * @return {@code true} if {@code c} is a character in this alphabet;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean contains(char c) {
+<b class="nc">&nbsp;        return inverse[c] != -1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of characters in this alphabet (the radix).
+&nbsp;     * 
+&nbsp;     * @return the number of characters in this alphabet
+&nbsp;     * @deprecated Replaced by {@link #radix()}.
+&nbsp;     */
+&nbsp;    @Deprecated
+&nbsp;    public int R() {
+<b class="nc">&nbsp;        return R;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of characters in this alphabet (the radix).
+&nbsp;     * 
+&nbsp;     * @return the number of characters in this alphabet
+&nbsp;     */
+&nbsp;    public int radix() {
+<b class="nc">&nbsp;        return R;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the binary logarithm of the number of characters in this alphabet.
+&nbsp;     * 
+&nbsp;     * @return the binary logarithm (rounded up) of the number of characters in this alphabet
+&nbsp;     */
+&nbsp;    public int lgR() {
+<b class="nc">&nbsp;        int lgR = 0;</b>
+<b class="nc">&nbsp;        for (int t = R-1; t &gt;= 1; t /= 2)</b>
+<b class="nc">&nbsp;            lgR++;</b>
+<b class="nc">&nbsp;        return lgR;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the index corresponding to the argument character.
+&nbsp;     * 
+&nbsp;     * @param  c the character
+&nbsp;     * @return the index corresponding to the character {@code c}
+&nbsp;     * @throws IllegalArgumentException unless {@code c} is a character in this alphabet
+&nbsp;     */
+&nbsp;    public int toIndex(char c) {
+<b class="nc">&nbsp;        if (c &gt;= inverse.length || inverse[c] == -1) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Character &quot; + c + &quot; not in alphabet&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return inverse[c];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the indices corresponding to the argument characters.
+&nbsp;     * 
+&nbsp;     * @param  s the characters
+&nbsp;     * @return the indices corresponding to the characters {@code s}
+&nbsp;     * @throws IllegalArgumentException unless every character in {@code s}
+&nbsp;     *         is a character in this alphabet
+&nbsp;     */
+&nbsp;    public int[] toIndices(String s) {
+<b class="nc">&nbsp;        char[] source = s.toCharArray();</b>
+<b class="nc">&nbsp;        int[] target  = new int[s.length()];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; source.length; i++)</b>
+<b class="nc">&nbsp;            target[i] = toIndex(source[i]);</b>
+<b class="nc">&nbsp;        return target;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the character corresponding to the argument index.
+&nbsp;     * 
+&nbsp;     * @param  index the index
+&nbsp;     * @return the character corresponding to the index {@code index}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= index &lt; R}
+&nbsp;     */
+&nbsp;    public char toChar(int index) {
+<b class="nc">&nbsp;        if (index &lt; 0 || index &gt;= R) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;index must be between 0 and &quot; + R + &quot;: &quot; + index);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return alphabet[index];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the characters corresponding to the argument indices.
+&nbsp;     * 
+&nbsp;     * @param  indices the indices
+&nbsp;     * @return the characters corresponding to the indices {@code indices}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt; indices[i] &lt; R}
+&nbsp;     *         for every {@code i}
+&nbsp;     */
+&nbsp;    public String toChars(int[] indices) {
+<b class="nc">&nbsp;        StringBuilder s = new StringBuilder(indices.length);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; indices.length; i++)</b>
+<b class="nc">&nbsp;            s.append(toChar(indices[i]));</b>
+<b class="nc">&nbsp;        return s.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code Alphabet} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int[]  encoded1 = Alphabet.BASE64.toIndices(&quot;NowIsTheTimeForAllGoodMen&quot;);</b>
+<b class="nc">&nbsp;        String decoded1 = Alphabet.BASE64.toChars(encoded1);</b>
+<b class="nc">&nbsp;        StdOut.println(decoded1);</b>
+&nbsp; 
+<b class="nc">&nbsp;        int[]  encoded2 = Alphabet.DNA.toIndices(&quot;AACGAACGGTTTACCCCG&quot;);</b>
+<b class="nc">&nbsp;        String decoded2 = Alphabet.DNA.toChars(encoded2);</b>
+<b class="nc">&nbsp;        StdOut.println(decoded2);</b>
+&nbsp;
+<b class="nc">&nbsp;        int[]  encoded3 = Alphabet.DECIMAL.toIndices(&quot;01234567890123456789&quot;);</b>
+<b class="nc">&nbsp;        String decoded3 = Alphabet.DECIMAL.toChars(encoded3);</b>
+<b class="nc">&nbsp;        StdOut.println(decoded3);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

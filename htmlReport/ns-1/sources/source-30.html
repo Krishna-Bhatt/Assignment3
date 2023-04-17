@@ -1,0 +1,382 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > DepthFirstOrder</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: DepthFirstOrder (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DepthFirstOrder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/93)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac DepthFirstOrder.java
+&nbsp; *  Execution:    java DepthFirstOrder digraph.txt
+&nbsp; *  Dependencies: Digraph.java Queue.java Stack.java StdOut.java
+&nbsp; *                EdgeWeightedDigraph.java DirectedEdge.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/42digraph/tinyDAG.txt
+&nbsp; *                https://algs4.cs.princeton.edu/42digraph/tinyDG.txt
+&nbsp; *
+&nbsp; *  Compute preorder and postorder for a digraph or edge-weighted digraph.
+&nbsp; *  Runs in O(E + V) time.
+&nbsp; *
+&nbsp; *  % java DepthFirstOrder tinyDAG.txt
+&nbsp; *     v  pre post
+&nbsp; *  --------------
+&nbsp; *     0    0    8
+&nbsp; *     1    3    2
+&nbsp; *     2    9   10
+&nbsp; *     3   10    9
+&nbsp; *     4    2    0
+&nbsp; *     5    1    1
+&nbsp; *     6    4    7
+&nbsp; *     7   11   11
+&nbsp; *     8   12   12
+&nbsp; *     9    5    6
+&nbsp; *    10    8    5
+&nbsp; *    11    6    4
+&nbsp; *    12    7    3
+&nbsp; *  Preorder:  0 5 4 1 6 9 11 12 10 2 3 7 8 
+&nbsp; *  Postorder: 4 5 1 12 11 10 9 6 0 3 2 7 8 
+&nbsp; *  Reverse postorder: 8 7 2 3 0 6 9 10 11 12 1 5 4 
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code DepthFirstOrder} class represents a data type for 
+&nbsp; *  determining depth-first search ordering of the vertices in a digraph
+&nbsp; *  or edge-weighted digraph, including preorder, postorder, and reverse postorder.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses depth-first search.
+&nbsp; *  Each constructor takes &amp;Theta;(&lt;em&gt;V&lt;/em&gt; + &lt;em&gt;E&lt;/em&gt;) time,
+&nbsp; *  where &lt;em&gt;V&lt;/em&gt; is the number of vertices and &lt;em&gt;E&lt;/em&gt; is the
+&nbsp; *  number of edges.
+&nbsp; *  Each instance method takes &amp;Theta;(1) time.
+&nbsp; *  It uses &amp;Theta;(&lt;em&gt;V&lt;/em&gt;) extra space (not including the digraph).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/42digraph&quot;&gt;Section 4.2&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class DepthFirstOrder {</b>
+&nbsp;    private boolean[] marked;          // marked[v] = has v been marked in dfs?
+&nbsp;    private int[] pre;                 // pre[v]    = preorder  number of v
+&nbsp;    private int[] post;                // post[v]   = postorder number of v
+&nbsp;    private Queue&lt;Integer&gt; preorder;   // vertices in preorder
+&nbsp;    private Queue&lt;Integer&gt; postorder;  // vertices in postorder
+&nbsp;    private int preCounter;            // counter or preorder numbering
+&nbsp;    private int postCounter;           // counter for postorder numbering
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines a depth-first order for the digraph {@code G}.
+&nbsp;     * @param G the digraph
+&nbsp;     */
+<b class="nc">&nbsp;    public DepthFirstOrder(Digraph G) {</b>
+<b class="nc">&nbsp;        pre    = new int[G.V()];</b>
+<b class="nc">&nbsp;        post   = new int[G.V()];</b>
+<b class="nc">&nbsp;        postorder = new Queue&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        preorder  = new Queue&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        marked    = new boolean[G.V()];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            if (!marked[v]) dfs(G, v);</b>
+&nbsp;
+<b class="nc">&nbsp;        assert check();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines a depth-first order for the edge-weighted digraph {@code G}.
+&nbsp;     * @param G the edge-weighted digraph
+&nbsp;     */
+<b class="nc">&nbsp;    public DepthFirstOrder(EdgeWeightedDigraph G) {</b>
+<b class="nc">&nbsp;        pre    = new int[G.V()];</b>
+<b class="nc">&nbsp;        post   = new int[G.V()];</b>
+<b class="nc">&nbsp;        postorder = new Queue&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        preorder  = new Queue&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        marked    = new boolean[G.V()];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            if (!marked[v]) dfs(G, v);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // run DFS in digraph G from vertex v and compute preorder/postorder
+&nbsp;    private void dfs(Digraph G, int v) {
+<b class="nc">&nbsp;        marked[v] = true;</b>
+<b class="nc">&nbsp;        pre[v] = preCounter++;</b>
+<b class="nc">&nbsp;        preorder.enqueue(v);</b>
+<b class="nc">&nbsp;        for (int w : G.adj(v)) {</b>
+<b class="nc">&nbsp;            if (!marked[w]) {</b>
+<b class="nc">&nbsp;                dfs(G, w);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        postorder.enqueue(v);</b>
+<b class="nc">&nbsp;        post[v] = postCounter++;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    // run DFS in edge-weighted digraph G from vertex v and compute preorder/postorder
+&nbsp;    private void dfs(EdgeWeightedDigraph G, int v) {
+<b class="nc">&nbsp;        marked[v] = true;</b>
+<b class="nc">&nbsp;        pre[v] = preCounter++;</b>
+<b class="nc">&nbsp;        preorder.enqueue(v);</b>
+<b class="nc">&nbsp;        for (DirectedEdge e : G.adj(v)) {</b>
+<b class="nc">&nbsp;            int w = e.to();</b>
+<b class="nc">&nbsp;            if (!marked[w]) {</b>
+<b class="nc">&nbsp;                dfs(G, w);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        postorder.enqueue(v);</b>
+<b class="nc">&nbsp;        post[v] = postCounter++;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the preorder number of vertex {@code v}.
+&nbsp;     * @param  v the vertex
+&nbsp;     * @return the preorder number of vertex {@code v}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public int pre(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        return pre[v];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the postorder number of vertex {@code v}.
+&nbsp;     * @param  v the vertex
+&nbsp;     * @return the postorder number of vertex {@code v}
+&nbsp;     * @throws IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;     */
+&nbsp;    public int post(int v) {
+<b class="nc">&nbsp;        validateVertex(v);</b>
+<b class="nc">&nbsp;        return post[v];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the vertices in postorder.
+&nbsp;     * @return the vertices in postorder, as an iterable of vertices
+&nbsp;     */
+&nbsp;    public Iterable&lt;Integer&gt; post() {
+<b class="nc">&nbsp;        return postorder;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the vertices in preorder.
+&nbsp;     * @return the vertices in preorder, as an iterable of vertices
+&nbsp;     */
+&nbsp;    public Iterable&lt;Integer&gt; pre() {
+<b class="nc">&nbsp;        return preorder;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the vertices in reverse postorder.
+&nbsp;     * @return the vertices in reverse postorder, as an iterable of vertices
+&nbsp;     */
+&nbsp;    public Iterable&lt;Integer&gt; reversePost() {
+<b class="nc">&nbsp;        Stack&lt;Integer&gt; reverse = new Stack&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int v : postorder)</b>
+<b class="nc">&nbsp;            reverse.push(v);</b>
+<b class="nc">&nbsp;        return reverse;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // check that pre() and post() are consistent with pre(v) and post(v)
+&nbsp;    private boolean check() {
+&nbsp;
+&nbsp;        // check that post(v) is consistent with post()
+<b class="nc">&nbsp;        int r = 0;</b>
+<b class="nc">&nbsp;        for (int v : post()) {</b>
+<b class="nc">&nbsp;            if (post(v) != r) {</b>
+<b class="nc">&nbsp;                StdOut.println(&quot;post(v) and post() inconsistent&quot;);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            r++;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // check that pre(v) is consistent with pre()
+<b class="nc">&nbsp;        r = 0;</b>
+<b class="nc">&nbsp;        for (int v : pre()) {</b>
+<b class="nc">&nbsp;            if (pre(v) != r) {</b>
+<b class="nc">&nbsp;                StdOut.println(&quot;pre(v) and pre() inconsistent&quot;);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            r++;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // throw an IllegalArgumentException unless {@code 0 &lt;= v &lt; V}
+&nbsp;    private void validateVertex(int v) {
+<b class="nc">&nbsp;        int V = marked.length;</b>
+<b class="nc">&nbsp;        if (v &lt; 0 || v &gt;= V)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;vertex &quot; + v + &quot; is not between 0 and &quot; + (V-1));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code DepthFirstOrder} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        In in = new In(args[0]);</b>
+<b class="nc">&nbsp;        Digraph G = new Digraph(in);</b>
+&nbsp;
+<b class="nc">&nbsp;        DepthFirstOrder dfs = new DepthFirstOrder(G);</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;   v  pre post&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;--------------&quot;);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;%4d %4d %4d\n&quot;, v, dfs.pre(v), dfs.post(v));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        StdOut.print(&quot;Preorder:  &quot;);</b>
+<b class="nc">&nbsp;        for (int v : dfs.pre()) {</b>
+<b class="nc">&nbsp;            StdOut.print(v + &quot; &quot;);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.print(&quot;Postorder: &quot;);</b>
+<b class="nc">&nbsp;        for (int v : dfs.post()) {</b>
+<b class="nc">&nbsp;            StdOut.print(v + &quot; &quot;);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.print(&quot;Reverse postorder: &quot;);</b>
+<b class="nc">&nbsp;        for (int v : dfs.reversePost()) {</b>
+<b class="nc">&nbsp;            StdOut.print(v + &quot; &quot;);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

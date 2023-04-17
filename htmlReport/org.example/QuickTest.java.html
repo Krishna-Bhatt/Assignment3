@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuickTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">QuickTest and 1 more Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">QuickTest.java</span></div><h1>QuickTest.java</h1><pre class="source lang-java linenums">package org.example;
+
+import org.junit.jupiter.api.Test;
+
+import static org.example.Quick.*;
+import static org.junit.jupiter.api.Assertions.*;
+<span class="fc" id="L7">class QuickTest {</span>
+    @Test
+    void testAlreadySortedArray() {
+<span class="fc" id="L10">            String[] a =new String[]{&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;};</span>
+<span class="fc" id="L11">            Quick.sort(a);</span>
+<span class="fc" id="L12">            assertTrue(isSorted(a));</span>
+<span class="fc" id="L13">        }</span>
+
+    @Test
+    void testJEqualsLo() {
+<span class="fc" id="L17">        Comparable[] a = new Comparable[] {'C','B','A'};</span>
+<span class="fc" id="L18">        Quick.sort(a);</span>
+<span class="fc" id="L19">        assertArrayEquals(new Comparable[] {'A','B','C'}, a);</span>
+<span class="fc" id="L20">    }</span>
+
+    @Test
+    void testSelectInvalidK() {
+<span class="fc" id="L24">        assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="fc" id="L25">            Comparable[] a = {'B','D','A','F'};</span>
+<span class="nc" id="L26">            Quick.select(a, -1);</span>
+<span class="nc" id="L27">        });</span>
+<span class="fc" id="L28">        assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="fc" id="L29">            Comparable[] a = {'B','D','A','F'};</span>
+<span class="nc" id="L30">            Quick.select(a, 5);</span>
+<span class="nc" id="L31">        });</span>
+<span class="fc" id="L32">    }</span>
+    @Test
+    void testSelectKEqualsToZero() {
+<span class="fc" id="L35">        Comparable[] a = { 'B','D','A','F'};</span>
+<span class="fc" id="L36">        assertEquals('A', Quick.select(a, 0));</span>
+<span class="fc" id="L37">    }</span>
+
+    @Test
+    void testIGreaterThanK() {
+<span class="fc" id="L41">        Character[] a = {'P', 'G', 'B', 'E', 'A', 'I', 'M'};</span>
+<span class="fc" id="L42">        assertEquals('P', Quick.select(a, 6));</span>
+<span class="fc" id="L43">    }</span>
+    @Test
+    void testWhileLessChar() {
+<span class="fc" id="L46">        Character[] a = new Character[] {'B', 'C', 'A'};</span>
+<span class="fc" id="L47">        int lo = 0;</span>
+<span class="fc" id="L48">        int hi = a.length - 1;</span>
+<span class="fc" id="L49">        int j = partition(a, lo, hi);</span>
+<span class="fc" id="L50">        assertEquals(lo, j-1);</span>
+<span class="fc" id="L51">        assertArrayEquals(new Character[] {'A', 'B', 'C'}, a);</span>
+<span class="fc" id="L52">    }</span>
+    @Test
+    void testShow(){
+<span class="fc" id="L55">        Character[] a = new Character[] {'B', 'C', 'A'};</span>
+<span class="fc" id="L56">        Quick.show(a);</span>
+
+<span class="fc" id="L58">    }</span>
+    @Test
+    void testSort() {
+<span class="fc" id="L61">        Comparable[] a = { 3, 2, 1 };</span>
+<span class="fc" id="L62">        assertFalse(isSorted(a));</span>
+<span class="fc" id="L63">    }</span>
+
+    @Test
+    void testPartitionWithEqualIndices() {
+<span class="fc" id="L67">        Character[] a = {'E', 'A', 'S', 'Y', 'Q', 'U', 'E', 'S', 'T', 'I', 'O', 'N'};</span>
+<span class="fc" id="L68">        Quick.sort(a, 1, a.length - 1);</span>
+<span class="fc" id="L69">        assertTrue(isSorted(a, 1, a.length - 1));</span>
+<span class="fc" id="L70">    }</span>
+    @Test
+    void testWithInvalidIndex(){
+<span class="fc" id="L73">        String[] arr5 = {&quot;S&quot;, &quot;O&quot;, &quot;R&quot;, &quot;T&quot;, &quot;E&quot;, &quot;X&quot;, &quot;A&quot;, &quot;M&quot;, &quot;P&quot;, &quot;L&quot;, &quot;E&quot;};</span>
+<span class="fc" id="L74">        int k = 11; // Invalid index</span>
+        try {
+<span class="nc" id="L76">            Comparable result = Quick.select(arr5, k);</span>
+<span class="nc" id="L77">            fail(&quot;Expected IllegalArgumentException to be thrown&quot;);</span>
+<span class="fc" id="L78">        } catch (IllegalArgumentException e) {</span>
+            // Assert that the correct error message is thrown
+<span class="fc" id="L80">            assertEquals(&quot;index is not between 0 and 11: 11&quot;, e.getMessage());</span>
+<span class="nc" id="L81">        }</span>
+<span class="fc" id="L82">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

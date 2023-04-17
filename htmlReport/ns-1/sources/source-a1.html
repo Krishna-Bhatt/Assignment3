@@ -1,0 +1,484 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SET</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: SET (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SET</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/99)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac SET.java
+&nbsp; *  Execution:    java SET
+&nbsp; *  Dependencies: StdOut.java
+&nbsp; *  
+&nbsp; *  Set implementation using Java&#39;s TreeSet library.
+&nbsp; *  Does not allow duplicates.
+&nbsp; *
+&nbsp; *  % java SET
+&nbsp; *  128.112.136.11
+&nbsp; *  208.216.181.15
+&nbsp; *  null
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;import java.util.TreeSet;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code SET} class represents an ordered set of comparable keys.
+&nbsp; *  It supports the usual &lt;em&gt;add&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;, and &lt;em&gt;delete&lt;/em&gt;
+&nbsp; *  methods. It also provides ordered methods for finding the &lt;em&gt;minimum&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;maximum&lt;/em&gt;, &lt;em&gt;floor&lt;/em&gt;, and &lt;em&gt;ceiling&lt;/em&gt; and set methods
+&nbsp; *  for &lt;em&gt;union&lt;/em&gt;, &lt;em&gt;intersection&lt;/em&gt;, and &lt;em&gt;equality&lt;/em&gt;.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  Even though this implementation include the method {@code equals()}, it
+&nbsp; *  does not support the method {@code hashCode()} because sets are mutable.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a balanced binary search tree. It requires that
+&nbsp; *  the key type implements the {@code Comparable} interface and calls the
+&nbsp; *  {@code compareTo()} and method to compare two keys. It does not call either
+&nbsp; *  {@code equals()} or {@code hashCode()}.
+&nbsp; *  The &lt;em&gt;add&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;, &lt;em&gt;delete&lt;/em&gt;, &lt;em&gt;minimum&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;maximum&lt;/em&gt;, &lt;em&gt;ceiling&lt;/em&gt;, and &lt;em&gt;floor&lt;/em&gt; methods take
+&nbsp; *  logarithmic time in the worst case.
+&nbsp; *  The &lt;em&gt;size&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt; operations take constant time.
+&nbsp; *  Construction takes constant time.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/35applications&quot;&gt;Section 3.5&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms in Java, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; *
+&nbsp; *  @param &lt;Key&gt; the generic type of a key in this set
+&nbsp; */
+&nbsp;
+&nbsp;public class SET&lt;Key extends Comparable&lt;Key&gt;&gt; implements Iterable&lt;Key&gt; {
+&nbsp;    private TreeSet&lt;Key&gt; set;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty set.
+&nbsp;     */
+<b class="nc">&nbsp;    public SET() {</b>
+<b class="nc">&nbsp;        set = new TreeSet&lt;Key&gt;();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes a new set that is an independent copy of the specified set.
+&nbsp;     *
+&nbsp;     * @param x the set to copy
+&nbsp;     */
+<b class="nc">&nbsp;    public SET(SET&lt;Key&gt; x) {</b>
+<b class="nc">&nbsp;        set = new TreeSet&lt;Key&gt;(x.set);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the key to this set (if it is not already present).
+&nbsp;     *
+&nbsp;     * @param  key the key to add
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void add(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;called add() with a null key&quot;);</b>
+<b class="nc">&nbsp;        set.add(key);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this set contains the given key.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return {@code true} if this set contains {@code key};
+&nbsp;     *         {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public boolean contains(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;called contains() with a null key&quot;);</b>
+<b class="nc">&nbsp;        return set.contains(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the specified key from this set (if the set contains the specified key).
+&nbsp;     * This is equivalent to {@code remove()}, but we plan to deprecate {@code delete()}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void delete(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;called delete() with a null key&quot;);</b>
+<b class="nc">&nbsp;        set.remove(key);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the specified key from this set (if the set contains the specified key).
+&nbsp;     * This is equivalent to {@code delete()}, but we plan to deprecate {@code delete()}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void remove(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;called remove() with a null key&quot;);</b>
+<b class="nc">&nbsp;        set.remove(key);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of keys in this set.
+&nbsp;     *
+&nbsp;     * @return the number of keys in this set
+&nbsp;     */
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return set.size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if this set is empty.
+&nbsp;     *
+&nbsp;     * @return {@code true} if this set is empty;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="nc">&nbsp;        return size() == 0;</b>
+&nbsp;    }
+&nbsp; 
+&nbsp;    /**
+&nbsp;     * Returns all of the keys in this set, as an iterator.
+&nbsp;     * To iterate over all of the keys in a set named {@code set}, use the
+&nbsp;     * foreach notation: {@code for (Key key : set)}.
+&nbsp;     *
+&nbsp;     * @return an iterator to all of the keys in this set
+&nbsp;     */
+&nbsp;    public Iterator&lt;Key&gt; iterator() {
+<b class="nc">&nbsp;        return set.iterator();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the largest key in this set.
+&nbsp;     *
+&nbsp;     * @return the largest key in this set
+&nbsp;     * @throws NoSuchElementException if this set is empty
+&nbsp;     */
+&nbsp;    public Key max() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called max() with empty set&quot;);</b>
+<b class="nc">&nbsp;        return set.last();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the smallest key in this set.
+&nbsp;     *
+&nbsp;     * @return the smallest key in this set
+&nbsp;     * @throws NoSuchElementException if this set is empty
+&nbsp;     */
+&nbsp;    public Key min() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;called min() with empty set&quot;);</b>
+<b class="nc">&nbsp;        return set.first();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the smallest key in this set greater than or equal to {@code key}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the smallest key in this set greater than or equal to {@code key}
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     * @throws NoSuchElementException if there is no such key
+&nbsp;     */
+&nbsp;    public Key ceiling(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;called ceiling() with a null key&quot;);</b>
+<b class="nc">&nbsp;        Key k = set.ceiling(key);</b>
+<b class="nc">&nbsp;        if (k == null) throw new NoSuchElementException(&quot;all keys are less than &quot; + key);</b>
+<b class="nc">&nbsp;        return k;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the largest key in this set less than or equal to {@code key}.
+&nbsp;     *
+&nbsp;     * @param  key the key
+&nbsp;     * @return the largest key in this set table less than or equal to {@code key}
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     * @throws NoSuchElementException if there is no such key
+&nbsp;     */
+&nbsp;    public Key floor(Key key) {
+<b class="nc">&nbsp;        if (key == null) throw new IllegalArgumentException(&quot;called floor() with a null key&quot;);</b>
+<b class="nc">&nbsp;        Key k = set.floor(key);</b>
+<b class="nc">&nbsp;        if (k == null) throw new NoSuchElementException(&quot;all keys are greater than &quot; + key);</b>
+<b class="nc">&nbsp;        return k;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the union of this set and that set.
+&nbsp;     *
+&nbsp;     * @param  that the other set
+&nbsp;     * @return the union of this set and that set
+&nbsp;     * @throws IllegalArgumentException if {@code that} is {@code null}
+&nbsp;     */
+&nbsp;    public SET&lt;Key&gt; union(SET&lt;Key&gt; that) {
+<b class="nc">&nbsp;        if (that == null) throw new IllegalArgumentException(&quot;called union() with a null argument&quot;);</b>
+<b class="nc">&nbsp;        SET&lt;Key&gt; c = new SET&lt;Key&gt;();</b>
+<b class="nc">&nbsp;        for (Key x : this) {</b>
+<b class="nc">&nbsp;            c.add(x);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        for (Key x : that) {</b>
+<b class="nc">&nbsp;            c.add(x);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return c;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the intersection of this set and that set.
+&nbsp;     *
+&nbsp;     * @param  that the other set
+&nbsp;     * @return the intersection of this set and that set
+&nbsp;     * @throws IllegalArgumentException if {@code that} is {@code null}
+&nbsp;     */
+&nbsp;    public SET&lt;Key&gt; intersects(SET&lt;Key&gt; that) {
+<b class="nc">&nbsp;        if (that == null) throw new IllegalArgumentException(&quot;called intersects() with a null argument&quot;);</b>
+<b class="nc">&nbsp;        SET&lt;Key&gt; c = new SET&lt;Key&gt;();</b>
+<b class="nc">&nbsp;        if (this.size() &lt; that.size()) {</b>
+<b class="nc">&nbsp;            for (Key x : this) {</b>
+<b class="nc">&nbsp;                if (that.contains(x)) c.add(x);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            for (Key x : that) {</b>
+<b class="nc">&nbsp;                if (this.contains(x)) c.add(x);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return c;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**       
+&nbsp;     * Compares this set to the specified set.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Note that this method declares two empty sets to be equal
+&nbsp;     * even if they are parameterized by different generic types.
+&nbsp;     * This is consistent with the behavior of {@code equals()} 
+&nbsp;     * within Java&#39;s Collections framework.
+&nbsp;     *       
+&nbsp;     * @param  other the other set
+&nbsp;     * @return {@code true} if this set equals {@code other};
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean equals(Object other) {
+<b class="nc">&nbsp;        if (other == this) return true;</b>
+<b class="nc">&nbsp;        if (other == null) return false;</b>
+<b class="nc">&nbsp;        if (other.getClass() != this.getClass()) return false;</b>
+<b class="nc">&nbsp;        SET that = (SET) other;</b>
+<b class="nc">&nbsp;        return this.set.equals(that.set);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * This operation is not supported because sets are mutable.
+&nbsp;     *
+&nbsp;     * @return does not return a value
+&nbsp;     * @throws UnsupportedOperationException if called
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        throw new UnsupportedOperationException(&quot;hashCode() is not supported because sets are mutable&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of this set.
+&nbsp;     *
+&nbsp;     * @return a string representation of this set, enclosed in curly braces,
+&nbsp;     *         with adjacent keys separated by a comma and a space
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        String s = set.toString();</b>
+<b class="nc">&nbsp;        return &quot;{ &quot; + s.substring(1, s.length() - 1) + &quot; }&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code SET} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        SET&lt;String&gt; set = new SET&lt;String&gt;();</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;set = &quot; + set);</b>
+&nbsp;
+&nbsp;        // insert some keys
+<b class="nc">&nbsp;        set.add(&quot;www.cs.princeton.edu&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.cs.princeton.edu&quot;);    // overwrite old value</b>
+<b class="nc">&nbsp;        set.add(&quot;www.princeton.edu&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.math.princeton.edu&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.yale.edu&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.amazon.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.simpsons.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.stanford.edu&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.google.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.ibm.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.apple.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.slashdot.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.whitehouse.gov&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.espn.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.snopes.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.movies.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.cnn.com&quot;);</b>
+<b class="nc">&nbsp;        set.add(&quot;www.iitb.ac.in&quot;);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(set.contains(&quot;www.cs.princeton.edu&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(!set.contains(&quot;www.harvardsucks.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(set.contains(&quot;www.simpsons.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;ceiling(www.simpsonr.com) = &quot; + set.ceiling(&quot;www.simpsonr.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;ceiling(www.simpsons.com) = &quot; + set.ceiling(&quot;www.simpsons.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;ceiling(www.simpsont.com) = &quot; + set.ceiling(&quot;www.simpsont.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;floor(www.simpsonr.com)   = &quot; + set.floor(&quot;www.simpsonr.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;floor(www.simpsons.com)   = &quot; + set.floor(&quot;www.simpsons.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;floor(www.simpsont.com)   = &quot; + set.floor(&quot;www.simpsont.com&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;set = &quot; + set);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+&nbsp;        // print out all keys in this set in lexicographic order
+<b class="nc">&nbsp;        for (String s : set) {</b>
+<b class="nc">&nbsp;            StdOut.println(s);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;        SET&lt;String&gt; set2 = new SET&lt;String&gt;(set);</b>
+<b class="nc">&nbsp;        StdOut.println(set.equals(set2));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

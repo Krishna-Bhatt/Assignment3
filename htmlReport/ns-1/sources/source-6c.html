@@ -1,0 +1,231 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > KWIK</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: KWIK (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KWIK</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac KWIK.java
+&nbsp; *  Execution:    java KWIK file.txt
+&nbsp; *  Dependencies: StdIn.java StdOut.java In.java SuffixArray.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/63suffix/tale.txt
+&nbsp; *                https://algs4.cs.princeton.edu/63suffix/mobydick.txt 
+&nbsp; *
+&nbsp; *  Keyword-in-context search.
+&nbsp; *
+&nbsp; *  %  java KWIK tale.txt 15
+&nbsp; *  majesty
+&nbsp; *   most gracious majesty king george th
+&nbsp; *  rnkeys and the majesty of the law fir
+&nbsp; *  on against the majesty of the people 
+&nbsp; *  se them to his majestys chief secreta
+&nbsp; *  h lists of his majestys forces and of
+&nbsp; *
+&nbsp; *  the worst
+&nbsp; *  w the best and the worst are known to y
+&nbsp; *  f them give me the worst first there th
+&nbsp; *  for in case of the worst is a friend in
+&nbsp; *  e roomdoor and the worst is over then a
+&nbsp; *  pect mr darnay the worst its the wisest
+&nbsp; *  is his brother the worst of a bad race 
+&nbsp; *  ss in them for the worst of health for 
+&nbsp; *   you have seen the worst of her agitati
+&nbsp; *  cumwented into the worst of luck buuust
+&nbsp; *  n your brother the worst of the bad rac
+&nbsp; *   full share in the worst of the day pla
+&nbsp; *  mes to himself the worst of the strife 
+&nbsp; *  f times it was the worst of times it wa
+&nbsp; *  ould hope that the worst was over well 
+&nbsp; *  urage business the worst will be over i
+&nbsp; *  clesiastics of the worst world worldly 
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code KWIK} class provides a {@link SuffixArray} client for computing
+&nbsp; *  all occurrences of a keyword in a given string, with surrounding context.
+&nbsp; *  This is known as &lt;em&gt;keyword-in-context search&lt;/em&gt;.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/63suffix&quot;&gt;Section 6.3&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class KWIK {
+&nbsp;
+&nbsp;    // Do not instantiate.
+&nbsp;    private KWIK() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads a string from a file specified as the first
+&nbsp;     * command-line argument; read an integer k specified as the
+&nbsp;     * second command line argument; then repeatedly processes
+&nbsp;     * use queries, printing all occurrences of the given query
+&nbsp;     * string in the text string with k characters of surrounding
+&nbsp;     * context on either side.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        In in = new In(args[0]);</b>
+<b class="nc">&nbsp;        int context = Integer.parseInt(args[1]);</b>
+&nbsp;
+&nbsp;        // read in text
+<b class="nc">&nbsp;        String text = in.readAll().replaceAll(&quot;\\s+&quot;, &quot; &quot;);</b>
+<b class="nc">&nbsp;        int n = text.length();</b>
+&nbsp;
+&nbsp;        // build suffix array
+<b class="nc">&nbsp;        SuffixArray sa = new SuffixArray(text);</b>
+&nbsp;
+&nbsp;        // find all occurrences of queries and give context
+<b class="nc">&nbsp;        while (StdIn.hasNextLine()) {</b>
+<b class="nc">&nbsp;            String query = StdIn.readLine();</b>
+<b class="nc">&nbsp;            for (int i = sa.rank(query); i &lt; n; i++) {</b>
+<b class="nc">&nbsp;                int from1 = sa.index(i);</b>
+<b class="nc">&nbsp;                int to1   = Math.min(n, from1 + query.length());</b>
+<b class="nc">&nbsp;                if (!query.equals(text.substring(from1, to1))) break;</b>
+<b class="nc">&nbsp;                int from2 = Math.max(0, sa.index(i) - context);</b>
+<b class="nc">&nbsp;                int to2   = Math.min(n, sa.index(i) + context + query.length());</b>
+<b class="nc">&nbsp;                StdOut.println(text.substring(from2, to2));</b>
+&nbsp;            }
+<b class="nc">&nbsp;            StdOut.println();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;} 
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,438 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BinaryStdIn</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: BinaryStdIn (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BinaryStdIn</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/92)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac BinaryStdIn.java
+&nbsp; *  Execution:    java BinaryStdIn &lt; input &gt; output
+&nbsp; *  Dependencies: none             
+&nbsp; *  
+&nbsp; *  Supports reading binary data from standard input.
+&nbsp; *
+&nbsp; *  % java BinaryStdIn &lt; input.jpg &gt; output.jpg
+&nbsp; *  % diff input.jpg output.jpg
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.io.BufferedInputStream;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; *  &lt;i&gt;Binary standard input&lt;/i&gt;. This class provides methods for reading
+&nbsp; *  in bits from standard input, either one bit at a time (as a {@code boolean}),
+&nbsp; *  8 bits at a time (as a {@code byte} or {@code char}),
+&nbsp; *  16 bits at a time (as a {@code short}), 32 bits at a time
+&nbsp; *  (as an {@code int} or {@code float}), or 64 bits at a time (as a
+&nbsp; *  {@code double} or {@code long}).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  All primitive types are assumed to be represented using their 
+&nbsp; *  standard Java representations, in big-endian (most significant
+&nbsp; *  byte first) order.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The client should not intermix calls to {@code BinaryStdIn} with calls
+&nbsp; *  to {@code StdIn} or {@code System.in};
+&nbsp; *  otherwise unexpected behavior will result.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public final class BinaryStdIn {
+&nbsp;    private static final int EOF = -1;      // end of file
+&nbsp;
+&nbsp;    private static BufferedInputStream in;  // input stream
+&nbsp;    private static int buffer;              // one character buffer
+&nbsp;    private static int n;                   // number of bits left in buffer
+&nbsp;    private static boolean isInitialized;   // has BinaryStdIn been called for first time?
+&nbsp;
+&nbsp;    // don&#39;t instantiate
+&nbsp;    private BinaryStdIn() { }
+&nbsp;
+&nbsp;    // fill buffer
+&nbsp;    private static void initialize() {
+<b class="nc">&nbsp;        in = new BufferedInputStream(System.in);</b>
+<b class="nc">&nbsp;        buffer = 0;</b>
+<b class="nc">&nbsp;        n = 0;</b>
+<b class="nc">&nbsp;        fillBuffer();</b>
+<b class="nc">&nbsp;        isInitialized = true;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private static void fillBuffer() {
+&nbsp;        try {
+<b class="nc">&nbsp;            buffer = in.read();</b>
+<b class="nc">&nbsp;            n = 8;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;EOF&quot;);</b>
+<b class="nc">&nbsp;            buffer = EOF;</b>
+<b class="nc">&nbsp;            n = -1;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Close this input stream and release any associated system resources.
+&nbsp;     */
+&nbsp;    public static void close() {
+<b class="nc">&nbsp;        if (!isInitialized) initialize();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            in.close();</b>
+<b class="nc">&nbsp;            isInitialized = false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException ioe) {</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(&quot;Could not close BinaryStdIn&quot;, ioe);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Returns true if standard input is empty.
+&nbsp;     * @return true if and only if standard input is empty
+&nbsp;     */
+&nbsp;    public static boolean isEmpty() {
+<b class="nc">&nbsp;        if (!isInitialized) initialize();</b>
+<b class="nc">&nbsp;        return buffer == EOF;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next bit of data from standard input and return as a boolean.
+&nbsp;     *
+&nbsp;     * @return the next bit of data from standard input as a {@code boolean}
+&nbsp;     * @throws NoSuchElementException if standard input is empty
+&nbsp;     */
+&nbsp;    public static boolean readBoolean() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Reading from empty input stream&quot;);</b>
+<b class="nc">&nbsp;        n--;</b>
+<b class="nc">&nbsp;        boolean bit = ((buffer &gt;&gt; n) &amp; 1) == 1;</b>
+<b class="nc">&nbsp;        if (n == 0) fillBuffer();</b>
+<b class="nc">&nbsp;        return bit;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 8 bits from standard input and return as an 8-bit char.
+&nbsp;     * Note that {@code char} is a 16-bit type;
+&nbsp;     * to read the next 16 bits as a char, use {@code readChar(16)}.
+&nbsp;     *
+&nbsp;     * @return the next 8 bits of data from standard input as a {@code char}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 8 bits available on standard input
+&nbsp;     */
+&nbsp;    public static char readChar() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Reading from empty input stream&quot;);</b>
+&nbsp;
+&nbsp;        // special case when aligned byte
+<b class="nc">&nbsp;        if (n == 8) {</b>
+<b class="nc">&nbsp;            int x = buffer;</b>
+<b class="nc">&nbsp;            fillBuffer();</b>
+<b class="nc">&nbsp;            return (char) (x &amp; 0xff);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // combine last n bits of current buffer with first 8-n bits of new buffer
+<b class="nc">&nbsp;        int x = buffer;</b>
+<b class="nc">&nbsp;        x &lt;&lt;= (8 - n);</b>
+<b class="nc">&nbsp;        int oldN = n;</b>
+<b class="nc">&nbsp;        fillBuffer();</b>
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Reading from empty input stream&quot;);</b>
+<b class="nc">&nbsp;        n = oldN;</b>
+<b class="nc">&nbsp;        x |= (buffer &gt;&gt;&gt; n);</b>
+<b class="nc">&nbsp;        return (char) (x &amp; 0xff);</b>
+&nbsp;        // the above code doesn&#39;t quite work for the last character if n = 8
+&nbsp;        // because buffer will be -1, so there is a special case for aligned byte
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next &lt;em&gt;r&lt;/em&gt; bits from standard input and return as an &lt;em&gt;r&lt;/em&gt;-bit character.
+&nbsp;     *
+&nbsp;     * @param  r number of bits to read.
+&nbsp;     * @return the next r bits of data from standard input as a {@code char}
+&nbsp;     * @throws NoSuchElementException if there are fewer than {@code r} bits available on standard input
+&nbsp;     * @throws IllegalArgumentException unless {@code 1 &lt;= r &lt;= 16}
+&nbsp;     */
+&nbsp;    public static char readChar(int r) {
+<b class="nc">&nbsp;        if (r &lt; 1 || r &gt; 16) throw new IllegalArgumentException(&quot;Illegal value of r = &quot; + r);</b>
+&nbsp;
+&nbsp;        // optimize r = 8 case
+<b class="nc">&nbsp;        if (r == 8) return readChar();</b>
+&nbsp;
+<b class="nc">&nbsp;        char x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; r; i++) {</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 1;</b>
+<b class="nc">&nbsp;            boolean bit = readBoolean();</b>
+<b class="nc">&nbsp;            if (bit) x |= 1;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the remaining bytes of data from standard input and return as a string. 
+&nbsp;     *
+&nbsp;     * @return the remaining bytes of data from standard input as a {@code String}
+&nbsp;     * @throws NoSuchElementException if standard input is empty or if the number of bits
+&nbsp;     *         available on standard input is not a multiple of 8 (byte-aligned)
+&nbsp;     */
+&nbsp;    public static String readString() {
+<b class="nc">&nbsp;        if (isEmpty()) throw new NoSuchElementException(&quot;Reading from empty input stream&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        StringBuilder sb = new StringBuilder();</b>
+<b class="nc">&nbsp;        while (!isEmpty()) {</b>
+<b class="nc">&nbsp;            char c = readChar();</b>
+<b class="nc">&nbsp;            sb.append(c);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return sb.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 16 bits from standard input and return as a 16-bit short.
+&nbsp;     *
+&nbsp;     * @return the next 16 bits of data from standard input as a {@code short}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 16 bits available on standard input
+&nbsp;     */
+&nbsp;    public static short readShort() {
+<b class="nc">&nbsp;        short x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 2; i++) {</b>
+<b class="nc">&nbsp;            char c = readChar();</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 8;</b>
+<b class="nc">&nbsp;            x |= c;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 32 bits from standard input and return as a 32-bit int.
+&nbsp;     *
+&nbsp;     * @return the next 32 bits of data from standard input as a {@code int}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 32 bits available on standard input
+&nbsp;     */
+&nbsp;    public static int readInt() {
+<b class="nc">&nbsp;        int x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 4; i++) {</b>
+<b class="nc">&nbsp;            char c = readChar();</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 8;</b>
+<b class="nc">&nbsp;            x |= c;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next &lt;em&gt;r&lt;/em&gt; bits from standard input and return as an &lt;em&gt;r&lt;/em&gt;-bit int.
+&nbsp;     *
+&nbsp;     * @param  r number of bits to read.
+&nbsp;     * @return the next r bits of data from standard input as a {@code int}
+&nbsp;     * @throws NoSuchElementException if there are fewer than {@code r} bits available on standard input
+&nbsp;     * @throws IllegalArgumentException unless {@code 1 &lt;= r &lt;= 32}
+&nbsp;     */
+&nbsp;    public static int readInt(int r) {
+<b class="nc">&nbsp;        if (r &lt; 1 || r &gt; 32) throw new IllegalArgumentException(&quot;Illegal value of r = &quot; + r);</b>
+&nbsp;
+&nbsp;        // optimize r = 32 case
+<b class="nc">&nbsp;        if (r == 32) return readInt();</b>
+&nbsp;
+<b class="nc">&nbsp;        int x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; r; i++) {</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 1;</b>
+<b class="nc">&nbsp;            boolean bit = readBoolean();</b>
+<b class="nc">&nbsp;            if (bit) x |= 1;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 64 bits from standard input and return as a 64-bit long.
+&nbsp;     *
+&nbsp;     * @return the next 64 bits of data from standard input as a {@code long}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 64 bits available on standard input
+&nbsp;     */
+&nbsp;    public static long readLong() {
+<b class="nc">&nbsp;        long x = 0;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 8; i++) {</b>
+<b class="nc">&nbsp;            char c = readChar();</b>
+<b class="nc">&nbsp;            x &lt;&lt;= 8;</b>
+<b class="nc">&nbsp;            x |= c;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 64 bits from standard input and return as a 64-bit double.
+&nbsp;     *
+&nbsp;     * @return the next 64 bits of data from standard input as a {@code double}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 64 bits available on standard input
+&nbsp;     */
+&nbsp;    public static double readDouble() {
+<b class="nc">&nbsp;        return Double.longBitsToDouble(readLong());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 32 bits from standard input and return as a 32-bit float.
+&nbsp;     *
+&nbsp;     * @return the next 32 bits of data from standard input as a {@code float}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 32 bits available on standard input
+&nbsp;     */
+&nbsp;    public static float readFloat() {
+<b class="nc">&nbsp;        return Float.intBitsToFloat(readInt());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Reads the next 8 bits from standard input and return as an 8-bit byte.
+&nbsp;     *
+&nbsp;     * @return the next 8 bits of data from standard input as a {@code byte}
+&nbsp;     * @throws NoSuchElementException if there are fewer than 8 bits available on standard input
+&nbsp;     */
+&nbsp;    public static byte readByte() {
+<b class="nc">&nbsp;        char c = readChar();</b>
+<b class="nc">&nbsp;        return (byte) (c &amp; 0xff);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;   /**
+&nbsp;     * Test client. Reads in a binary input file from standard input and writes
+&nbsp;     * it to standard output.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // read one 8-bit char at a time
+<b class="nc">&nbsp;        while (!BinaryStdIn.isEmpty()) {</b>
+<b class="nc">&nbsp;            char c = BinaryStdIn.readChar();</b>
+<b class="nc">&nbsp;            BinaryStdOut.write(c);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        BinaryStdOut.flush();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

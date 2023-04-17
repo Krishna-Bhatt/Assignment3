@@ -1,0 +1,296 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Selection</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: Selection (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Selection</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac Selection.java
+&nbsp; *  Execution:    java  Selection &lt; input.txt
+&nbsp; *  Dependencies: StdOut.java StdIn.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/21elementary/tiny.txt
+&nbsp; *                https://algs4.cs.princeton.edu/21elementary/words3.txt
+&nbsp; *   
+&nbsp; *  Sorts a sequence of strings from standard input using selection sort.
+&nbsp; *   
+&nbsp; *  % more tiny.txt
+&nbsp; *  S O R T E X A M P L E
+&nbsp; *
+&nbsp; *  % java Selection &lt; tiny.txt
+&nbsp; *  A E E L M O P R S T X                 [ one string per line ]
+&nbsp; *    
+&nbsp; *  % more words3.txt
+&nbsp; *  bed bug dad yes zoo ... all bad yet
+&nbsp; *  
+&nbsp; *  % java Selection &lt; words3.txt
+&nbsp; *  all bad bed bug dad ... yes yet zoo    [ one string per line ]
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Comparator;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code Selection} class provides static methods for sorting an
+&nbsp; *  array using &lt;em&gt;selection sort&lt;/em&gt;.
+&nbsp; *  This implementation makes ~ &amp;frac12; &lt;em&gt;n&lt;/em&gt;&lt;sup&gt;2&lt;/sup&gt; compares to sort
+&nbsp; *  any array of length &lt;em&gt;n&lt;/em&gt;, so it is not suitable for sorting large arrays.
+&nbsp; *  It performs exactly &lt;em&gt;n&lt;/em&gt; exchanges.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This sorting algorithm is not stable. It uses &amp;Theta;(1) extra memory
+&nbsp; *  (not including the input array).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see
+&nbsp; *  &lt;a href=&quot;https://algs4.cs.princeton.edu/21elementary&quot;&gt;Section 2.1&lt;/a&gt;
+&nbsp; *  of &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class Selection {</b>
+&nbsp;
+&nbsp;    // This class should not be instantiated.
+&nbsp;    private Selection() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rearranges the array in ascending order, using the natural order.
+&nbsp;     * @param a the array to be sorted
+&nbsp;     */
+&nbsp;    public static void sort(Comparable[] a) {
+<b class="nc">&nbsp;        int n = a.length;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            int min = i;</b>
+<b class="nc">&nbsp;            for (int j = i+1; j &lt; n; j++) {</b>
+<b class="nc">&nbsp;                if (less(a[j], a[min])) min = j;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            exch(a, i, min);</b>
+<b class="nc">&nbsp;            assert isSorted(a, 0, i);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        assert isSorted(a);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rearranges the array in ascending order, using a comparator.
+&nbsp;     * @param a the array
+&nbsp;     * @param comparator the comparator specifying the order
+&nbsp;     */
+&nbsp;    public static void sort(Object[] a, Comparator comparator) {
+<b class="nc">&nbsp;        int n = a.length;</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            int min = i;</b>
+<b class="nc">&nbsp;            for (int j = i+1; j &lt; n; j++) {</b>
+<b class="nc">&nbsp;                if (less(comparator, a[j], a[min])) min = j;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            exch(a, i, min);</b>
+<b class="nc">&nbsp;            assert isSorted(a, comparator, 0, i);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        assert isSorted(a, comparator);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;   /***************************************************************************
+&nbsp;    *  Helper sorting functions.
+&nbsp;    ***************************************************************************/
+&nbsp;    
+&nbsp;    // is v &lt; w ?
+&nbsp;    private static boolean less(Comparable v, Comparable w) {
+<b class="nc">&nbsp;        return v.compareTo(w) &lt; 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // is v &lt; w ?
+&nbsp;    private static boolean less(Comparator comparator, Object v, Object w) {
+<b class="nc">&nbsp;        return comparator.compare(v, w) &lt; 0;</b>
+&nbsp;    }
+&nbsp;        
+&nbsp;        
+&nbsp;    // exchange a[i] and a[j]
+&nbsp;    private static void exch(Object[] a, int i, int j) {
+<b class="nc">&nbsp;        Object swap = a[i];</b>
+<b class="nc">&nbsp;        a[i] = a[j];</b>
+<b class="nc">&nbsp;        a[j] = swap;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;   /***************************************************************************
+&nbsp;    *  Check if array is sorted - useful for debugging.
+&nbsp;    ***************************************************************************/
+&nbsp;
+&nbsp;    // is the array a[] sorted?
+&nbsp;    private static boolean isSorted(Comparable[] a) {
+<b class="nc">&nbsp;        return isSorted(a, 0, a.length - 1);</b>
+&nbsp;    }
+&nbsp;        
+&nbsp;    // is the array sorted from a[lo] to a[hi]
+&nbsp;    private static boolean isSorted(Comparable[] a, int lo, int hi) {
+<b class="nc">&nbsp;        for (int i = lo + 1; i &lt;= hi; i++)</b>
+<b class="nc">&nbsp;            if (less(a[i], a[i-1])) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // is the array a[] sorted?
+&nbsp;    private static boolean isSorted(Object[] a, Comparator comparator) {
+<b class="nc">&nbsp;        return isSorted(a, comparator, 0, a.length - 1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // is the array sorted from a[lo] to a[hi]
+&nbsp;    private static boolean isSorted(Object[] a, Comparator comparator, int lo, int hi) {
+<b class="nc">&nbsp;        for (int i = lo + 1; i &lt;= hi; i++)</b>
+<b class="nc">&nbsp;            if (less(comparator, a[i], a[i-1])) return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    // print array to standard output
+&nbsp;    private static void show(Comparable[] a) {
+<b class="nc">&nbsp;        for (int i = 0; i &lt; a.length; i++) {</b>
+<b class="nc">&nbsp;            StdOut.println(a[i]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads in a sequence of strings from standard input; selection sorts them; 
+&nbsp;     * and prints them to standard output in ascending order. 
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String[] a = StdIn.readAllStrings();</b>
+<b class="nc">&nbsp;        Selection.sort(a);</b>
+<b class="nc">&nbsp;        show(a);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

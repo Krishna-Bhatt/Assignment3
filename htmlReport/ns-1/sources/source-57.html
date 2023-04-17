@@ -1,0 +1,297 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GrahamScan</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: GrahamScan (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GrahamScan</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/38)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/52)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac GrahamaScan.java
+&nbsp; *  Execution:    java GrahamScan &lt; input.txt
+&nbsp; *  Dependencies: Point2D.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/99hull/rs1423.txt
+&nbsp; *                https://algs4.cs.princeton.edu/99hull/kw1260.txt
+&nbsp; * 
+&nbsp; *  Create points from standard input and compute the convex hull using
+&nbsp; *  Graham scan algorithm.
+&nbsp; *
+&nbsp; *  May be floating-point issues if x- and y-coordinates are not integers.
+&nbsp; *
+&nbsp; *  % java GrahamScan &lt; input100.txt 
+&nbsp; *  (7486.0, 422.0)
+&nbsp; *  (29413.0, 596.0)
+&nbsp; *  (32011.0, 3140.0)
+&nbsp; *  (30875.0, 28560.0)
+&nbsp; *  (28462.0, 32343.0)
+&nbsp; *  (15731.0, 32661.0)
+&nbsp; *  (822.0, 32301.0)
+&nbsp; *  (823.0, 15895.0)
+&nbsp; *  (1444.0, 10362.0)
+&nbsp; *  (4718.0, 4451.0)
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;import java.util.Arrays;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code GrahamScan} data type provides methods for computing the 
+&nbsp; *  convex hull of a set of &lt;em&gt;n&lt;/em&gt; points in the plane.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  The implementation uses the Graham-Scan convex hull algorithm.
+&nbsp; *  It runs in O(&lt;em&gt;n&lt;/em&gt; log &lt;em&gt;n&lt;/em&gt;) time in the worst case
+&nbsp; *  and uses O(&lt;em&gt;n&lt;/em&gt;) extra memory.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/99scientific&quot;&gt;Section 9.9&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class GrahamScan {</b>
+<b class="nc">&nbsp;    private Stack&lt;Point2D&gt; hull = new Stack&lt;Point2D&gt;();</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Computes the convex hull of the specified array of points.
+&nbsp;     *
+&nbsp;     * @param  points the array of points
+&nbsp;     * @throws IllegalArgumentException if {@code points} is {@code null}
+&nbsp;     * @throws IllegalArgumentException if any entry in {@code points[]} is {@code null}
+&nbsp;     * @throws IllegalArgumentException if {@code points.length} is {@code 0}
+&nbsp;     */
+<b class="nc">&nbsp;    public GrahamScan(Point2D[] points) {</b>
+<b class="nc">&nbsp;        if (points == null) throw new IllegalArgumentException(&quot;argument is null&quot;);</b>
+<b class="nc">&nbsp;        if (points.length == 0) throw new IllegalArgumentException(&quot;array is of length 0&quot;);</b>
+&nbsp;
+&nbsp;        // defensive copy
+<b class="nc">&nbsp;        int n = points.length;</b>
+<b class="nc">&nbsp;        Point2D[] a = new Point2D[n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            if (points[i] == null)</b>
+<b class="nc">&nbsp;                throw new IllegalArgumentException(&quot;points[&quot; + i + &quot;] is null&quot;);</b>
+<b class="nc">&nbsp;            a[i] = points[i];</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // preprocess so that a[0] has lowest y-coordinate; break ties by x-coordinate
+&nbsp;        // a[0] is an extreme point of the convex hull
+&nbsp;        // (alternatively, could do easily in linear time)
+<b class="nc">&nbsp;        Arrays.sort(a);</b>
+&nbsp;
+&nbsp;        // sort by polar angle with respect to base point a[0],
+&nbsp;        // breaking ties by distance to a[0]
+<b class="nc">&nbsp;        Arrays.sort(a, 1, n, a[0].polarOrder());</b>
+&nbsp;
+<b class="nc">&nbsp;        hull.push(a[0]);       // a[0] is first extreme point</b>
+&nbsp;
+&nbsp;        // find index k1 of first point not equal to a[0]
+&nbsp;        int k1;
+<b class="nc">&nbsp;        for (k1 = 1; k1 &lt; n; k1++)</b>
+<b class="nc">&nbsp;            if (!a[0].equals(a[k1])) break;</b>
+<b class="nc">&nbsp;        if (k1 == n) return;        // all points equal</b>
+&nbsp;
+&nbsp;        // find index k2 of first point not collinear with a[0] and a[k1]
+&nbsp;        int k2;
+<b class="nc">&nbsp;        for (k2 = k1+1; k2 &lt; n; k2++)</b>
+<b class="nc">&nbsp;            if (Point2D.ccw(a[0], a[k1], a[k2]) != 0) break;</b>
+<b class="nc">&nbsp;        hull.push(a[k2-1]);    // a[k2-1] is second extreme point</b>
+&nbsp;
+&nbsp;        // Graham scan; note that a[n-1] is extreme point different from a[0]
+<b class="nc">&nbsp;        for (int i = k2; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            Point2D top = hull.pop();</b>
+<b class="nc">&nbsp;            while (Point2D.ccw(hull.peek(), top, a[i]) &lt;= 0) {</b>
+<b class="nc">&nbsp;                top = hull.pop();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            hull.push(top);</b>
+<b class="nc">&nbsp;            hull.push(a[i]);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        assert isConvex();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the extreme points on the convex hull in counterclockwise order.
+&nbsp;     *
+&nbsp;     * @return the extreme points on the convex hull in counterclockwise order
+&nbsp;     */
+&nbsp;    public Iterable&lt;Point2D&gt; hull() {
+<b class="nc">&nbsp;        Stack&lt;Point2D&gt; s = new Stack&lt;Point2D&gt;();</b>
+<b class="nc">&nbsp;        for (Point2D p : hull) s.push(p);</b>
+<b class="nc">&nbsp;        return s;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // check that boundary of hull is strictly convex
+&nbsp;    private boolean isConvex() {
+<b class="nc">&nbsp;        int n = hull.size();</b>
+<b class="nc">&nbsp;        if (n &lt;= 2) return true;</b>
+&nbsp;
+<b class="nc">&nbsp;        Point2D[] points = new Point2D[n];</b>
+<b class="nc">&nbsp;        int k = 0;</b>
+<b class="nc">&nbsp;        for (Point2D p : hull()) {</b>
+<b class="nc">&nbsp;            points[k++] = p;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            if (Point2D.ccw(points[i], points[(i+1) % n], points[(i+2) % n]) &lt;= 0) {</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;   /**
+&nbsp;     * Unit tests the {@code GrahamScan} data type.
+&nbsp;     * Reads in an integer {@code n} and {@code n} points (specified by
+&nbsp;     * their &lt;em&gt;x&lt;/em&gt;- and &lt;em&gt;y&lt;/em&gt;-coordinates) from standard input;
+&nbsp;     * computes their convex hull; and prints out the points on the
+&nbsp;     * convex hull to standard output.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int n = StdIn.readInt();</b>
+<b class="nc">&nbsp;        Point2D[] points = new Point2D[n];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            int x = StdIn.readInt();</b>
+<b class="nc">&nbsp;            int y = StdIn.readInt();</b>
+<b class="nc">&nbsp;            points[i] = new Point2D(x, y);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        GrahamScan graham = new GrahamScan(points);</b>
+<b class="nc">&nbsp;        for (Point2D p : graham.hull())</b>
+<b class="nc">&nbsp;            StdOut.println(p);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

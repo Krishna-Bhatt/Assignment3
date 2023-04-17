@@ -1,0 +1,295 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > NFA</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: NFA (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NFA</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/58)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/54)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac NFA.java
+&nbsp; *  Execution:    java NFA regexp text
+&nbsp; *  Dependencies: Stack.java Bag.java Digraph.java DirectedDFS.java
+&nbsp; *
+&nbsp; *  % java NFA &quot;(A*B|AC)D&quot; AAAABD
+&nbsp; *  true
+&nbsp; *
+&nbsp; *  % java NFA &quot;(A*B|AC)D&quot; AAAAC
+&nbsp; *  false
+&nbsp; *
+&nbsp; *  % java NFA &quot;(a|(bc)*d)*&quot; abcbcd
+&nbsp; *  true
+&nbsp; *
+&nbsp; *  % java NFA &quot;(a|(bc)*d)*&quot; abcbcbcdaaaabcbcdaaaddd
+&nbsp; *  true
+&nbsp; *
+&nbsp; *  Remarks
+&nbsp; *  -----------
+&nbsp; *  The following features are not supported:
+&nbsp; *    - The + operator
+&nbsp; *    - Multiway or
+&nbsp; *    - Metacharacters in the text
+&nbsp; *    - Character classes.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code NFA} class provides a data type for creating a
+&nbsp; *  &lt;em&gt;nondeterministic finite state automaton&lt;/em&gt; (NFA) from a regular
+&nbsp; *  expression and testing whether a given string is matched by that regular
+&nbsp; *  expression.
+&nbsp; *  It supports the following operations: &lt;em&gt;concatenation&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;closure&lt;/em&gt;, &lt;em&gt;binary or&lt;/em&gt;, and &lt;em&gt;parentheses&lt;/em&gt;.
+&nbsp; *  It does not support &lt;em&gt;mutiway or&lt;/em&gt;, &lt;em&gt;character classes&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;metacharacters&lt;/em&gt; (either in the text or pattern),
+&nbsp; *  &lt;em&gt;capturing capabilities&lt;/em&gt;, &lt;em&gt;greedy&lt;/em&gt; or &lt;em&gt;relucantant&lt;/em&gt;
+&nbsp; *  modifiers, and other features in industrial-strength implementations
+&nbsp; *  such as {@link java.util.regex.Pattern} and {@link java.util.regex.Matcher}.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation builds the NFA using a digraph and a stack
+&nbsp; *  and simulates the NFA using digraph search (see the textbook for details).
+&nbsp; *  The constructor takes time proportional to &lt;em&gt;m&lt;/em&gt;, where &lt;em&gt;m&lt;/em&gt;
+&nbsp; *  is the number of characters in the regular expression.
+&nbsp; *  The &lt;em&gt;recognizes&lt;/em&gt; method takes time proportional to &lt;em&gt;m n&lt;/em&gt;,
+&nbsp; *  where &lt;em&gt;n&lt;/em&gt; is the number of characters in the text.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/54regexp&quot;&gt;Section 5.4&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+<b class="nc">&nbsp;public class NFA { </b>
+&nbsp;
+&nbsp;    private Digraph graph;     // digraph of epsilon transitions
+&nbsp;    private String regexp;     // regular expression
+&nbsp;    private final int m;       // number of characters in regular expression
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes the NFA from the specified regular expression.
+&nbsp;     *
+&nbsp;     * @param  regexp the regular expression
+&nbsp;     */
+<b class="nc">&nbsp;    public NFA(String regexp) {</b>
+<b class="nc">&nbsp;        this.regexp = regexp;</b>
+<b class="nc">&nbsp;        m = regexp.length();</b>
+<b class="nc">&nbsp;        Stack&lt;Integer&gt; ops = new Stack&lt;Integer&gt;(); </b>
+<b class="nc">&nbsp;        graph = new Digraph(m+1); </b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; m; i++) { </b>
+<b class="nc">&nbsp;            int lp = i; </b>
+<b class="nc">&nbsp;            if (regexp.charAt(i) == &#39;(&#39; || regexp.charAt(i) == &#39;|&#39;) </b>
+<b class="nc">&nbsp;                ops.push(i); </b>
+<b class="nc">&nbsp;            else if (regexp.charAt(i) == &#39;)&#39;) {</b>
+<b class="nc">&nbsp;                int or = ops.pop(); </b>
+&nbsp;
+&nbsp;                // 2-way or operator
+<b class="nc">&nbsp;                if (regexp.charAt(or) == &#39;|&#39;) { </b>
+<b class="nc">&nbsp;                    lp = ops.pop();</b>
+<b class="nc">&nbsp;                    graph.addEdge(lp, or+1);</b>
+<b class="nc">&nbsp;                    graph.addEdge(or, i);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                else if (regexp.charAt(or) == &#39;(&#39;)</b>
+<b class="nc">&nbsp;                    lp = or;</b>
+<b class="nc">&nbsp;                else assert false;</b>
+&nbsp;            } 
+&nbsp;
+&nbsp;            // closure operator (uses 1-character lookahead)
+<b class="nc">&nbsp;            if (i &lt; m-1 &amp;&amp; regexp.charAt(i+1) == &#39;*&#39;) { </b>
+<b class="nc">&nbsp;                graph.addEdge(lp, i+1); </b>
+<b class="nc">&nbsp;                graph.addEdge(i+1, lp); </b>
+&nbsp;            } 
+<b class="nc">&nbsp;            if (regexp.charAt(i) == &#39;(&#39; || regexp.charAt(i) == &#39;*&#39; || regexp.charAt(i) == &#39;)&#39;) </b>
+<b class="nc">&nbsp;                graph.addEdge(i, i+1);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (ops.size() != 0)</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Invalid regular expression&quot;);</b>
+<b class="nc">&nbsp;    } </b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the text is matched by the regular expression.
+&nbsp;     * 
+&nbsp;     * @param  txt the text
+&nbsp;     * @return {@code true} if the text is matched by the regular expression,
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean recognizes(String txt) {
+<b class="nc">&nbsp;        DirectedDFS dfs = new DirectedDFS(graph, 0);</b>
+<b class="nc">&nbsp;        Bag&lt;Integer&gt; pc = new Bag&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; graph.V(); v++)</b>
+<b class="nc">&nbsp;            if (dfs.marked(v)) pc.add(v);</b>
+&nbsp;
+&nbsp;        // Compute possible NFA states for txt[i+1]
+<b class="nc">&nbsp;        for (int i = 0; i &lt; txt.length(); i++) {</b>
+<b class="nc">&nbsp;            if (txt.charAt(i) == &#39;*&#39; || txt.charAt(i) == &#39;|&#39; || txt.charAt(i) == &#39;(&#39; || txt.charAt(i) == &#39;)&#39;)</b>
+<b class="nc">&nbsp;                throw new IllegalArgumentException(&quot;text contains the metacharacter &#39;&quot; + txt.charAt(i) + &quot;&#39;&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            Bag&lt;Integer&gt; match = new Bag&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;            for (int v : pc) {</b>
+<b class="nc">&nbsp;                if (v == m) continue;</b>
+<b class="nc">&nbsp;                if ((regexp.charAt(v) == txt.charAt(i)) || regexp.charAt(v) == &#39;.&#39;)</b>
+<b class="nc">&nbsp;                    match.add(v+1); </b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            if (match.isEmpty()) continue;</b>
+&nbsp;
+<b class="nc">&nbsp;            dfs = new DirectedDFS(graph, match); </b>
+<b class="nc">&nbsp;            pc = new Bag&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;            for (int v = 0; v &lt; graph.V(); v++)</b>
+<b class="nc">&nbsp;                if (dfs.marked(v)) pc.add(v);</b>
+&nbsp;
+&nbsp;            // optimization if no states reachable
+<b class="nc">&nbsp;            if (pc.size() == 0) return false;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // check for accept state
+<b class="nc">&nbsp;        for (int v : pc)</b>
+<b class="nc">&nbsp;            if (v == m) return true;</b>
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code NFA} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        String regexp = &quot;(&quot; + args[0] + &quot;)&quot;;</b>
+<b class="nc">&nbsp;        String txt = args[1];</b>
+<b class="nc">&nbsp;        NFA nfa = new NFA(regexp);</b>
+<b class="nc">&nbsp;        StdOut.println(nfa.recognizes(txt));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;} 
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

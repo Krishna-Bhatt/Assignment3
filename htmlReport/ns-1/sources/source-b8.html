@@ -1,0 +1,455 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > TST</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: TST (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TST</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/88)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/104)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TST$Node</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/88)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/104)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac TST.java
+&nbsp; *  Execution:    java TST &lt; words.txt
+&nbsp; *  Dependencies: StdIn.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/52trie/shellsST.txt
+&nbsp; *
+&nbsp; *  Symbol table with string keys, implemented using a ternary search
+&nbsp; *  trie (TST).
+&nbsp; *
+&nbsp; *
+&nbsp; *  % java TST &lt; shellsST.txt
+&nbsp; *  keys(&quot;&quot;):
+&nbsp; *  by 4
+&nbsp; *  sea 6
+&nbsp; *  sells 1
+&nbsp; *  she 0
+&nbsp; *  shells 3
+&nbsp; *  shore 7
+&nbsp; *  the 5
+&nbsp; *
+&nbsp; *  longestPrefixOf(&quot;shellsort&quot;):
+&nbsp; *  shells
+&nbsp; *
+&nbsp; *  keysWithPrefix(&quot;shor&quot;):
+&nbsp; *  shore
+&nbsp; *
+&nbsp; *  keysThatMatch(&quot;.he.l.&quot;):
+&nbsp; *  shells
+&nbsp; *
+&nbsp; *  % java TST
+&nbsp; *  theory the now is the time for all good men
+&nbsp; *
+&nbsp; *  Remarks
+&nbsp; *  --------
+&nbsp; *    - can&#39;t use a key that is the empty string &quot;&quot;
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code TST} class represents an symbol table of key-value
+&nbsp; *  pairs, with string keys and generic values.
+&nbsp; *  It supports the usual &lt;em&gt;put&lt;/em&gt;, &lt;em&gt;get&lt;/em&gt;, &lt;em&gt;contains&lt;/em&gt;,
+&nbsp; *  &lt;em&gt;delete&lt;/em&gt;, &lt;em&gt;size&lt;/em&gt;, and &lt;em&gt;is-empty&lt;/em&gt; methods.
+&nbsp; *  It also provides character-based methods for finding the string
+&nbsp; *  in the symbol table that is the &lt;em&gt;longest prefix&lt;/em&gt; of a given prefix,
+&nbsp; *  finding all strings in the symbol table that &lt;em&gt;start with&lt;/em&gt; a given prefix,
+&nbsp; *  and finding all strings in the symbol table that &lt;em&gt;match&lt;/em&gt; a given pattern.
+&nbsp; *  A symbol table implements the &lt;em&gt;associative array&lt;/em&gt; abstraction:
+&nbsp; *  when associating a value with a key that is already in the symbol table,
+&nbsp; *  the convention is to replace the old value with the new value.
+&nbsp; *  Unlike {@link java.util.Map}, this class uses the convention that
+&nbsp; *  values cannot be {@code null}—setting the
+&nbsp; *  value associated with a key to {@code null} is equivalent to deleting the key
+&nbsp; *  from the symbol table.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a ternary search trie.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation, see &lt;a href=&quot;https://algs4.cs.princeton.edu/52trie&quot;&gt;Section 5.2&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; */
+&nbsp;public class TST&lt;Value&gt; {
+&nbsp;    private int n;              // size
+&nbsp;    private Node&lt;Value&gt; root;   // root of TST
+&nbsp;
+&nbsp;    private static class Node&lt;Value&gt; {
+&nbsp;        private char c;                        // character
+&nbsp;        private Node&lt;Value&gt; left, mid, right;  // left, middle, and right subtries
+&nbsp;        private Value val;                     // value associated with string
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes an empty string symbol table.
+&nbsp;     */
+<b class="nc">&nbsp;    public TST() {</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of key-value pairs in this symbol table.
+&nbsp;     * @return the number of key-value pairs in this symbol table
+&nbsp;     */
+&nbsp;    public int size() {
+<b class="nc">&nbsp;        return n;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Does this symbol table contain the given key?
+&nbsp;     * @param key the key
+&nbsp;     * @return {@code true} if this symbol table contains {@code key} and
+&nbsp;     *     {@code false} otherwise
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public boolean contains(String key) {
+<b class="nc">&nbsp;        if (key == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;argument to contains() is null&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return get(key) != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the value associated with the given key.
+&nbsp;     * @param key the key
+&nbsp;     * @return the value associated with the given key if the key is in the symbol table
+&nbsp;     *     and {@code null} if the key is not in the symbol table
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public Value get(String key) {
+<b class="nc">&nbsp;        if (key == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;calls get() with null argument&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (key.length() == 0) throw new IllegalArgumentException(&quot;key must have length &gt;= 1&quot;);</b>
+<b class="nc">&nbsp;        Node&lt;Value&gt; x = get(root, key, 0);</b>
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        return x.val;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // return subtrie corresponding to given key
+&nbsp;    private Node&lt;Value&gt; get(Node&lt;Value&gt; x, String key, int d) {
+<b class="nc">&nbsp;        if (x == null) return null;</b>
+<b class="nc">&nbsp;        if (key.length() == 0) throw new IllegalArgumentException(&quot;key must have length &gt;= 1&quot;);</b>
+<b class="nc">&nbsp;        char c = key.charAt(d);</b>
+<b class="nc">&nbsp;        if      (c &lt; x.c)              return get(x.left,  key, d);</b>
+<b class="nc">&nbsp;        else if (c &gt; x.c)              return get(x.right, key, d);</b>
+<b class="nc">&nbsp;        else if (d &lt; key.length() - 1) return get(x.mid,   key, d+1);</b>
+<b class="nc">&nbsp;        else                           return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserts the key-value pair into the symbol table, overwriting the old value
+&nbsp;     * with the new value if the key is already in the symbol table.
+&nbsp;     * If the value is {@code null}, this effectively deletes the key from the symbol table.
+&nbsp;     * @param key the key
+&nbsp;     * @param val the value
+&nbsp;     * @throws IllegalArgumentException if {@code key} is {@code null}
+&nbsp;     */
+&nbsp;    public void put(String key, Value val) {
+<b class="nc">&nbsp;        if (key == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;calls put() with null key&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (!contains(key)) n++;</b>
+<b class="nc">&nbsp;        else if(val == null) n--;       // delete existing key</b>
+<b class="nc">&nbsp;        root = put(root, key, val, 0);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    private Node&lt;Value&gt; put(Node&lt;Value&gt; x, String key, Value val, int d) {
+<b class="nc">&nbsp;        char c = key.charAt(d);</b>
+<b class="nc">&nbsp;        if (x == null) {</b>
+<b class="nc">&nbsp;            x = new Node&lt;Value&gt;();</b>
+<b class="nc">&nbsp;            x.c = c;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if      (c &lt; x.c)               x.left  = put(x.left,  key, val, d);</b>
+<b class="nc">&nbsp;        else if (c &gt; x.c)               x.right = put(x.right, key, val, d);</b>
+<b class="nc">&nbsp;        else if (d &lt; key.length() - 1)  x.mid   = put(x.mid,   key, val, d+1);</b>
+<b class="nc">&nbsp;        else                            x.val   = val;</b>
+<b class="nc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the string in the symbol table that is the longest prefix of {@code query},
+&nbsp;     * or {@code null}, if no such string.
+&nbsp;     * @param query the query string
+&nbsp;     * @return the string in the symbol table that is the longest prefix of {@code query},
+&nbsp;     *     or {@code null} if no such string
+&nbsp;     * @throws IllegalArgumentException if {@code query} is {@code null}
+&nbsp;     */
+&nbsp;    public String longestPrefixOf(String query) {
+<b class="nc">&nbsp;        if (query == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;calls longestPrefixOf() with null argument&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (query.length() == 0) return null;</b>
+<b class="nc">&nbsp;        int length = 0;</b>
+<b class="nc">&nbsp;        Node&lt;Value&gt; x = root;</b>
+<b class="nc">&nbsp;        int i = 0;</b>
+<b class="nc">&nbsp;        while (x != null &amp;&amp; i &lt; query.length()) {</b>
+<b class="nc">&nbsp;            char c = query.charAt(i);</b>
+<b class="nc">&nbsp;            if      (c &lt; x.c) x = x.left;</b>
+<b class="nc">&nbsp;            else if (c &gt; x.c) x = x.right;</b>
+&nbsp;            else {
+<b class="nc">&nbsp;                i++;</b>
+<b class="nc">&nbsp;                if (x.val != null) length = i;</b>
+<b class="nc">&nbsp;                x = x.mid;</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return query.substring(0, length);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all keys in the symbol table as an {@code Iterable}.
+&nbsp;     * To iterate over all of the keys in the symbol table named {@code st},
+&nbsp;     * use the foreach notation: {@code for (Key key : st.keys())}.
+&nbsp;     * @return all keys in the symbol table as an {@code Iterable}
+&nbsp;     */
+&nbsp;    public Iterable&lt;String&gt; keys() {
+<b class="nc">&nbsp;        Queue&lt;String&gt; queue = new Queue&lt;String&gt;();</b>
+<b class="nc">&nbsp;        collect(root, new StringBuilder(), queue);</b>
+<b class="nc">&nbsp;        return queue;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all of the keys in the set that start with {@code prefix}.
+&nbsp;     * @param prefix the prefix
+&nbsp;     * @return all of the keys in the set that start with {@code prefix},
+&nbsp;     *     as an iterable
+&nbsp;     * @throws IllegalArgumentException if {@code prefix} is {@code null}
+&nbsp;     */
+&nbsp;    public Iterable&lt;String&gt; keysWithPrefix(String prefix) {
+<b class="nc">&nbsp;        if (prefix == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;calls keysWithPrefix() with null argument&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Queue&lt;String&gt; queue = new Queue&lt;String&gt;();</b>
+<b class="nc">&nbsp;        Node&lt;Value&gt; x = get(root, prefix, 0);</b>
+<b class="nc">&nbsp;        if (x == null) return queue;</b>
+<b class="nc">&nbsp;        if (x.val != null) queue.enqueue(prefix);</b>
+<b class="nc">&nbsp;        collect(x.mid, new StringBuilder(prefix), queue);</b>
+<b class="nc">&nbsp;        return queue;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // all keys in subtrie rooted at x with given prefix
+&nbsp;    private void collect(Node&lt;Value&gt; x, StringBuilder prefix, Queue&lt;String&gt; queue) {
+<b class="nc">&nbsp;        if (x == null) return;</b>
+<b class="nc">&nbsp;        collect(x.left,  prefix, queue);</b>
+<b class="nc">&nbsp;        if (x.val != null) queue.enqueue(prefix.toString() + x.c);</b>
+<b class="nc">&nbsp;        collect(x.mid,   prefix.append(x.c), queue);</b>
+<b class="nc">&nbsp;        prefix.deleteCharAt(prefix.length() - 1);</b>
+<b class="nc">&nbsp;        collect(x.right, prefix, queue);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all of the keys in the symbol table that match {@code pattern},
+&nbsp;     * where the character &#39;.&#39; is interpreted as a wildcard character.
+&nbsp;     * @param pattern the pattern
+&nbsp;     * @return all of the keys in the symbol table that match {@code pattern},
+&nbsp;     *     as an iterable, where . is treated as a wildcard character.
+&nbsp;     */
+&nbsp;    public Iterable&lt;String&gt; keysThatMatch(String pattern) {
+<b class="nc">&nbsp;        Queue&lt;String&gt; queue = new Queue&lt;String&gt;();</b>
+<b class="nc">&nbsp;        collect(root, new StringBuilder(), 0, pattern, queue);</b>
+<b class="nc">&nbsp;        return queue;</b>
+&nbsp;    }
+&nbsp; 
+&nbsp;    private void collect(Node&lt;Value&gt; x, StringBuilder prefix, int i, String pattern, Queue&lt;String&gt; queue) {
+<b class="nc">&nbsp;        if (x == null) return;</b>
+<b class="nc">&nbsp;        char c = pattern.charAt(i);</b>
+<b class="nc">&nbsp;        if (c == &#39;.&#39; || c &lt; x.c) collect(x.left, prefix, i, pattern, queue);</b>
+<b class="nc">&nbsp;        if (c == &#39;.&#39; || c == x.c) {</b>
+<b class="nc">&nbsp;            if (i == pattern.length() - 1 &amp;&amp; x.val != null) queue.enqueue(prefix.toString() + x.c);</b>
+<b class="nc">&nbsp;            if (i &lt; pattern.length() - 1) {</b>
+<b class="nc">&nbsp;                collect(x.mid, prefix.append(x.c), i+1, pattern, queue);</b>
+<b class="nc">&nbsp;                prefix.deleteCharAt(prefix.length() - 1);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        if (c == &#39;.&#39; || c &gt; x.c) collect(x.right, prefix, i, pattern, queue);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code TST} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // build symbol table from standard input
+<b class="nc">&nbsp;        TST&lt;Integer&gt; st = new TST&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        for (int i = 0; !StdIn.isEmpty(); i++) {</b>
+<b class="nc">&nbsp;            String key = StdIn.readString();</b>
+<b class="nc">&nbsp;            st.put(key, i);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // print results
+<b class="nc">&nbsp;        if (st.size() &lt; 100) {</b>
+<b class="nc">&nbsp;            StdOut.println(&quot;keys(\&quot;\&quot;):&quot;);</b>
+<b class="nc">&nbsp;            for (String key : st.keys()) {</b>
+<b class="nc">&nbsp;                StdOut.println(key + &quot; &quot; + st.get(key));</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            StdOut.println();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;longestPrefixOf(\&quot;shellsort\&quot;):&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(st.longestPrefixOf(&quot;shellsort&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;longestPrefixOf(\&quot;shell\&quot;):&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(st.longestPrefixOf(&quot;shell&quot;));</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;keysWithPrefix(\&quot;shor\&quot;):&quot;);</b>
+<b class="nc">&nbsp;        for (String s : st.keysWithPrefix(&quot;shor&quot;))</b>
+<b class="nc">&nbsp;            StdOut.println(s);</b>
+<b class="nc">&nbsp;        StdOut.println();</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.println(&quot;keysThatMatch(\&quot;.he.l.\&quot;):&quot;);</b>
+<b class="nc">&nbsp;        for (String s : st.keysThatMatch(&quot;.he.l.&quot;))</b>
+<b class="nc">&nbsp;            StdOut.println(s);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,473 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EulerianCycle</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: EulerianCycle (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EulerianCycle</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/76)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/112)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">EulerianCycle$Edge</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/80)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/120)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac EulerianCycle.java
+&nbsp; *  Execution:    java  EulerianCycle V E
+&nbsp; *  Dependencies: Graph.java Stack.java StdOut.java
+&nbsp; *
+&nbsp; *  Find an Eulerian cycle in a graph, if one exists.
+&nbsp; *
+&nbsp; *  Runs in O(E + V) time.
+&nbsp; *
+&nbsp; *  This implementation is tricker than the one for digraphs because
+&nbsp; *  when we use edge v-w from v&#39;s adjacency list, we must be careful
+&nbsp; *  not to use the second copy of the edge from w&#39;s adjaceny list.
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code EulerianCycle} class represents a data type
+&nbsp; *  for finding an Eulerian cycle or path in a graph.
+&nbsp; *  An &lt;em&gt;Eulerian cycle&lt;/em&gt; is a cycle (not necessarily simple) that
+&nbsp; *  uses every edge in the graph exactly once.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses a nonrecursive depth-first search.
+&nbsp; *  The constructor takes &amp;Theta;(&lt;em&gt;E&lt;/em&gt; + &lt;em&gt;V&lt;/em&gt;) time in the worst
+&nbsp; *  case, where &lt;em&gt;E&lt;/em&gt; is the number of edges and &lt;em&gt;V&lt;/em&gt; is the
+&nbsp; *  number of vertices
+&nbsp; *  Each instance method takes &amp;Theta;(1) time.
+&nbsp; *  It uses &amp;Theta;(&lt;em&gt;E&lt;/em&gt; + &lt;em&gt;V&lt;/em&gt;) extra space in the worst case
+&nbsp; *  (not including the graph).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  To compute Eulerian paths in graphs, see {@link EulerianPath}.
+&nbsp; *  To compute Eulerian cycles and paths in digraphs, see
+&nbsp; *  {@link DirectedEulerianCycle} and {@link DirectedEulerianPath}.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/41graph&quot;&gt;Section 4.1&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; * 
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; *  @author Nate Liu
+&nbsp; */
+<b class="nc">&nbsp;public class EulerianCycle {</b>
+<b class="nc">&nbsp;    private Stack&lt;Integer&gt; cycle = new Stack&lt;Integer&gt;();  // Eulerian cycle; null if no such cycle</b>
+&nbsp;
+&nbsp;    // an undirected edge, with a field to indicate whether the edge has already been used
+&nbsp;    private static class Edge {
+&nbsp;        private final int v;
+&nbsp;        private final int w;
+&nbsp;        private boolean isUsed;
+&nbsp;
+<b class="nc">&nbsp;        public Edge(int v, int w) {</b>
+<b class="nc">&nbsp;            this.v = v;</b>
+<b class="nc">&nbsp;            this.w = w;</b>
+<b class="nc">&nbsp;            isUsed = false;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // returns the other vertex of the edge
+&nbsp;        public int other(int vertex) {
+<b class="nc">&nbsp;            if      (vertex == v) return w;</b>
+<b class="nc">&nbsp;            else if (vertex == w) return v;</b>
+<b class="nc">&nbsp;            else throw new IllegalArgumentException(&quot;Illegal endpoint&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Computes an Eulerian cycle in the specified graph, if one exists.
+&nbsp;     * 
+&nbsp;     * @param G the graph
+&nbsp;     */
+<b class="nc">&nbsp;    public EulerianCycle(Graph G) {</b>
+&nbsp;
+&nbsp;        // must have at least one edge
+<b class="nc">&nbsp;        if (G.E() == 0) return;</b>
+&nbsp;
+&nbsp;        // necessary condition: all vertices have even degree
+&nbsp;        // (this test is needed or it might find an Eulerian path instead of cycle)
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) </b>
+<b class="nc">&nbsp;            if (G.degree(v) % 2 != 0)</b>
+<b class="nc">&nbsp;                return;</b>
+&nbsp;
+&nbsp;        // create local view of adjacency lists, to iterate one vertex at a time
+&nbsp;        // the helper Edge data type is used to avoid exploring both copies of an edge v-w
+<b class="nc">&nbsp;        Queue&lt;Edge&gt;[] adj = (Queue&lt;Edge&gt;[]) new Queue[G.V()];</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            adj[v] = new Queue&lt;Edge&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++) {</b>
+<b class="nc">&nbsp;            int selfLoops = 0;</b>
+<b class="nc">&nbsp;            for (int w : G.adj(v)) {</b>
+&nbsp;                // careful with self loops
+<b class="nc">&nbsp;                if (v == w) {</b>
+<b class="nc">&nbsp;                    if (selfLoops % 2 == 0) {</b>
+<b class="nc">&nbsp;                        Edge e = new Edge(v, w);</b>
+<b class="nc">&nbsp;                        adj[v].enqueue(e);</b>
+<b class="nc">&nbsp;                        adj[w].enqueue(e);</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    selfLoops++;</b>
+&nbsp;                }
+<b class="nc">&nbsp;                else if (v &lt; w) {</b>
+<b class="nc">&nbsp;                    Edge e = new Edge(v, w);</b>
+<b class="nc">&nbsp;                    adj[v].enqueue(e);</b>
+<b class="nc">&nbsp;                    adj[w].enqueue(e);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // initialize stack with any non-isolated vertex
+<b class="nc">&nbsp;        int s = nonIsolatedVertex(G);</b>
+<b class="nc">&nbsp;        Stack&lt;Integer&gt; stack = new Stack&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        stack.push(s);</b>
+&nbsp;
+&nbsp;        // greedily search through edges in iterative DFS style
+<b class="nc">&nbsp;        cycle = new Stack&lt;Integer&gt;();</b>
+<b class="nc">&nbsp;        while (!stack.isEmpty()) {</b>
+<b class="nc">&nbsp;            int v = stack.pop();</b>
+<b class="nc">&nbsp;            while (!adj[v].isEmpty()) {</b>
+<b class="nc">&nbsp;                Edge edge = adj[v].dequeue();</b>
+<b class="nc">&nbsp;                if (edge.isUsed) continue;</b>
+<b class="nc">&nbsp;                edge.isUsed = true;</b>
+<b class="nc">&nbsp;                stack.push(v);</b>
+<b class="nc">&nbsp;                v = edge.other(v);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;            // push vertex with no more leaving edges to cycle
+<b class="nc">&nbsp;            cycle.push(v);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // check if all edges are used
+<b class="nc">&nbsp;        if (cycle.size() != G.E() + 1)</b>
+<b class="nc">&nbsp;            cycle = null;</b>
+&nbsp;
+<b class="nc">&nbsp;        assert certifySolution(G);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the sequence of vertices on an Eulerian cycle.
+&nbsp;     * 
+&nbsp;     * @return the sequence of vertices on an Eulerian cycle;
+&nbsp;     *         {@code null} if no such cycle
+&nbsp;     */
+&nbsp;    public Iterable&lt;Integer&gt; cycle() {
+<b class="nc">&nbsp;        return cycle;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the graph has an Eulerian cycle.
+&nbsp;     * 
+&nbsp;     * @return {@code true} if the graph has an Eulerian cycle;
+&nbsp;     *         {@code false} otherwise
+&nbsp;     */
+&nbsp;    public boolean hasEulerianCycle() {
+<b class="nc">&nbsp;        return cycle != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // returns any non-isolated vertex; -1 if no such vertex
+&nbsp;    private static int nonIsolatedVertex(Graph G) {
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            if (G.degree(v) &gt; 0)</b>
+<b class="nc">&nbsp;                return v;</b>
+<b class="nc">&nbsp;        return -1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**************************************************************************
+&nbsp;     *
+&nbsp;     *  The code below is solely for testing correctness of the data type.
+&nbsp;     *
+&nbsp;     **************************************************************************/
+&nbsp;
+&nbsp;    // Determines whether a graph has an Eulerian cycle using necessary
+&nbsp;    // and sufficient conditions (without computing the cycle itself):
+&nbsp;    //    - at least one edge
+&nbsp;    //    - degree(v) is even for every vertex v
+&nbsp;    //    - the graph is connected (ignoring isolated vertices)
+&nbsp;    private static boolean satisfiesNecessaryAndSufficientConditions(Graph G) {
+&nbsp;
+&nbsp;        // Condition 0: at least 1 edge
+<b class="nc">&nbsp;        if (G.E() == 0) return false;</b>
+&nbsp;
+&nbsp;        // Condition 1: degree(v) is even for every vertex
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            if (G.degree(v) % 2 != 0)</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;
+&nbsp;        // Condition 2: graph is connected, ignoring isolated vertices
+<b class="nc">&nbsp;        int s = nonIsolatedVertex(G);</b>
+<b class="nc">&nbsp;        BreadthFirstPaths bfs = new BreadthFirstPaths(G, s);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; G.V(); v++)</b>
+<b class="nc">&nbsp;            if (G.degree(v) &gt; 0 &amp;&amp; !bfs.hasPathTo(v))</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // check that solution is correct
+&nbsp;    private boolean certifySolution(Graph G) {
+&nbsp;
+&nbsp;        // internal consistency check
+<b class="nc">&nbsp;        if (hasEulerianCycle() == (cycle() == null)) return false;</b>
+&nbsp;
+&nbsp;        // hashEulerianCycle() returns correct value
+<b class="nc">&nbsp;        if (hasEulerianCycle() != satisfiesNecessaryAndSufficientConditions(G)) return false;</b>
+&nbsp;
+&nbsp;        // nothing else to check if no Eulerian cycle
+<b class="nc">&nbsp;        if (cycle == null) return true;</b>
+&nbsp;
+&nbsp;        // check that cycle() uses correct number of edges
+<b class="nc">&nbsp;        if (cycle.size() != G.E() + 1) return false;</b>
+&nbsp;
+&nbsp;        // check that cycle() is a cycle of G
+&nbsp;        // TODO
+&nbsp;
+&nbsp;        // check that first and last vertices in cycle() are the same
+<b class="nc">&nbsp;        int first = -1, last = -1;</b>
+<b class="nc">&nbsp;        for (int v : cycle()) {</b>
+<b class="nc">&nbsp;            if (first == -1) first = v;</b>
+<b class="nc">&nbsp;            last = v;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        if (first != last) return false;</b>
+&nbsp;
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static void unitTest(Graph G, String description) {
+<b class="nc">&nbsp;        StdOut.println(description);</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;-------------------------------------&quot;);</b>
+<b class="nc">&nbsp;        StdOut.print(G);</b>
+&nbsp;
+<b class="nc">&nbsp;        EulerianCycle euler = new EulerianCycle(G);</b>
+&nbsp;
+<b class="nc">&nbsp;        StdOut.print(&quot;Eulerian cycle: &quot;);</b>
+<b class="nc">&nbsp;        if (euler.hasEulerianCycle()) {</b>
+<b class="nc">&nbsp;            for (int v : euler.cycle()) {</b>
+<b class="nc">&nbsp;                StdOut.print(v + &quot; &quot;);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            StdOut.println();</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            StdOut.println(&quot;none&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        StdOut.println();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Unit tests the {@code EulerianCycle} data type.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        int V = Integer.parseInt(args[0]);</b>
+<b class="nc">&nbsp;        int E = Integer.parseInt(args[1]);</b>
+&nbsp;
+&nbsp;        // Eulerian cycle
+<b class="nc">&nbsp;        Graph G1 = GraphGenerator.eulerianCycle(V, E);</b>
+<b class="nc">&nbsp;        unitTest(G1, &quot;Eulerian cycle&quot;);</b>
+&nbsp;
+&nbsp;        // Eulerian path
+<b class="nc">&nbsp;        Graph G2 = GraphGenerator.eulerianPath(V, E);</b>
+<b class="nc">&nbsp;        unitTest(G2, &quot;Eulerian path&quot;);</b>
+&nbsp;
+&nbsp;        // empty graph
+<b class="nc">&nbsp;        Graph G3 = new Graph(V);</b>
+<b class="nc">&nbsp;        unitTest(G3, &quot;empty graph&quot;);</b>
+&nbsp;
+&nbsp;        // self loop
+<b class="nc">&nbsp;        Graph G4 = new Graph(V);</b>
+<b class="nc">&nbsp;        int v4 = StdRandom.uniform(V);</b>
+<b class="nc">&nbsp;        G4.addEdge(v4, v4);</b>
+<b class="nc">&nbsp;        unitTest(G4, &quot;single self loop&quot;);</b>
+&nbsp;
+&nbsp;        // union of two disjoint cycles
+<b class="nc">&nbsp;        Graph H1 = GraphGenerator.eulerianCycle(V/2, E/2);</b>
+<b class="nc">&nbsp;        Graph H2 = GraphGenerator.eulerianCycle(V - V/2, E - E/2);</b>
+<b class="nc">&nbsp;        int[] perm = new int[V];</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; V; i++)</b>
+<b class="nc">&nbsp;            perm[i] = i;</b>
+<b class="nc">&nbsp;        StdRandom.shuffle(perm);</b>
+<b class="nc">&nbsp;        Graph G5 = new Graph(V);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; H1.V(); v++)</b>
+<b class="nc">&nbsp;            for (int w : H1.adj(v))</b>
+<b class="nc">&nbsp;                G5.addEdge(perm[v], perm[w]);</b>
+<b class="nc">&nbsp;        for (int v = 0; v &lt; H2.V(); v++)</b>
+<b class="nc">&nbsp;            for (int w : H2.adj(v))</b>
+<b class="nc">&nbsp;                G5.addEdge(perm[V/2 + v], perm[V/2 + w]);</b>
+<b class="nc">&nbsp;        unitTest(G5, &quot;Union of two disjoint cycles&quot;);</b>
+&nbsp;
+&nbsp;        // random digraph
+<b class="nc">&nbsp;        Graph G6 = GraphGenerator.simple(V, E);</b>
+<b class="nc">&nbsp;        unitTest(G6, &quot;simple graph&quot;);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>

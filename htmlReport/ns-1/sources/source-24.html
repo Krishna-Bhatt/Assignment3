@@ -1,0 +1,238 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > CPM</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.princeton.cs.algs4</a>
+</div>
+
+<h1>Coverage Summary for Class: CPM (edu.princeton.cs.algs4)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CPM</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/******************************************************************************
+&nbsp; *  Compilation:  javac CPM.java
+&nbsp; *  Execution:    java CPM &lt; input.txt
+&nbsp; *  Dependencies: EdgeWeightedDigraph.java AcyclicDigraphLP.java StdOut.java
+&nbsp; *  Data files:   https://algs4.cs.princeton.edu/44sp/jobsPC.txt
+&nbsp; *
+&nbsp; *  Critical path method.
+&nbsp; *
+&nbsp; *  % java CPM &lt; jobsPC.txt
+&nbsp; *   job   start  finish
+&nbsp; *  --------------------
+&nbsp; *     0     0.0    41.0
+&nbsp; *     1    41.0    92.0
+&nbsp; *     2   123.0   173.0
+&nbsp; *     3    91.0   127.0
+&nbsp; *     4    70.0   108.0
+&nbsp; *     5     0.0    45.0
+&nbsp; *     6    70.0    91.0
+&nbsp; *     7    41.0    73.0
+&nbsp; *     8    91.0   123.0
+&nbsp; *     9    41.0    70.0
+&nbsp; *  Finish time:   173.0
+&nbsp; *
+&nbsp; ******************************************************************************/
+&nbsp;
+&nbsp;package edu.princeton.cs.algs4;
+&nbsp;
+&nbsp;/**
+&nbsp; *  The {@code CPM} class provides a client that solves the
+&nbsp; *  parallel precedence-constrained job scheduling problem
+&nbsp; *  via the &lt;em&gt;critical path method&lt;/em&gt;. It reduces the problem
+&nbsp; *  to the longest-paths problem in edge-weighted DAGs.
+&nbsp; *  It builds an edge-weighted digraph (which must be a DAG)
+&nbsp; *  from the job-scheduling problem specification,
+&nbsp; *  finds the longest-paths tree, and computes the longest-paths
+&nbsp; *  lengths (which are precisely the start times for each job).
+&nbsp; *  &lt;p&gt;
+&nbsp; *  This implementation uses {@link AcyclicLP} to find a longest
+&nbsp; *  path in a DAG.
+&nbsp; *  The program takes &amp;Theta;(&lt;em&gt;V&lt;/em&gt; + &lt;em&gt;E&lt;/em&gt;) time in
+&nbsp; *  the worst case, where &lt;em&gt;V&lt;/em&gt; is the number of jobs and
+&nbsp; *  &lt;em&gt;E&lt;/em&gt; is the number of precedence constraints.
+&nbsp; *  &lt;p&gt;
+&nbsp; *  For additional documentation,
+&nbsp; *  see &lt;a href=&quot;https://algs4.cs.princeton.edu/44sp&quot;&gt;Section 4.4&lt;/a&gt; of
+&nbsp; *  &lt;i&gt;Algorithms, 4th Edition&lt;/i&gt; by Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  @author Robert Sedgewick
+&nbsp; *  @author Kevin Wayne
+&nbsp; */
+&nbsp;public class CPM {
+&nbsp;
+&nbsp;    // this class cannot be instantiated
+&nbsp;    private CPM() { }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  Reads the precedence constraints from standard input
+&nbsp;     *  and prints a feasible schedule to standard output.
+&nbsp;     *
+&nbsp;     * @param args the command-line arguments
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+&nbsp;        // number of jobs
+<b class="nc">&nbsp;        int n = StdIn.readInt();</b>
+&nbsp;
+&nbsp;        // source and sink
+<b class="nc">&nbsp;        int source = 2*n;</b>
+<b class="nc">&nbsp;        int sink   = 2*n + 1;</b>
+&nbsp;
+&nbsp;        // build network
+<b class="nc">&nbsp;        EdgeWeightedDigraph G = new EdgeWeightedDigraph(2*n + 2);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            double duration = StdIn.readDouble();</b>
+<b class="nc">&nbsp;            G.addEdge(new DirectedEdge(source, i, 0.0));</b>
+<b class="nc">&nbsp;            G.addEdge(new DirectedEdge(i+n, sink, 0.0));</b>
+<b class="nc">&nbsp;            G.addEdge(new DirectedEdge(i, i+n,    duration));</b>
+&nbsp;
+&nbsp;            // precedence constraints
+<b class="nc">&nbsp;            int m = StdIn.readInt();</b>
+<b class="nc">&nbsp;            for (int j = 0; j &lt; m; j++) {</b>
+<b class="nc">&nbsp;                int precedent = StdIn.readInt();</b>
+<b class="nc">&nbsp;                G.addEdge(new DirectedEdge(n+i, precedent, 0.0));</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // compute longest path
+<b class="nc">&nbsp;        AcyclicLP lp = new AcyclicLP(G, source);</b>
+&nbsp;
+&nbsp;        // print results
+<b class="nc">&nbsp;        StdOut.println(&quot; job   start  finish&quot;);</b>
+<b class="nc">&nbsp;        StdOut.println(&quot;--------------------&quot;);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc">&nbsp;            StdOut.printf(&quot;%4d %7.1f %7.1f\n&quot;, i, lp.distTo(i), lp.distTo(i+n));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        StdOut.printf(&quot;Finish time: %7.1f\n&quot;, lp.distTo(sink));</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;/******************************************************************************
+&nbsp; *  Copyright 2002-2020, Robert Sedgewick and Kevin Wayne.
+&nbsp; *
+&nbsp; *  This file is part of algs4.jar, which accompanies the textbook
+&nbsp; *
+&nbsp; *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+&nbsp; *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+&nbsp; *      http://algs4.cs.princeton.edu
+&nbsp; *
+&nbsp; *
+&nbsp; *  algs4.jar is free software: you can redistribute it and/or modify
+&nbsp; *  it under the terms of the GNU General Public License as published by
+&nbsp; *  the Free Software Foundation, either version 3 of the License, or
+&nbsp; *  (at your option) any later version.
+&nbsp; *
+&nbsp; *  algs4.jar is distributed in the hope that it will be useful,
+&nbsp; *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+&nbsp; *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+&nbsp; *  GNU General Public License for more details.
+&nbsp; *
+&nbsp; *  You should have received a copy of the GNU General Public License
+&nbsp; *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+&nbsp; ******************************************************************************/
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-04-17 00:14</div>
+</div>
+</body>
+</html>
